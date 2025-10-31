@@ -1,0 +1,69 @@
+/* 1. Import Tailwind's base, components, and utilities */
+@import "tailwindcss";
+
+/* 2. Define your custom font files. 
+   Notice each weight (e.g., 300, 400, 700) has its own file and rule.
+   (You must have these files in your /fonts/catamaran/ folder)
+*/
+@font-face {
+  font-family: 'Catamaran';
+  font-style: normal;
+  font-weight: 300; /* Light */
+  font-display: swap;
+  src: url("./fonts/catamaran/Catamaran-Light.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: 'Catamaran';
+  font-style: normal;
+  font-weight: 400; /* Regular */
+  font-display: swap;
+  src: url("./fonts/catamaran/Catamaran-Regular.ttf") format("truetype");
+}
+
+@font-face {
+  font-family: 'Catamaran';
+  font-style: normal;
+  font-weight: 700; /* Bold */
+  font-display: swap;
+  src: url("./fonts/catamaran/Catamaran-Bold.ttf") format("truetype");
+}
+
+/* 3. Apply your font as the default.
+   Using @layer base tells Tailwind to apply this to the foundational
+   styles of your site. This is the correct way to set a default.
+*/
+@layer base {
+  body {
+    font-family: 'Catamaran', sans-serif;
+  }
+}
+
+
+@theme {
+  --color-brand-pink-50: #ffecf1;
+  --color-brand-pink-100: #fed9e3;
+  --color-brand-pink-200: #feb1c8;
+  --color-brand-pink-300: #fd85ae;
+  --color-brand-pink-400: #fd4b96;
+  --color-brand-pink-500: #e60f7d;
+  --color-brand-pink-600: #b80963;
+  --color-brand-pink-700: #8d054a;
+  --color-brand-pink-800: #640333;
+  --color-brand-pink-900: #3e011d;
+  --color-brand-pink-950: #2a0012;
+}
+
+@theme {
+  --color-brand-purple-50: #fbecfc;
+  --color-brand-purple-100: #f7ddf9;
+  --color-brand-purple-200: #f0baf4;
+  --color-brand-purple-300: #e995ef;
+  --color-brand-purple-400: #e26ce9;
+  --color-brand-purple-500: #cf49d6;
+  --color-brand-purple-600: #ad3cb3;
+  --color-brand-purple-700: #8a2e8f;
+  --color-brand-purple-800: #5e1d61;
+  --color-brand-purple-900: #370d39;
+  --color-brand-purple-950: #250626;
+}
