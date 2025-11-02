@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import MainLogo from "../assets/Pink & Purple Logo Package/Main logo without background.png"
 
 export default function NavBar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
@@ -31,7 +32,7 @@ export default function NavBar() {
                 scrolled ? "text-purple-600" : "text-white drop-shadow-md"
               }`}
             >
-              PINK AND PURPLE
+              <img src={MainLogo} alt="Pink and Purple Main Logo" className="w-45"/>
             </h1>
           </div>
 
@@ -142,7 +143,7 @@ export default function NavBar() {
               className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl text-sm font-semibold transition-all duration-200 shadow-sm hover:shadow-md ${
                 scrolled
                   ? "bg-pink-500 text-white hover:bg-pink-600"
-                  : "border-2 border-brand-pink-400 text-zinc-50  "
+                  : "border-2 border-brand-pink-400 text-zinc-50 hover:bg-pink-600 hover:border-none"
               }`}
             >
               Get Started

@@ -1,10 +1,6 @@
-
 export default function HeroSection() {
   return (
-    <section
-      id="home"
-      className="bg-stone-900 lg:py-32"
-    >
+    <section id="home" className="bg-stone-900 lg:py-32">
       <div className="max-w-7xl mx-auto px-6 lg:px-8">
         <div className="text-center max-w-4xl mx-auto">
           {/* Headline */}
@@ -45,7 +41,7 @@ export default function HeroSection() {
             </a>
             <a
               href="#about"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white text-gray-900 border-2 border-gray-200 px-8 py-4 rounded-lg text-base font-semibold hover:border-purple-300 hover:bg-purple-50 transition-all duration-200"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-white text-gray-900 border-2 border-gray-200 px-8 py-4 rounded-lg text-base font-semibold  hover:bg-purple-500 transition-all duration-200 border-none hover:text-white  transition-all duration-200"
             >
               Learn More
             </a>
