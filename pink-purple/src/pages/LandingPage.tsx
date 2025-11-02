@@ -4,6 +4,7 @@ import HeroSection from "../components/sections/HeroSection";
 import ServicesSection from "../components/sections/ServiceSection";
 import WhoWeAre from "../components/sections/WhoWeAre";
 import WhyChooseUs from "../components/sections/WhyChooseUs";
+import Footer from "../components/Footer";
 
 const fadeInUpVariants = {
   hidden: { 
@@ -67,6 +68,7 @@ export default function LandingPage() {
       >
         <CTASection />
       </motion.div>
+      <Footer />
     </>
   );
 }

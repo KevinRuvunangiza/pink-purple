@@ -1,39 +1,87 @@
+import { motion } from "framer-motion";
+import { ArrowRight } from "lucide-react";
+
+const fadeIn = {
+  initial: { opacity: 0, y: 20 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: "-50px" },
+  transition: { duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }
+};
+
 export default function CTASection() {
   return (
-    <section className="py-20 lg:py-28 bg-gradient-to-br from-pink-500 via-purple-500 to-purple-600">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="text-center max-w-3xl mx-auto">
+    <section className="py-28 lg:py-36 bg-purple-600 relative overflow-hidden">
+      {/* Subtle background pattern */}
+      <div className="absolute inset-0 opacity-10">
+        <div 
+          className="w-full h-full"
+          style={{
+            backgroundImage: `
+              linear-gradient(rgba(255, 255, 255, 0.1) 1px, transparent 1px),
+              linear-gradient(90deg, rgba(255, 255, 255, 0.1) 1px, transparent 1px)
+            `,
+            backgroundSize: '80px 80px',
+          }}
+        />
+      </div>
+
+      <div className="max-w-[1200px] mx-auto px-8 lg:px-12 relative">
+        <motion.div 
+          {...fadeIn}
+          className="max-w-[780px] mx-auto text-center"
+        >
           {/* Heading */}
-          <h2 className="text-4xl lg:text-5xl font-black text-white mb-6">
+          <motion.h2 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, ease: [0.25, 0.1, 0.25, 1] }}
+            className="text-[48px] lg:text-[64px] font-semibold text-white mb-6 leading-[1.1] tracking-tight"
+          >
             Ready to Build Your Business the Smart Way?
-          </h2>
+          </motion.h2>
 
           {/* Subtext */}
-          <p className="text-lg text-purple-100 mb-10">
+          <motion.p 
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.1, ease: [0.25, 0.1, 0.25, 1] }}
+            className="text-[19px] text-purple-100 mb-10 leading-[1.5]"
+          >
             Get your company up and running in days, not weeks.
-          </p>
+          </motion.p>
 
           {/* CTA Button */}
-          <a
-            href="#register"
-            className="inline-flex items-center justify-center gap-2 bg-white text-purple-600 px-10 py-5 rounded-lg text-lg font-bold hover:bg-gray-100 transition-all duration-200 shadow-2xl hover:scale-105"
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
           >
-            Start Registration
-            <svg
-              className="w-5 h-5"
-              fill="none"
-              viewBox="0 0 24 24"
-              stroke="currentColor"
+            <motion.a
+              href="#register"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
+              className="inline-flex items-center justify-center gap-3 bg-white text-purple-600 px-8 py-4 rounded-xl text-[17px] font-semibold hover:bg-purple-50 transition-colors duration-200 shadow-lg"
             >
-              <path
-                strokeLinecap="round"
-                strokeLinejoin="round"
-                strokeWidth={2}
-                d="M13 7l5 5m0 0l-5 5m5-5H6"
-              />
-            </svg>
-          </a>
-        </div>
+              Start Registration
+              <ArrowRight className="w-5 h-5" strokeWidth={2} />
+            </motion.a>
+          </motion.div>
+
+          {/* Optional: Trust indicator */}
+          <motion.p
+            initial={{ opacity: 0 }}
+            whileInView={{ opacity: 1 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.5, delay: 0.3, ease: [0.25, 0.1, 0.25, 1] }}
+            className="text-purple-200 text-[14px] mt-6"
+          >
+            Join 100+ businesses already growing with Pink & Purple
+          </motion.p>
+        </motion.div>
       </div>
     </section>
   );
