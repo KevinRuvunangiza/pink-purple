@@ -1,73 +1,121 @@
+import { motion } from 'framer-motion';
+import { Eye, Target, Check } from 'lucide-react';
 
+const fadeIn = {
+  initial: { opacity: 0, y: 24 },
+  whileInView: { opacity: 1, y: 0 },
+  viewport: { once: true, margin: "-50px" },
+  transition: { duration: 0.6, ease: [0.22, 1, 0.36, 1] }
+};
 
-export default function WhoWeAre(){
+interface ValueItemProps {
+  value: string;
+  index: number;
+}
 
-     return (
-    <section id="about" className="py-20 lg:py-28 bg-white">
-      <div className="max-w-7xl mx-auto px-6 lg:px-8">
-        <div className="max-w-4xl mx-auto">
-          {/* Section Heading */}
-          <h2 className="text-4xl lg:text-5xl font-black text-gray-900 mb-8">
+const ValueItem: React.FC<ValueItemProps> = ({ value, index }) => (
+  <motion.div
+    initial={{ opacity: 0, x: -8 }}
+    whileInView={{ opacity: 1, x: 0 }}
+    viewport={{ once: true }}
+    transition={{ duration: 0.5, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
+    className="flex items-start gap-3 py-2"
+  >
+    <Check className="w-5 h-5 text-purple-600 flex-shrink-0 mt-0.5" strokeWidth={2.5} />
+    <span className="text-gray-700 text-[17px] leading-relaxed">{value}</span>
+  </motion.div>
+);
+
+interface CardProps {
+  icon: React.ReactNode;
+  title: string;
+  description: string;
+  delay: number;
+}
+
+const Card: React.FC<CardProps> = ({ icon, title, description, delay }) => (
+  <motion.div
+    initial={{ opacity: 0, y: 20 }}
+    whileInView={{ opacity: 1, y: 0 }}
+    viewport={{ once: true }}
+    transition={{ duration: 0.6, delay, ease: [0.22, 1, 0.36, 1] }}
+    className="group"
+  >
+    <div className="mb-4">
+      {icon}
+    </div>
+    <h3 className="text-[22px] font-semibold text-gray-900 mb-3 leading-tight">
+      {title}
+    </h3>
+    <p className="text-gray-600 text-[17px] leading-relaxed">
+      {description}
+    </p>
+  </motion.div>
+);
+
+export default function WhoWeAre() {
+  const coreValues = [
+    'Integrity and Transparency',
+    'Professionalism',
+    'Simplicity and Innovation',
+    'Empowerment through Knowledge'
+  ];
+
+  return (
+    <section className="py-28 lg:py-36 bg-white">
+      <div className="max-w-[1200px] mx-auto px-8 lg:px-12">
+        {/* Heading Section */}
+        <motion.div {...fadeIn} className="mb-20">
+          <h2 className="text-[56px] lg:text-[72px] font-semibold text-gray-900 mb-6 leading-[1.1] tracking-tight">
             Who We Are
           </h2>
           
-          {/* Body Text */}
-          <p className="text-lg text-gray-600 leading-relaxed mb-16">
+          <p className="text-[21px] text-gray-600 leading-[1.6] max-w-[840px]">
             Pink & Purple is a South African-based business solutions company helping small and medium enterprises (SMEs) establish strong foundations. From company registration and system automation to CRM setup and digital marketing, we empower businesses with structure, technology, and strategic guidance.
           </p>
-          
-          {/* Vision & Mission Grid */}
-          <div className="grid md:grid-cols-2 gap-8 mb-16">
-            {/* Vision Card */}
-            <div className="bg-purple-50 rounded-2xl p-8 border border-purple-100">
-              <div className="w-12 h-12 bg-purple-500 rounded-lg flex items-center justify-center mb-4">
-                <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
-                </svg>
+        </motion.div>
+        
+        {/* Vision & Mission */}
+        <div className="grid lg:grid-cols-2 gap-16 lg:gap-20 mb-28">
+          <Card
+            icon={
+              <div className="w-12 h-12 bg-purple-600 rounded-xl flex items-center justify-center">
+                <Eye className="w-6 h-6 text-white" strokeWidth={2} />
               </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Our Vision</h3>
-              <p className="text-gray-700 leading-relaxed">
-                To create a future where entrepreneurs run efficient, automated, and sustainable businesses.
-              </p>
-            </div>
-            
-            {/* Mission Card */}
-            <div className="bg-pink-50 rounded-2xl p-8 border border-pink-100">
-              <div className="w-12 h-12 bg-pink-500 rounded-lg flex items-center justify-center mb-4">
-                <svg className="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-bold text-gray-900 mb-3">Our Mission</h3>
-              <p className="text-gray-700 leading-relaxed">
-                To simplify business growth through technology, automation, and personalized support.
-              </p>
-            </div>
-          </div>
+            }
+            title="Our Vision"
+            description="To create a future where entrepreneurs run efficient, automated, and sustainable businesses."
+            delay={0.2}
+          />
           
-          {/* Core Values */}
-          <div>
-            <h3 className="text-2xl font-bold text-gray-900 mb-6">Our Core Values</h3>
-            <div className="grid sm:grid-cols-2 gap-4">
-              {[
-                'Integrity and Transparency',
-                'Professionalism',
-                'Simplicity and Innovation',
-                'Empowerment through Knowledge'
-              ].map((value, index) => (
-                <div key={index} className="flex items-start gap-3">
-                  <div className="w-6 h-6 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full flex items-center justify-center flex-shrink-0 mt-0.5">
-                    <svg className="w-3 h-3 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={3} d="M5 13l4 4L19 7" />
-                    </svg>
-                  </div>
-                  <span className="text-gray-700 font-medium">{value}</span>
-                </div>
-              ))}
-            </div>
-          </div>
+          <Card
+            icon={
+              <div className="w-12 h-12 bg-pink-600 rounded-xl flex items-center justify-center">
+                <Target className="w-6 h-6 text-white" strokeWidth={2} />
+              </div>
+            }
+            title="Our Mission"
+            description="To simplify business growth through technology, automation, and personalized support."
+            delay={0.3}
+          />
         </div>
+        
+        {/* Core Values */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
+        >
+          <h3 className="text-[32px] font-semibold text-gray-900 mb-8 leading-tight">
+            Our Core Values
+          </h3>
+          <div className="grid md:grid-cols-2 gap-x-16 gap-y-2 max-w-[900px]">
+            {coreValues.map((value, index) => (
+              <ValueItem key={index} value={value} index={index} />
+            ))}
+          </div>
+        </motion.div>
       </div>
     </section>
   );

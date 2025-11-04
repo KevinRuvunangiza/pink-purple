@@ -1,12 +1,15 @@
-import './App.css'
-import NavBar from './components/NavBar'
-import LandingPage from './pages/LandingPage'
+import "./App.css";
+import LogoLoadingScreen from "./components/LoadingScreen";
+import NavBar from "./components/NavBar";
+import LandingPage from "./pages/LandingPage";
 
 function App() {
   return (
     <>
-    <NavBar />
-    <LandingPage />
+      <LogoLoadingScreen duration={3500}>
+        <NavBar />
+        <LandingPage />
+      </LogoLoadingScreen>
       {/* <div className="p-8 space-y-6">
         <h1 className="text-4xl font-light">
           Font Light (300) - The quick brown fox jumps over the lazy dog
@@ -42,7 +45,7 @@ function App() {
         </div>
       </div> */}
     </>
-  )
+  );
 }
 
-export default App
+export default App;
