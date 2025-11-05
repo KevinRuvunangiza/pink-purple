@@ -21,7 +21,7 @@ const ValueItem: React.FC<ValueItemProps> = ({ value, index }) => (
     transition={{ duration: 0.5, delay: index * 0.1, ease: [0.22, 1, 0.36, 1] }}
     className="flex items-start gap-3 py-2"
   >
-    <Check className="w-5 h-5 text-purple-600 flex-shrink-0 mt-0.5" strokeWidth={2.5} />
+    <Check className="w-5 h-5 text-brand-purple-700 flex-shrink-0 mt-0.5" strokeWidth={2.5} />
     <span className="text-gray-700 text-[17px] leading-relaxed">{value}</span>
   </motion.div>
 );
@@ -71,7 +71,7 @@ export default function WhoWeAre() {
           </h2>
           
           <p className="text-[21px] text-gray-600 leading-[1.6] max-w-[840px]">
-            Pink & Purple is a South African-based business solutions company helping small and medium enterprises (SMEs) establish strong foundations. From company registration and system automation to CRM setup and digital marketing, we empower businesses with structure, technology, and strategic guidance.
+            Pink & Brand-purple is a South African-based business solutions company helping small and medium enterprises (SMEs) establish strong foundations. From company registration and system automation to CRM setup and digital marketing, we empower businesses with structure, technology, and strategic guidance.
           </p>
         </motion.div>
         
@@ -79,7 +79,7 @@ export default function WhoWeAre() {
         <div className="grid lg:grid-cols-2 gap-16 lg:gap-20 mb-28">
           <Card
             icon={
-              <div className="w-12 h-12 bg-purple-600 rounded-xl flex items-center justify-center">
+              <div className="w-12 h-12 bg-brand-purple-700 rounded-xl flex items-center justify-center">
                 <Eye className="w-6 h-6 text-white" strokeWidth={2} />
               </div>
             }

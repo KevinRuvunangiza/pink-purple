@@ -24,7 +24,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ icon, title, description, del
     className="group"
   >
     {/* Icon */}
-    <div className="mb-5 flex items-center justify-center w-12 h-12 rounded-xl bg-purple-600 text-white">
+    <div className="mb-5 flex items-center justify-center w-12 h-12 rounded-xl bg-brand-purple-700 text-white">
       {icon}
     </div>
     

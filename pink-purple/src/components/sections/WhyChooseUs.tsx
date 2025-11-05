@@ -25,7 +25,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ icon, title, description, del
   >
     <div className="relative bg-neutral-800 rounded-2xl p-8 border border-neutral-700 group-hover:border-neutral-600 transition-colors duration-300">
       {/* Icon */}
-      <div className="mb-5 flex items-center justify-center w-12 h-12 rounded-xl bg-purple-600 text-white">
+      <div className="mb-5 flex items-center justify-center w-12 h-12 rounded-xl bg-brand-purple-700 text-white">
         {icon}
       </div>
       
@@ -54,7 +54,7 @@ const StatItem: React.FC<StatItemProps> = ({ number, label, delay }) => (
     transition={{ duration: 0.5, delay, ease: [0.25, 0.1, 0.25, 1] }}
     className="text-center"
   >
-    <div className="text-[40px] lg:text-[48px] font-bold text-purple-500 mb-2">
+    <div className="text-[40px] lg:text-[48px] font-bold text-pink-600 mb-2">
       {number}
     </div>
     <div className="text-neutral-400 text-[15px] font-medium">
@@ -104,9 +104,10 @@ export default function WhyChooseUs() {
         <motion.div {...fadeIn} className="mb-16 text-center max-w-[780px] mx-auto">
           <h2 className="text-[48px] lg:text-[56px] font-semibold text-white mb-5 leading-[1.1] tracking-tight">
             Why Choose{" "}
-            <span className="text-purple-500">
-              Pink & Purple
+            <span className="text-pink-600">
+              Pink & 
             </span>
+            <span className="text-brand-purple-700"> Purple</span>
           </h2>
           
           <p className="text-[19px] text-neutral-400 leading-[1.5]">
