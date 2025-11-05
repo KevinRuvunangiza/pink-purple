@@ -25,7 +25,7 @@ export default function HeroSection() {
       </div>
 
       {/* Radial glow effects */}
-      <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-purple-600 rounded-full blur-[150px] opacity-20" />
+      <div className="absolute top-1/4 left-1/4 w-[600px] h-[600px] bg-brand-purple-700 rounded-full blur-[150px] opacity-20" />
       <div className="absolute bottom-1/4 right-1/4 w-[500px] h-[500px] bg-pink-600 rounded-full blur-[140px] opacity-15" />
 
       <div className="max-w-[1200px] mx-auto px-8 lg:px-12 relative">
@@ -36,7 +36,7 @@ export default function HeroSection() {
             className="text-[56px] lg:text-[72px] font-semibold text-white leading-[1.1] tracking-tight mb-6"
           >
             Empowering Small Businesses to{" "}
-            <span className="text-purple-500">
+            <span className="text-brand-purple-700">
               Grow Smarter
             </span>
           </motion.h1>
@@ -65,7 +65,7 @@ export default function HeroSection() {
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               transition={{ duration: 0.2 }}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-purple-600 text-white px-8 py-4 rounded-xl text-[16px] font-medium hover:bg-purple-700 transition-colors duration-200 shadow-lg"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-brand-purple-700 text-white px-8 py-4 rounded-xl text-[16px] font-medium hover:bg-purple-700 transition-colors duration-200 shadow-lg"
             >
               Register Your Business
               <ArrowRight className="w-5 h-5" strokeWidth={2} />

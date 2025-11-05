@@ -208,31 +208,69 @@ export default function NavBar() {
 
         {/* Mobile menu */}
         {mobileMenuOpen && (
-          <div className="lg:hidden border-t border-gray-100 py-4">
-            <div className="space-y-1">
-              {["home", "about", "services", "register", "blog", "contact"].map(
-                (item) => (
-                  <a
-                    key={item}
-                    href={`#${item}`}
-                    onClick={() => setMobileMenuOpen(false)}
-                    className={`block px-4 py-3 text-sm font-bold rounded-lg transition-colors hover:bg-pink-50 hover:text-pink-600 ${
-                      item === "register" ? "ml-4 text-gray-700" : "text-gray-900"
-                    }`}
-                  >
-                    {item === "register" ? "→ Register Your Business" : item.charAt(0).toUpperCase() + item.slice(1)}
-                  </a>
-                )
-              )}
-              <div className="pt-4">
+          <div className="lg:hidden absolute top-20 left-0 right-0 bg-white shadow-xl border-t border-gray-100">
+            <div className="px-4 py-6 space-y-1">
+              <a
+                href="#home"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block px-4 py-3 text-base font-bold text-gray-900 rounded-xl transition-all hover:bg-gradient-to-r hover:from-pink-50 hover:to-purple-50 hover:text-pink-600 active:scale-95"
+              >
+                Home
+              </a>
+              <a
+                href="#about"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block px-4 py-3 text-base font-bold text-gray-900 rounded-xl transition-all hover:bg-gradient-to-r hover:from-pink-50 hover:to-purple-50 hover:text-pink-600 active:scale-95"
+              >
+                About
+              </a>
+              
+              {/* Services section in mobile */}
+              <div className="py-2">
+                <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
+                  Services
+                </div>
+                <a
+                  href="#services"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block px-4 py-3 ml-2 text-sm font-semibold text-gray-700 rounded-xl transition-all hover:bg-gradient-to-r hover:from-pink-50 hover:to-purple-50 hover:text-pink-600 active:scale-95"
+                >
+                  All Services
+                </a>
+                <a
+                  href="#register"
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="block px-4 py-3 ml-2 text-sm font-semibold text-gray-700 rounded-xl transition-all hover:bg-gradient-to-r hover:from-pink-50 hover:to-purple-50 hover:text-pink-600 active:scale-95"
+                >
+                  Register Your Business
+                </a>
+              </div>
+
+              <a
+                href="#blog"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block px-4 py-3 text-base font-bold text-gray-900 rounded-xl transition-all hover:bg-gradient-to-r hover:from-pink-50 hover:to-purple-50 hover:text-pink-600 active:scale-95"
+              >
+                Blog
+              </a>
+              <a
+                href="#contact"
+                onClick={() => setMobileMenuOpen(false)}
+                className="block px-4 py-3 text-base font-bold text-gray-900 rounded-xl transition-all hover:bg-gradient-to-r hover:from-pink-50 hover:to-purple-50 hover:text-pink-600 active:scale-95"
+              >
+                Contact
+              </a>
+
+              {/* CTA Button */}
+              <div className="pt-4 px-4">
                 <a
                   href="#get-started"
                   onClick={() => setMobileMenuOpen(false)}
-                  className="flex items-center justify-center gap-2 bg-pink-500 text-white px-5 py-3 rounded-lg text-sm font-semibold hover:bg-pink-600 transition-colors mx-4"
+                  className="flex items-center justify-center gap-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white px-6 py-4 rounded-2xl text-base font-bold shadow-lg hover:shadow-xl hover:from-pink-600 hover:to-purple-600 transition-all active:scale-95"
                 >
                   Get Started
                   <svg
-                    className="w-4 h-4"
+                    className="w-5 h-5"
                     fill="none"
                     viewBox="0 0 24 24"
                     stroke="currentColor"
