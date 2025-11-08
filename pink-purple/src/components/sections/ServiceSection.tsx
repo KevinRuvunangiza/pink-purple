@@ -63,8 +63,8 @@ export default function ServicesSection() {
   ];
 
   return (
-    <section id="services" className="py-28 lg:py-36 bg-white">
-      <div className="max-w-[1200px] mx-auto px-8 lg:px-12">
+    <section id="services" className="py-28 lg:py-36 bg-white ">
+      <div className="max-w-[1200px] mx-auto px-8 lg:px-12 mt-[-50px]">
         {/* Section Header */}
         <motion.div {...fadeIn} className="mb-20 max-w-[720px]">
           <h2 className="text-[48px] lg:text-[56px] font-semibold text-gray-900 mb-5 leading-[1.1] tracking-tight">

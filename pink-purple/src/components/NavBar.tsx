@@ -1,7 +1,11 @@
 import { useState, useEffect } from "react";
-import MainLogo from "../assets/Pink & Purple Logo Package/Main logo without background.png"
+import MainLogo from "../assets/Pink & Purple Logo Package/Main logo without background.png";
 
-export default function NavBar() {
+interface NavBarProps {
+  onGetStartedClick: () => void;
+}
+
+export default function NavBar({ onGetStartedClick }: NavBarProps) {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
@@ -14,6 +18,12 @@ export default function NavBar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+  const handleGetStartedClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
+    e.preventDefault();
+    setMobileMenuOpen(false);
+    onGetStartedClick();
+  };
 
   return (
     <nav
@@ -140,6 +150,7 @@ export default function NavBar() {
           <div className="hidden lg:block">
             <a
               href="#get-started"
+              onClick={handleGetStartedClick}
               className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl text-sm font-semibold transition-all duration-200 shadow-sm hover:shadow-md ${
                 scrolled
                   ? "bg-pink-500 text-white hover:bg-pink-600"
@@ -265,7 +276,7 @@ export default function NavBar() {
               <div className="pt-4 px-4">
                 <a
                   href="#get-started"
-                  onClick={() => setMobileMenuOpen(false)}
+                  onClick={handleGetStartedClick}
                   className="flex items-center justify-center gap-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white px-6 py-4 rounded-2xl text-base font-bold shadow-lg hover:shadow-xl hover:from-pink-600 hover:to-purple-600 transition-all active:scale-95"
                 >
                   Get Started
