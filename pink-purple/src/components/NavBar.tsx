@@ -1,14 +1,12 @@
 import { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router";
 import MainLogo from "../assets/Pink & Purple Logo Package/Main logo without background.png";
 
-interface NavBarProps {
-  onGetStartedClick: () => void;
-}
-
-export default function NavBar({ onGetStartedClick }: NavBarProps) {
+export default function NavBar() {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [servicesOpen, setServicesOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
+  const navigate = useNavigate();
 
   // Scroll handler
   useEffect(() => {
@@ -19,10 +17,9 @@ export default function NavBar({ onGetStartedClick }: NavBarProps) {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const handleGetStartedClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
+  const handleNavClick = (path: string) => {
     setMobileMenuOpen(false);
-    onGetStartedClick();
+    navigate(path);
   };
 
   return (
@@ -37,19 +34,15 @@ export default function NavBar({ onGetStartedClick }: NavBarProps) {
         <div className="flex justify-between items-center h-20">
           {/* Logo/Brand */}
           <div className="flex-shrink-0">
-            <h1
-              className={`text-xl font-black tracking-tight transition-colors duration-300 ${
-                scrolled ? "text-purple-600" : "text-white drop-shadow-md"
-              }`}
-            >
+            <Link to="/">
               <img src={MainLogo} alt="Pink and Purple Main Logo" className="w-45"/>
-            </h1>
+            </Link>
           </div>
 
           {/* Desktop Navigation */}
           <div className="hidden lg:flex items-center space-x-10">
-            <a
-              href="#home"
+            <Link
+              to="/"
               className={`text-sm font-bold transition-colors duration-200 ${
                 scrolled
                   ? "text-gray-900 hover:text-pink-500"
@@ -57,9 +50,9 @@ export default function NavBar({ onGetStartedClick }: NavBarProps) {
               }`}
             >
               Home
-            </a>
-            <a
-              href="#about"
+            </Link>
+            <Link
+              to="/about"
               className={`text-sm font-bold transition-colors duration-200 ${
                 scrolled
                   ? "text-gray-900 hover:text-pink-500"
@@ -67,7 +60,7 @@ export default function NavBar({ onGetStartedClick }: NavBarProps) {
               }`}
             >
               About
-            </a>
+            </Link>
 
             {/* Services Dropdown */}
             <div
@@ -102,30 +95,30 @@ export default function NavBar({ onGetStartedClick }: NavBarProps) {
 
               {servicesOpen && (
                 <div className="absolute top-full left-0 mt-2 w-56 bg-white rounded-lg shadow-lg border border-gray-100 py-2">
-                  <a
-                    href="#services"
+                  <Link
+                    to="/services"
                     className="block px-4 py-3 text-sm text-gray-700 hover:bg-pink-50 hover:text-pink-600 transition-colors"
                   >
                     <div className="font-bold">All Services</div>
                     <div className="text-xs text-gray-500 mt-0.5">
                       View our full range
                     </div>
-                  </a>
-                  <a
-                    href="#register"
+                  </Link>
+                  <Link
+                    to="/register"
                     className="block px-4 py-3 text-sm text-gray-700 hover:bg-pink-50 hover:text-pink-600 transition-colors"
                   >
                     <div className="font-bold">Register Your Business</div>
                     <div className="text-xs text-gray-500 mt-0.5">
                       Get started today
                     </div>
-                  </a>
+                  </Link>
                 </div>
               )}
             </div>
 
-            <a
-              href="#blog"
+            <Link
+              to="/blog"
               className={`text-sm font-bold transition-colors duration-200 ${
                 scrolled
                   ? "text-gray-900 hover:text-pink-500"
@@ -133,9 +126,9 @@ export default function NavBar({ onGetStartedClick }: NavBarProps) {
               }`}
             >
               Blog
-            </a>
-            <a
-              href="#contact"
+            </Link>
+            <Link
+              to="/contact"
               className={`text-sm font-bold transition-colors duration-200 ${
                 scrolled
                   ? "text-gray-900 hover:text-pink-500"
@@ -143,18 +136,17 @@ export default function NavBar({ onGetStartedClick }: NavBarProps) {
               }`}
             >
               Contact
-            </a>
+            </Link>
           </div>
 
           {/* CTA Button */}
           <div className="hidden lg:block">
-            <a
-              href="#get-started"
-              onClick={handleGetStartedClick}
+            <Link
+              to="/get-started"
               className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl text-sm font-semibold transition-all duration-200 shadow-sm hover:shadow-md ${
                 scrolled
                   ? "bg-pink-500 text-white hover:bg-pink-600"
-                  : "border-2 border-brand-pink-400 text-zinc-50 hover:bg-pink-600 hover:border-none"
+                  : "border-2 border-pink-400 text-zinc-50 hover:bg-pink-600"
               }`}
             >
               Get Started
@@ -171,7 +163,7 @@ export default function NavBar({ onGetStartedClick }: NavBarProps) {
                   d="M13 7l5 5m0 0l-5 5m5-5H6"
                 />
               </svg>
-            </a>
+            </Link>
           </div>
 
           {/* Mobile menu button */}
@@ -221,63 +213,56 @@ export default function NavBar({ onGetStartedClick }: NavBarProps) {
         {mobileMenuOpen && (
           <div className="lg:hidden absolute top-20 left-0 right-0 bg-white shadow-xl border-t border-gray-100">
             <div className="px-4 py-6 space-y-1">
-              <a
-                href="#home"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block px-4 py-3 text-base font-bold text-gray-900 rounded-xl transition-all hover:bg-gradient-to-r hover:from-pink-50 hover:to-purple-50 hover:text-pink-600 active:scale-95"
+              <button
+                onClick={() => handleNavClick("/")}
+                className="block w-full text-left px-4 py-3 text-base font-bold text-gray-900 rounded-xl transition-all hover:bg-gradient-to-r hover:from-pink-50 hover:to-purple-50 hover:text-pink-600 active:scale-95"
               >
                 Home
-              </a>
-              <a
-                href="#about"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block px-4 py-3 text-base font-bold text-gray-900 rounded-xl transition-all hover:bg-gradient-to-r hover:from-pink-50 hover:to-purple-50 hover:text-pink-600 active:scale-95"
+              </button>
+              <button
+                onClick={() => handleNavClick("/about")}
+                className="block w-full text-left px-4 py-3 text-base font-bold text-gray-900 rounded-xl transition-all hover:bg-gradient-to-r hover:from-pink-50 hover:to-purple-50 hover:text-pink-600 active:scale-95"
               >
                 About
-              </a>
+              </button>
               
               {/* Services section in mobile */}
               <div className="py-2">
                 <div className="px-4 py-2 text-xs font-semibold text-gray-500 uppercase tracking-wider">
                   Services
                 </div>
-                <a
-                  href="#services"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block px-4 py-3 ml-2 text-sm font-semibold text-gray-700 rounded-xl transition-all hover:bg-gradient-to-r hover:from-pink-50 hover:to-purple-50 hover:text-pink-600 active:scale-95"
+                <button
+                  onClick={() => handleNavClick("/services")}
+                  className="block w-full text-left px-4 py-3 ml-2 text-sm font-semibold text-gray-700 rounded-xl transition-all hover:bg-gradient-to-r hover:from-pink-50 hover:to-purple-50 hover:text-pink-600 active:scale-95"
                 >
                   All Services
-                </a>
-                <a
-                  href="#register"
-                  onClick={() => setMobileMenuOpen(false)}
-                  className="block px-4 py-3 ml-2 text-sm font-semibold text-gray-700 rounded-xl transition-all hover:bg-gradient-to-r hover:from-pink-50 hover:to-purple-50 hover:text-pink-600 active:scale-95"
+                </button>
+                <button
+                  onClick={() => handleNavClick("/register")}
+                  className="block w-full text-left px-4 py-3 ml-2 text-sm font-semibold text-gray-700 rounded-xl transition-all hover:bg-gradient-to-r hover:from-pink-50 hover:to-purple-50 hover:text-pink-600 active:scale-95"
                 >
                   Register Your Business
-                </a>
+                </button>
               </div>
 
-              <a
-                href="#blog"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block px-4 py-3 text-base font-bold text-gray-900 rounded-xl transition-all hover:bg-gradient-to-r hover:from-pink-50 hover:to-purple-50 hover:text-pink-600 active:scale-95"
+              <button
+                onClick={() => handleNavClick("/blog")}
+                className="block w-full text-left px-4 py-3 text-base font-bold text-gray-900 rounded-xl transition-all hover:bg-gradient-to-r hover:from-pink-50 hover:to-purple-50 hover:text-pink-600 active:scale-95"
               >
                 Blog
-              </a>
-              <a
-                href="#contact"
-                onClick={() => setMobileMenuOpen(false)}
-                className="block px-4 py-3 text-base font-bold text-gray-900 rounded-xl transition-all hover:bg-gradient-to-r hover:from-pink-50 hover:to-purple-50 hover:text-pink-600 active:scale-95"
+              </button>
+              <button
+                onClick={() => handleNavClick("/contact")}
+                className="block w-full text-left px-4 py-3 text-base font-bold text-gray-900 rounded-xl transition-all hover:bg-gradient-to-r hover:from-pink-50 hover:to-purple-50 hover:text-pink-600 active:scale-95"
               >
                 Contact
-              </a>
+              </button>
 
               {/* CTA Button */}
               <div className="pt-4 px-4">
-                <a
-                  href="#get-started"
-                  onClick={handleGetStartedClick}
-                  className="flex items-center justify-center gap-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white px-6 py-4 rounded-2xl text-base font-bold shadow-lg hover:shadow-xl hover:from-pink-600 hover:to-purple-600 transition-all active:scale-95"
+                <button
+                  onClick={() => handleNavClick("/get-started")}
+                  className="flex w-full items-center justify-center gap-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white px-6 py-4 rounded-2xl text-base font-bold shadow-lg hover:shadow-xl hover:from-pink-600 hover:to-purple-600 transition-all active:scale-95"
                 >
                   Get Started
                   <svg
@@ -293,7 +278,7 @@ export default function NavBar({ onGetStartedClick }: NavBarProps) {
                       d="M13 7l5 5m0 0l-5 5m5-5H6"
                     />
                   </svg>
-                </a>
+                </button>
               </div>
             </div>
           </div>
