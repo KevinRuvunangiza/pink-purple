@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import Icon from "../assets/Pink & Purple Logo Package/Icon without background.png"
 
-const LogoLoadingScreen = ({ children, logoUrl, duration = 3500 }) => {
+const LogoLoadingScreen = ({ children, duration = 3500 }) => {
   const [isLoading, setIsLoading] = useState(true);
   const [stage, setStage] = useState(0);
 
