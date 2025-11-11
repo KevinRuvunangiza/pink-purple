@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   CheckCircle,
@@ -13,7 +13,7 @@ import {
   Loader2,
 } from "lucide-react";
 
-const PUBLIC_PAYMENT_KEY = "pk_live_7f35457821ca77d85c3151a34f4feb430ef5ab53";
+import PaymentOptionModal from "./PaymentOptionsModal";
 
 const REMINDER_OPTIONS = [
   { value: "tomorrow", label: "Tomorrow" },
@@ -21,10 +21,15 @@ const REMINDER_OPTIONS = [
   { value: "1week", label: "Next Week" },
 ];
 
-type View = "initial" | "remind-form" | "payment-success" | "reminder-success";
+type View =
+  | "clickup-form"
+  | "initial"
+  | "remind-form"
+  | "payment-success"
+  | "reminder-success";
 
 export default function NextSteps() {
-  const [currentView, setCurrentView] = useState<View>("initial");
+  const [currentView, setCurrentView] = useState<View>("clickup-form");
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Form state
@@ -37,42 +42,40 @@ export default function NextSteps() {
   });
 
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
+  const [showPaymentModal, setShowPaymentModal] = useState(false);
+
+  // Listen for ClickUp form submission
+  useEffect(() => {
+    const handleMessage = (event: MessageEvent) => {
+      // Check if message is from ClickUp form
+      if (
+        event.data &&
+        event.data.type === "hsFormCallback" &&
+        event.data.eventName === "onFormSubmitted"
+      ) {
+        console.log("ClickUp form submitted!");
+        setCurrentView("initial");
+      }
+
+      // Alternative: Listen for ClickUp's specific message format
+      if (event.data === "clickup-form-submitted") {
+        console.log("ClickUp form submitted!");
+        setCurrentView("initial");
+      }
+    };
+
+    window.addEventListener("message", handleMessage);
+
+    return () => {
+      window.removeEventListener("message", handleMessage);
+    };
+  }, []);
 
   const handlePayNow = () => {
-    // Check if Paystack is loaded
-    if (!window.PaystackPop) {
-      console.error("Paystack script not loaded");
-      alert("Payment system is loading. Please try again in a moment.");
-      return;
-    }
-
-    // Initialize Paystack payment
-    const handler = window.PaystackPop.setup({
-      key: PUBLIC_PAYMENT_KEY,
-      email: "customer@email.com", // You can collect this earlier or use a default
-      amount: 100000, // Amount in kobo (1000 ZAR = 100000 kobo)
-      currency: "ZAR",
-      ref: "PSK_" + Math.floor(Math.random() * 1000000000 + 1),
-      metadata: {
-        custom_fields: [
-          {
-            display_name: "Service",
-            variable_name: "service",
-            value: "Company Registration",
-          },
-        ],
-      },
-      callback: function (response: any) {
-        console.log("Payment successful:", response);
-        setCurrentView("payment-success");
-      },
-      onClose: function () {
-        console.log("Payment window closed");
-      },
-    });
-
-    handler.openIframe();
+    setShowPaymentModal(true);
   };
+
+  
 
   const handleRemindLater = () => {
     setCurrentView("remind-form");
@@ -91,9 +94,7 @@ export default function NextSteps() {
     return Object.keys(errors).length === 0;
   };
 
-  const handleSubmitReminder = async (e: React.FormEvent) => {
-    e.preventDefault();
-
+  const handleSubmitReminder = async () => {
     if (!validateForm()) {
       return;
     }
@@ -101,14 +102,16 @@ export default function NextSteps() {
     setIsSubmitting(true);
 
     try {
-      // Call Netlify serverless function
-      const response = await fetch("/.netlify/functions/add-mailerlite-subscriber", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      const response = await fetch(
+        "/.netlify/functions/add-mailerlite-subscriber",
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(formData),
+        }
+      );
 
       if (!response.ok) {
         throw new Error("Failed to add subscriber");
@@ -138,9 +141,14 @@ export default function NextSteps() {
     setFormErrors({});
   };
 
+  // Manual form submission handler (if ClickUp doesn't auto-detect)
+  const handleManualFormComplete = () => {
+    setCurrentView("initial");
+  };
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-white py-12 px-4">
-      <div className="max-w-2xl mx-auto">
+      <div className="max-w-2xl mx-auto mt-8">
         {/* Progress Stepper */}
         <motion.div
           initial={{ opacity: 0, y: -20 }}
@@ -149,31 +157,104 @@ export default function NextSteps() {
         >
           <div className="flex items-center justify-center gap-4">
             <div className="flex items-center gap-2">
-              <div className="w-8 h-8 rounded-full bg-gradient-to-r from-purple-700 to-pink-600 flex items-center justify-center text-white font-bold text-sm">
-                <CheckCircle className="w-5 h-5" strokeWidth={2.5} />
+              <div
+                className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm ${
+                  currentView !== "clickup-form"
+                    ? "bg-gradient-to-r from-purple-700 to-pink-600"
+                    : "bg-purple-600"
+                }`}
+              >
+                {currentView !== "clickup-form" ? (
+                  <CheckCircle className="w-5 h-5" strokeWidth={2.5} />
+                ) : (
+                  "1"
+                )}
               </div>
-              <span className="text-sm font-semibold text-gray-700">Upload Info</span>
+              <span className="text-sm font-semibold text-gray-700">
+                Registration Form
+              </span>
             </div>
 
-            <div className="w-12 h-0.5 bg-gradient-to-r from-purple-300 to-pink-300"></div>
+            <div
+              className={`w-12 h-0.5 ${
+                currentView !== "clickup-form"
+                  ? "bg-gradient-to-r from-purple-300 to-pink-300"
+                  : "bg-gray-300"
+              }`}
+            ></div>
 
             <div className="flex items-center gap-2">
               <div
                 className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm ${
-                  currentView !== "initial"
+                  currentView !== "clickup-form"
                     ? "bg-gradient-to-r from-purple-700 to-pink-600"
                     : "bg-gray-300"
                 }`}
               >
                 2
               </div>
-              <span className="text-sm font-semibold text-gray-700">Choose Next Step</span>
+              <span className="text-sm font-semibold text-gray-700">
+                Choose Next Step
+              </span>
             </div>
           </div>
         </motion.div>
 
         {/* Main Content Area */}
         <AnimatePresence mode="wait">
+          {currentView === "clickup-form" && (
+            <motion.div
+              key="clickup-form"
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.95 }}
+              transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
+              className="bg-white rounded-3xl shadow-xl overflow-hidden"
+            >
+              {/* Form Header */}
+              <div className="bg-gradient-to-r from-purple-700 to-pink-600 px-8 py-6">
+                <h3 className="text-2xl font-bold text-white">
+                  Business Registration Form
+                </h3>
+                <p className="text-purple-100 text-sm mt-1">
+                  Fill in your details to get started
+                </p>
+              </div>
+
+              {/* ClickUp Form */}
+              <div className="p-8">
+                <iframe
+                  className="clickup-embed clickup-dynamic-height"
+                  src="https://forms.clickup.com/90121132910/p/f/2kxu6pve-32/HR3WRX2KA1OLDXEGOH/business-registration-form"
+                  width="100%"
+                  height="100%"
+                  style={{
+                    background: "transparent",
+                    border: "none",
+                    minHeight: "600px",
+                  }}
+                  title="Business Registration Form"
+                ></iframe>
+              </div>
+
+              {/* Manual Continue Button (fallback if auto-detection doesn't work) */}
+              <div className="px-8 pb-8 pt-4 border-t border-gray-200">
+                <motion.button
+                  onClick={handleManualFormComplete}
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.98 }}
+                  className="w-full bg-gradient-to-r from-purple-700 to-pink-600 text-white py-4 rounded-xl font-bold hover:from-purple-800 hover:to-pink-700 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
+                >
+                  Form Submitted - Continue
+                  <ArrowRight className="w-5 h-5" strokeWidth={2.5} />
+                </motion.button>
+                <p className="text-center text-sm text-gray-500 mt-3">
+                  Click this button after submitting the form above
+                </p>
+              </div>
+            </motion.div>
+          )}
+
           {currentView === "initial" && (
             <motion.div
               key="initial"
@@ -263,7 +344,9 @@ export default function NextSteps() {
                       <Clock className="w-6 h-6" strokeWidth={2.5} />
                     </div>
                     <div className="text-left flex-1">
-                      <div className="font-bold text-lg mb-1">Remind Me Later</div>
+                      <div className="font-bold text-lg mb-1">
+                        Remind Me Later
+                      </div>
                       <div className="text-sm text-purple-600">
                         We'll send you a reminder at your preferred time
                       </div>
@@ -296,7 +379,7 @@ export default function NextSteps() {
                 </p>
               </div>
 
-              <form onSubmit={handleSubmitReminder} className="space-y-6">
+              <div className="space-y-6">
                 {/* Email Field */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -362,13 +445,19 @@ export default function NextSteps() {
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                      <Building className="w-5 h-5 text-gray-400" strokeWidth={2} />
+                      <Building
+                        className="w-5 h-5 text-gray-400"
+                        strokeWidth={2}
+                      />
                     </div>
                     <input
                       type="text"
                       value={formData.businessName}
                       onChange={(e) =>
-                        setFormData({ ...formData, businessName: e.target.value })
+                        setFormData({
+                          ...formData,
+                          businessName: e.target.value,
+                        })
                       }
                       placeholder="Your Company (Pty) Ltd"
                       className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-300 transition-all duration-200"
@@ -383,7 +472,10 @@ export default function NextSteps() {
                   </label>
                   <div className="relative">
                     <div className="absolute top-3 left-0 pl-4 flex items-start pointer-events-none">
-                      <MapPin className="w-5 h-5 text-gray-400" strokeWidth={2} />
+                      <MapPin
+                        className="w-5 h-5 text-gray-400"
+                        strokeWidth={2}
+                      />
                     </div>
                     <textarea
                       value={formData.address}
@@ -452,7 +544,7 @@ export default function NextSteps() {
                 {/* Submit Buttons */}
                 <div className="space-y-3 pt-4">
                   <motion.button
-                    type="submit"
+                    onClick={handleSubmitReminder}
                     disabled={isSubmitting}
                     whileHover={!isSubmitting ? { scale: 1.02, y: -2 } : {}}
                     whileTap={!isSubmitting ? { scale: 0.98 } : {}}
@@ -460,7 +552,10 @@ export default function NextSteps() {
                   >
                     {isSubmitting ? (
                       <>
-                        <Loader2 className="w-5 h-5 animate-spin" strokeWidth={2.5} />
+                        <Loader2
+                          className="w-5 h-5 animate-spin"
+                          strokeWidth={2.5}
+                        />
                         Setting up reminder...
                       </>
                     ) : (
@@ -472,7 +567,6 @@ export default function NextSteps() {
                   </motion.button>
 
                   <motion.button
-                    type="button"
                     onClick={handleBackToInitial}
                     whileHover={{ scale: 1.01 }}
                     whileTap={{ scale: 0.99 }}
@@ -481,7 +575,7 @@ export default function NextSteps() {
                     Back
                   </motion.button>
                 </div>
-              </form>
+              </div>
             </motion.div>
           )}
 
@@ -522,8 +616,8 @@ export default function NextSteps() {
                 className="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-2xl"
               >
                 <p className="text-sm text-gray-700">
-                  You'll receive a confirmation email shortly with next steps and
-                  your receipt.
+                  You'll receive a confirmation email shortly with next steps
+                  and your receipt.
                 </p>
               </motion.div>
             </motion.div>
@@ -544,7 +638,10 @@ export default function NextSteps() {
                 className="inline-block mb-6"
               >
                 <div className="w-24 h-24 rounded-full bg-gradient-to-r from-purple-100 to-pink-100 flex items-center justify-center">
-                  <Mail className="w-12 h-12 text-purple-600" strokeWidth={2.5} />
+                  <Mail
+                    className="w-12 h-12 text-purple-600"
+                    strokeWidth={2.5}
+                  />
                 </div>
               </motion.div>
 
@@ -552,8 +649,8 @@ export default function NextSteps() {
                 Reminder Set!
               </h2>
               <p className="text-gray-600 text-lg mb-8">
-                We'll send you a friendly reminder at your chosen time. Check your
-                email for confirmation.
+                We'll send you a friendly reminder at your chosen time. Check
+                your email for confirmation.
               </p>
 
               <motion.div
@@ -563,19 +660,26 @@ export default function NextSteps() {
                 className="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-2xl"
               >
                 <p className="text-sm text-gray-700">
-                  You can complete your payment anytime by clicking the link in the
-                  reminder email.
+                  You can complete your payment anytime by clicking the link in
+                  the reminder email.
                 </p>
               </motion.div>
             </motion.div>
           )}
         </AnimatePresence>
       </div>
+      <PaymentOptionModal
+        showModal={showPaymentModal}
+        setShowModal={setShowPaymentModal}
+        onPaymentSuccess={() => setCurrentView("payment-success")}
+        onContactUs={() =>
+          alert("Redirect to contact section or support email")
+        }
+      />
     </div>
   );
 }
 
-// TypeScript declarations
 declare global {
   interface Window {
     PaystackPop: any;

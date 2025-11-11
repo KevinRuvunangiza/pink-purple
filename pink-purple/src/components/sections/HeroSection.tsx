@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import { ArrowRight } from "lucide-react";
+import { Link } from "react-router";
 
 const fadeIn = {
   initial: { opacity: 0, y: 20 },
@@ -60,8 +61,8 @@ export default function HeroSection() {
             transition={{ duration: 0.6, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
             className="flex flex-col sm:flex-row gap-4 justify-center items-center"
           >
+            <Link to="next-steps">
             <motion.a
-              href="#register"
               whileHover={{ scale: 1.02 }}
               whileTap={{ scale: 0.98 }}
               transition={{ duration: 0.2 }}
@@ -70,6 +71,7 @@ export default function HeroSection() {
               Register Your Business
               <ArrowRight className="w-5 h-5" strokeWidth={2} />
             </motion.a>
+            </Link>
             
             <motion.a
               href="#about"
