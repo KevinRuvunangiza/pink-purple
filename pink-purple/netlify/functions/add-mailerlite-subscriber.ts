@@ -49,7 +49,7 @@ const handler: Handler = async (event) => {
     }
 
     const MAILERLITE_API_KEY = process.env.MAILERLITE_API_KEY;
-    const    = process.env.MAILERLITE_GROUP_ID || "170777172695320520"; // Use env var or default
+    const MAILERLITE_GROUP_ID = process.env.MAILERLITE_GROUP_ID; // Use env var or default
 
     if (!MAILERLITE_API_KEY) {
       console.error("MAILERLITE_API_KEY is not set in environment variables");
