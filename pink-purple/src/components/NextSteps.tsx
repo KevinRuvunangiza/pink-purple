@@ -102,7 +102,7 @@ export default function NextSteps() {
 
     try {
       // Call Netlify serverless function
-      const response = await fetch("../netlify/functions/add-mailerlite-subscriber", {
+      const response = await fetch("/.netlify/functions/add-mailerlite-subscriber", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
