@@ -8,6 +8,7 @@ import Services from "./pages/Services"
 // import Register from "./pages/Register";
 import Blog from "./pages/Blog";
 import Contact from "./pages/Contact";
+import NextSteps from "./components/NextSteps";
 
 
 function App() {
@@ -24,6 +25,7 @@ function App() {
           <Route path="/blog" element={<Blog />} />
 
           <Route path="/contact" element={<Contact />} />
+           <Route path="/next-steps" element={<NextSteps />} />
         </Routes>
       </LogoLoadingScreen>
     </Router>
