@@ -190,7 +190,7 @@ export default function CTASection() {
               ease: [0.25, 0.1, 0.25, 1],
             }}
           >
-            <Link to="next-steps">
+            <Link to="next-steps" >
               <motion.button
               // onClick={handleStartRegistration}
               whileHover={{ scale: 1.05, y: -2 }}
