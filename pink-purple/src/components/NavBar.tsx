@@ -142,7 +142,7 @@ export default function NavBar() {
           {/* CTA Button */}
           <div className="hidden lg:block">
             <Link
-              to="/get-started"
+              to="/next-steps"
               className={`inline-flex items-center gap-2 px-5 py-2.5 rounded-2xl text-sm font-semibold transition-all duration-200 shadow-sm hover:shadow-md ${
                 scrolled
                   ? "bg-pink-500 text-white hover:bg-pink-600"
