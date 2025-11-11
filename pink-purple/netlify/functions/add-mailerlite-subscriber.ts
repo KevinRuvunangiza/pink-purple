@@ -49,7 +49,7 @@ const handler: Handler = async (event) => {
     }
 
     const MAILERLITE_API_KEY = process.env.MAILERLITE_API_KEY;
-    const MAILERLITE_GROUP_ID = process.env.MAILERLITE_GROUP_ID; // Use env var or default
+    const MAILERLITE_GROUP_ID = process.env.MAILERLITE_GROUP_ID;
 
     if (!MAILERLITE_API_KEY) {
       console.error("MAILERLITE_API_KEY is not set in environment variables");
@@ -80,6 +80,7 @@ const handler: Handler = async (event) => {
     };
 
     // Prepare subscriber data for MailerLite API
+    // Only includes fields that exist in your MailerLite account
     const subscriberData = {
       email: email.trim(),
       fields: {
@@ -87,16 +88,15 @@ const handler: Handler = async (event) => {
         business_name: businessName || "",
         address: address || "",
         reminder_date: getReminderDate(reminderTime),
-        reminder_time: reminderTime,
         payment_status: "pending",
       },
-      groups: [MAILERLITE_GROUP_ID], // Add subscriber to the specified group
+      groups: [MAILERLITE_GROUP_ID],
       status: "active",
     };
 
     console.log("Sending to MailerLite:", JSON.stringify(subscriberData, null, 2));
 
-    // Call MailerLite API v2 to add/update subscriber
+    // Call MailerLite API to add/update subscriber
     const response = await fetch("https://connect.mailerlite.com/api/subscribers", {
       method: "POST",
       headers: {
@@ -128,6 +128,7 @@ const handler: Handler = async (event) => {
 
     if (!response.ok) {
       console.error("MailerLite API error:", data);
+      console.error("Full error details:", JSON.stringify(data, null, 2));
       
       // Handle duplicate subscriber - update instead
       if (response.status === 422 || response.status === 409) {
@@ -143,13 +144,17 @@ const handler: Handler = async (event) => {
             },
             body: JSON.stringify({
               fields: subscriberData.fields,
-              groups: [MAILERLITE_GROUP_ID], // Also add to group on update
+              groups: [MAILERLITE_GROUP_ID],
             }),
           }
         );
 
+        const updateResponseText = await updateResponse.text();
+        console.log("Update response status:", updateResponse.status);
+        console.log("Update response body:", updateResponseText);
+
         if (updateResponse.ok) {
-          const updateData = await updateResponse.json();
+          const updateData = JSON.parse(updateResponseText);
           return {
             statusCode: 200,
             headers,
@@ -159,6 +164,8 @@ const handler: Handler = async (event) => {
               data: updateData,
             }),
           };
+        } else {
+          console.error("Update failed:", updateResponseText);
         }
       }
 
@@ -167,7 +174,8 @@ const handler: Handler = async (event) => {
         headers,
         body: JSON.stringify({
           error: "Failed to add subscriber to MailerLite",
-          details: data,
+          message: data.message || "Validation error",
+          details: data.errors || data,
         }),
       };
     }
