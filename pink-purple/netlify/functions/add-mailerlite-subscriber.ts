@@ -49,6 +49,7 @@ const handler: Handler = async (event) => {
     }
 
     const MAILERLITE_API_KEY = process.env.MAILERLITE_API_KEY;
+    const    = process.env.MAILERLITE_GROUP_ID || "170777172695320520"; // Use env var or default
 
     if (!MAILERLITE_API_KEY) {
       console.error("MAILERLITE_API_KEY is not set in environment variables");
@@ -79,21 +80,17 @@ const handler: Handler = async (event) => {
     };
 
     // Prepare subscriber data for MailerLite API
-    // Note: Custom fields need to be created in MailerLite dashboard first
     const subscriberData = {
       email: email.trim(),
       fields: {
         name: name || "",
-        // Use the exact field keys from your MailerLite account
-        // These need to match the custom fields you've created
         business_name: businessName || "",
         address: address || "",
         reminder_date: getReminderDate(reminderTime),
         reminder_time: reminderTime,
         payment_status: "pending",
       },
-      // Remove groups for now - you'll need the actual group ID from MailerLite
-      // groups: ["123456"], // Replace with actual group ID if needed
+      groups: [MAILERLITE_GROUP_ID], // Add subscriber to the specified group
       status: "active",
     };
 
@@ -146,6 +143,7 @@ const handler: Handler = async (event) => {
             },
             body: JSON.stringify({
               fields: subscriberData.fields,
+              groups: [MAILERLITE_GROUP_ID], // Also add to group on update
             }),
           }
         );
