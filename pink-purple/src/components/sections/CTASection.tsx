@@ -75,7 +75,7 @@ export default function CTASection() {
   ];
 
   return (
-    <section className="py-28 lg:py-36 bg-purple-700 relative overflow-hidden">
+    <section className="py-28 lg:py-36 bg-brand-purple-600 relative overflow-hidden">
       {/* Animated gradient orbs */}
       <div className="absolute inset-0 overflow-hidden">
         <motion.div
@@ -100,7 +100,7 @@ export default function CTASection() {
             repeat: Infinity,
             ease: "easeInOut",
           }}
-          className="absolute -bottom-1/2 -right-1/4 w-[800px] h-[800px] bg-purple-500 rounded-full blur-3xl"
+          className="absolute -bottom-1/2 -right-1/4 w-[800px] h-[800px] bg-brand-purple-600 rounded-full blur-3xl"
         />
       </div>
 
@@ -142,7 +142,7 @@ export default function CTASection() {
               delay: 0.1,
               ease: [0.25, 0.1, 0.25, 1],
             }}
-            className="text-xl text-purple-100 mb-8 leading-relaxed"
+            className="text-xl text-brand-purple-100 mb-8 leading-relaxed"
           >
             Get your company up and running in days, not weeks. Professional, hassle-free business registration.
           </motion.p>
@@ -194,7 +194,7 @@ export default function CTASection() {
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.98 }}
               transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
-              className="group inline-flex items-center justify-center gap-3 bg-white text-purple-700 px-10 py-5 rounded-2xl text-lg font-bold hover:bg-pink-50 transition-all duration-300 shadow-2xl hover:shadow-pink-500/50"
+              className="group inline-flex items-center justify-center gap-3 bg-white text-brand-purple-600 px-10 py-5 rounded-2xl text-lg font-bold hover:bg-pink-50 transition-all duration-300 shadow-2xl hover:shadow-pink-500/50"
             >
               Start Registration
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" strokeWidth={2.5} />
@@ -217,11 +217,11 @@ export default function CTASection() {
               {[...Array(4)].map((_, i) => (
                 <div
                   key={i}
-                  className="w-8 h-8 rounded-full bg-gradient-to-br from-pink-400 to-purple-500 border-2 border-white"
+                  className="w-8 h-8 rounded-full bg-gradient-to-br from-pink-400 to-brand-purple-500 border-2 border-white"
                 />
               ))}
             </div>
-            <p className="text-purple-100 text-sm font-medium">
+            <p className="text-brand-purple-100 text-sm font-medium">
               Join 100+ businesses already growing with us
             </p>
           </motion.div>
