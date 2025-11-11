@@ -3,6 +3,7 @@ import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import PaymentOptionModal from "../PaymentOptionsModal";
 import RegistrationForm from "../RegistrationForm";
+import { Link } from "react-router";
 
 const fadeIn = {
   initial: { opacity: 0, y: 20 },
@@ -189,8 +190,9 @@ export default function CTASection() {
               ease: [0.25, 0.1, 0.25, 1],
             }}
           >
-            <motion.button
-              onClick={handleStartRegistration}
+            <Link to="next-steps" >
+              <motion.button
+              // onClick={handleStartRegistration}
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.98 }}
               transition={{ duration: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
@@ -199,6 +201,8 @@ export default function CTASection() {
               Start Registration
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" strokeWidth={2.5} />
             </motion.button>
+            </Link>
+            
           </motion.div>
 
           {/* Trust indicator */}
