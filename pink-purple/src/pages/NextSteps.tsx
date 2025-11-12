@@ -8,17 +8,18 @@ import {
   Mail,
   User,
   Building,
-  MapPin,
   Calendar,
   Loader2,
 } from "lucide-react";
 
-import PaymentOptionModal from "./PaymentOptionsModal";
+import PaymentOptionModal from "../components/PaymentOptionsModal";
+import Footer from "../components/Footer";
 
 const REMINDER_OPTIONS = [
-  { value: "tomorrow", label: "Tomorrow" },
   { value: "3days", label: "In 3 Days" },
-  { value: "1week", label: "Next Week" },
+  { value: "1week", label: "In a Week" },
+  { value: "2weeks", label: "In 2 Weeks" },
+  { value: "1month", label: "In a Month" },
 ];
 
 type View =
@@ -31,18 +32,19 @@ type View =
 export default function NextSteps() {
   const [currentView, setCurrentView] = useState<View>("clickup-form");
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [showContinueButton, setShowContinueButton] = useState(false);
 
   // Form state
   const [formData, setFormData] = useState({
     email: "",
     name: "",
     businessName: "",
-    address: "",
-    reminderTime: "tomorrow",
+    reminderTime: "3days",
   });
 
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [showPaymentModal, setShowPaymentModal] = useState(false);
+  const continueButtonDelay: number = 10000;
 
   // Listen for ClickUp form submission
   useEffect(() => {
@@ -71,11 +73,24 @@ export default function NextSteps() {
     };
   }, []);
 
+  // Show continue button after 8 seconds delay
+  useEffect(() => {
+    if (currentView === "clickup-form") {
+      // Reset button visibility when returning to form
+      setShowContinueButton(false);
+
+      // Show button after [continueButtonDelay] seconds
+      const timer = setTimeout(() => {
+        setShowContinueButton(true);
+      }, continueButtonDelay);
+
+      return () => clearTimeout(timer);
+    }
+  }, [currentView]);
+
   const handlePayNow = () => {
     setShowPaymentModal(true);
   };
-
-  
 
   const handleRemindLater = () => {
     setCurrentView("remind-form");
@@ -135,8 +150,7 @@ export default function NextSteps() {
       email: "",
       name: "",
       businessName: "",
-      address: "",
-      reminderTime: "tomorrow",
+      reminderTime: "3days",
     });
     setFormErrors({});
   };
@@ -147,130 +161,174 @@ export default function NextSteps() {
   };
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 via-pink-50 to-white py-12 px-4">
-      <div className="max-w-2xl mx-auto mt-8">
-        {/* Progress Stepper */}
-        <motion.div
-          initial={{ opacity: 0, y: -20 }}
-          animate={{ opacity: 1, y: 0 }}
-          className="mb-12"
-        >
-          <div className="flex items-center justify-center gap-4">
+    <div className="min-h-screen bg-gray-950 py-12 px-4">
+      <div className="max-w-3xl mx-auto mt-8">
+        {/* Friendly header */}
+        <div className="flex items-center justify-between mb-6">
+          <div>
+            <h2 className="text-xl font-semibold text-white">
+              Business registration
+            </h2>
+            <p className="text-sm text-gray-100">
+              Quick setup — submit the form below and continue to payment.
+            </p>
+          </div>
+
+          <div className="hidden sm:flex items-center gap-3">
+            <div className="text-xs text-gray-100">Progress</div>
             <div className="flex items-center gap-2">
               <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm ${
+                className={`w-9 h-9 rounded-full flex items-center justify-center text-white font-semibold text-sm shadow-sm ${
                   currentView !== "clickup-form"
                     ? "bg-gradient-to-r from-purple-700 to-pink-600"
                     : "bg-purple-600"
                 }`}
               >
                 {currentView !== "clickup-form" ? (
-                  <CheckCircle className="w-5 h-5" strokeWidth={2.5} />
+                  <CheckCircle className="w-4 h-4" strokeWidth={2.5} />
                 ) : (
                   "1"
                 )}
               </div>
-              <span className="text-sm font-semibold text-gray-700">
-                Registration Form
-              </span>
-            </div>
-
-            <div
-              className={`w-12 h-0.5 ${
-                currentView !== "clickup-form"
-                  ? "bg-gradient-to-r from-purple-300 to-pink-300"
-                  : "bg-gray-300"
-              }`}
-            ></div>
-
-            <div className="flex items-center gap-2">
-              <div
-                className={`w-8 h-8 rounded-full flex items-center justify-center text-white font-bold text-sm ${
-                  currentView !== "clickup-form"
-                    ? "bg-gradient-to-r from-purple-700 to-pink-600"
-                    : "bg-gray-300"
-                }`}
-              >
+              <div className="w-20 h-1 rounded-full bg-gradient-to-r from-purple-200 to-pink-200" />
+              <div className="w-9 h-9 rounded-full flex items-center justify-center text-white font-semibold text-sm bg-gray-200 text-gray-600 shadow-sm">
                 2
               </div>
-              <span className="text-sm font-semibold text-gray-700">
-                Choose Next Step
-              </span>
             </div>
           </div>
-        </motion.div>
+        </div>
 
         {/* Main Content Area */}
         <AnimatePresence mode="wait">
           {currentView === "clickup-form" && (
             <motion.div
               key="clickup-form"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
-              className="bg-white rounded-3xl shadow-xl overflow-hidden"
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.45 }}
+              className="bg-white/90 backdrop-blur-sm rounded-2xl shadow-lg overflow-hidden border border-white/60"
             >
               {/* Form Header */}
-              <div className="bg-gradient-to-r from-purple-700 to-pink-600 px-8 py-6">
-                <h3 className="text-2xl font-bold text-white">
-                  Business Registration Form
-                </h3>
-                <p className="text-purple-100 text-sm mt-1">
-                  Fill in your details to get started
-                </p>
+              <div className="bg-gradient-to-r from-purple-700 to-pink-600 px-6 py-5">
+                <div className="flex items-center justify-between">
+                  <div>
+                    <h3 className="text-lg font-bold text-white">
+                      Business Registration Form
+                    </h3>
+                    <p className="text-purple-100 text-sm mt-1">
+                      Fill in your details to get started
+                    </p>
+                  </div>
+                  <div className="hidden md:flex items-center gap-3">
+                    <div className="text-xs text-white/90 bg-white/10 px-3 py-1 rounded-full">
+                      Step 1 of 2
+                    </div>
+                  </div>
+                </div>
               </div>
 
               {/* ClickUp Form */}
-              <div className="p-8">
-                <iframe
-                  className="clickup-embed clickup-dynamic-height"
-                  src="https://forms.clickup.com/90121132910/p/f/2kxu6pve-32/HR3WRX2KA1OLDXEGOH/business-registration-form"
-                  width="100%"
-                  height="100%"
-                  style={{
-                    background: "transparent",
-                    border: "none",
-                    minHeight: "600px",
-                  }}
-                  title="Business Registration Form"
-                ></iframe>
+              <div className="p-6 md:p-8">
+                <div className="rounded-xl overflow-hidden border border-gray-100 shadow-inner">
+                  {/* iframe wrapper to give nice radius + subtle shadow */}
+                  <div className="bg-white">
+                    <iframe
+                      className="clickup-embed clickup-dynamic-height w-full"
+                      src="https://forms.clickup.com/90121132910/p/f/2kxu6pve-32/HR3WRX2KA1OLDXEGOH/business-registration-form"
+                      width="100%"
+                      height="640"
+                      style={{
+                        background: "transparent",
+                        border: "none",
+                        minHeight: "560px",
+                        display: "block",
+                      }}
+                      title="Business Registration Form"
+                    ></iframe>
+                  </div>
+                </div>
               </div>
 
-              {/* Manual Continue Button (fallback if auto-detection doesn't work) */}
-              <div className="px-8 pb-8 pt-4 border-t border-gray-200">
-                <motion.button
-                  onClick={handleManualFormComplete}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                  className="w-full bg-gradient-to-r from-purple-700 to-pink-600 text-white py-4 rounded-xl font-bold hover:from-purple-800 hover:to-pink-700 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center gap-2"
-                >
-                  Form Submitted - Continue
-                  <ArrowRight className="w-5 h-5" strokeWidth={2.5} />
-                </motion.button>
-                <p className="text-center text-sm text-gray-500 mt-3">
-                  Click this button after submitting the form above
-                </p>
-              </div>
+              {/* Manual Continue Button with Delay and Animation */}
+              <AnimatePresence>
+                {showContinueButton && (
+                  <motion.div
+                    key="continue-button"
+                    initial={{ opacity: 0, y: 10, scale: 0.98 }}
+                    animate={{ opacity: 1, y: 0, scale: 1 }}
+                    transition={{
+                      duration: 0.45,
+                      type: "spring",
+                      stiffness: 220,
+                    }}
+                    className="px-6 pb-6 pt-4 border-t border-gray-100 bg-white/80"
+                  >
+                    <div className="max-w-2xl mx-auto">
+                      <motion.button
+                        onClick={handleManualFormComplete}
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                        className="w-full flex items-center justify-center gap-3 bg-gradient-to-r from-purple-700 to-pink-600 text-white py-3 rounded-xl font-semibold transition-shadow shadow-sm hover:shadow-md"
+                      >
+                        <span>Form Submitted — Continue</span>
+                        <ArrowRight className="w-5 h-5" strokeWidth={2.5} />
+                      </motion.button>
+
+                      <p className="text-center text-sm text-gray-500 mt-3">
+                        After submitting the form above, click to continue. If
+                        the form doesn't appear, try scrolling inside the form
+                        or reloading this page.
+                      </p>
+                    </div>
+                  </motion.div>
+                )}
+
+                {!showContinueButton && (
+                  <motion.div
+                    key="waiting"
+                    initial={{ opacity: 0 }}
+                    animate={{ opacity: 1 }}
+                    exit={{ opacity: 0 }}
+                    transition={{ duration: 0.35 }}
+                    className="px-6 pb-6 pt-4 border-t border-gray-100 bg-white/80"
+                  >
+                    <div className="max-w-2xl mx-auto flex items-center gap-3">
+                      <div className="w-10 h-10 rounded-lg bg-purple-50 flex items-center justify-center">
+                        <Loader2 className="w-5 h-5 animate-spin text-purple-600" />
+                      </div>
+                      <div>
+                        <div className="text-sm font-medium text-gray-800">
+                          Waiting for form completion
+                        </div>
+                        <div className="text-xs text-gray-500">
+                          Button unlocks automatically — or you can submit the
+                          form and wait for the success message.
+                        </div>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+              </AnimatePresence>
             </motion.div>
           )}
 
           {currentView === "initial" && (
             <motion.div
               key="initial"
-              initial={{ opacity: 0, scale: 0.95 }}
-              animate={{ opacity: 1, scale: 1 }}
-              exit={{ opacity: 0, scale: 0.95 }}
-              transition={{ duration: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
-              className="bg-white rounded-3xl shadow-xl p-8 md:p-12"
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              transition={{ duration: 0.45 }}
+              className="bg-white rounded-2xl shadow-lg p-6 md:p-10"
             >
               {/* Thank You Message */}
-              <div className="text-center mb-10">
+              <div className="text-center mb-8">
                 <motion.div
-                  initial={{ scale: 0 }}
-                  animate={{ scale: 1 }}
-                  transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
-                  className="inline-block mb-6"
+                  initial={{ scale: 0.8, opacity: 0 }}
+                  animate={{ scale: 1, opacity: 1 }}
+                  transition={{ delay: 0.1, type: "spring", stiffness: 260 }}
+                  className="inline-block mb-4"
                 >
                   <div className="w-20 h-20 rounded-full bg-gradient-to-r from-purple-100 to-pink-100 flex items-center justify-center">
                     <CheckCircle
@@ -281,19 +339,19 @@ export default function NextSteps() {
                 </motion.div>
 
                 <motion.h1
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
-                  className="text-3xl md:text-4xl font-bold text-gray-800 mb-4"
+                  transition={{ delay: 0.2 }}
+                  className="text-2xl md:text-3xl font-bold text-gray-800 mb-2"
                 >
-                  Thank You!
+                  Thank you!
                 </motion.h1>
 
                 <motion.p
-                  initial={{ opacity: 0, y: 20 }}
+                  initial={{ opacity: 0, y: 8 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.4 }}
-                  className="text-gray-600 text-lg"
+                  transition={{ delay: 0.25 }}
+                  className="text-gray-600"
                 >
                   Your company information has been successfully submitted.
                   <br />
@@ -303,9 +361,9 @@ export default function NextSteps() {
 
               {/* Action Buttons */}
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.5 }}
+                transition={{ delay: 0.35 }}
                 className="space-y-4"
               >
                 {/* Pay Now Button */}
@@ -313,23 +371,21 @@ export default function NextSteps() {
                   onClick={handlePayNow}
                   whileHover={{ scale: 1.02, y: -2 }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full group bg-gradient-to-r from-purple-700 to-pink-600 text-white p-6 rounded-2xl hover:from-purple-800 hover:to-pink-700 transition-all duration-300 shadow-lg hover:shadow-xl"
+                  className="w-full group bg-gradient-to-r from-purple-700 to-pink-600 text-white p-4 md:p-6 rounded-2xl transition-shadow shadow-sm hover:shadow-md flex items-center gap-4"
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="bg-white/20 backdrop-blur-sm p-3 rounded-xl group-hover:bg-white/30 transition-all duration-300">
-                      <CreditCard className="w-6 h-6" strokeWidth={2.5} />
-                    </div>
-                    <div className="text-left flex-1">
-                      <div className="font-bold text-lg mb-1">Pay Now</div>
-                      <div className="text-sm text-purple-100">
-                        Complete your registration with secure payment
-                      </div>
-                    </div>
-                    <ArrowRight
-                      className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200"
-                      strokeWidth={2.5}
-                    />
+                  <div className="bg-white/20 backdrop-blur-sm p-3 rounded-xl">
+                    <CreditCard className="w-5 h-5" strokeWidth={2.5} />
                   </div>
+                  <div className="text-left flex-1">
+                    <div className="font-semibold text-base">Pay Now</div>
+                    <div className="text-sm text-purple-100">
+                      Complete registration with secure payment
+                    </div>
+                  </div>
+                  <ArrowRight
+                    className="w-5 h-5 transform transition-transform group-hover:translate-x-1"
+                    strokeWidth={2.5}
+                  />
                 </motion.button>
 
                 {/* Remind Me Later Button */}
@@ -337,25 +393,21 @@ export default function NextSteps() {
                   onClick={handleRemindLater}
                   whileHover={{ scale: 1.02, y: -2 }}
                   whileTap={{ scale: 0.98 }}
-                  className="w-full group bg-white border-2 border-purple-200 text-purple-700 p-6 rounded-2xl hover:border-purple-300 hover:bg-purple-50 transition-all duration-300 shadow-sm hover:shadow-md"
+                  className="w-full group bg-white border-2 border-purple-100 text-purple-700 p-4 md:p-6 rounded-2xl hover:border-purple-200 hover:bg-purple-50 transition-shadow shadow-sm hover:shadow-md flex items-center gap-4"
                 >
-                  <div className="flex items-center gap-4">
-                    <div className="bg-purple-100 p-3 rounded-xl group-hover:bg-purple-200 transition-all duration-300">
-                      <Clock className="w-6 h-6" strokeWidth={2.5} />
-                    </div>
-                    <div className="text-left flex-1">
-                      <div className="font-bold text-lg mb-1">
-                        Remind Me Later
-                      </div>
-                      <div className="text-sm text-purple-600">
-                        We'll send you a reminder at your preferred time
-                      </div>
-                    </div>
-                    <ArrowRight
-                      className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200"
-                      strokeWidth={2.5}
-                    />
+                  <div className="bg-purple-100 p-3 rounded-xl">
+                    <Clock className="w-5 h-5" strokeWidth={2.5} />
                   </div>
+                  <div className="text-left flex-1">
+                    <div className="font-semibold text-base">Remind Me Later</div>
+                    <div className="text-sm text-purple-600">
+                      We'll send a reminder at your chosen time
+                    </div>
+                  </div>
+                  <ArrowRight
+                    className="w-5 h-5 transform transition-transform group-hover:translate-x-1"
+                    strokeWidth={2.5}
+                  />
                 </motion.button>
               </motion.div>
             </motion.div>
@@ -364,22 +416,22 @@ export default function NextSteps() {
           {currentView === "remind-form" && (
             <motion.div
               key="remind-form"
-              initial={{ opacity: 0, x: 20 }}
+              initial={{ opacity: 0, x: 10 }}
               animate={{ opacity: 1, x: 0 }}
-              exit={{ opacity: 0, x: -20 }}
+              exit={{ opacity: 0, x: -10 }}
               transition={{ duration: 0.4 }}
-              className="bg-white rounded-3xl shadow-xl p-8 md:p-12"
+              className="bg-white rounded-2xl shadow-lg p-6 md:p-10"
             >
-              <div className="mb-8">
-                <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-2">
-                  Set Up Your Reminder
+              <div className="mb-6">
+                <h2 className="text-xl md:text-2xl font-bold text-gray-800 mb-1">
+                  Set up your reminder
                 </h2>
                 <p className="text-gray-600">
-                  We'll send you a friendly reminder to complete your payment
+                  We'll send you a friendly reminder to complete your payment.
                 </p>
               </div>
 
-              <div className="space-y-6">
+              <div className="space-y-5">
                 {/* Email Field */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
@@ -408,7 +460,7 @@ export default function NextSteps() {
                   </div>
                   {formErrors.email && (
                     <motion.p
-                      initial={{ opacity: 0, y: -10 }}
+                      initial={{ opacity: 0, y: -6 }}
                       animate={{ opacity: 1, y: 0 }}
                       className="text-red-500 text-sm mt-2 flex items-center gap-1"
                     >
@@ -461,30 +513,6 @@ export default function NextSteps() {
                       }
                       placeholder="Your Company (Pty) Ltd"
                       className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-300 transition-all duration-200"
-                    />
-                  </div>
-                </div>
-
-                {/* Address Field */}
-                <div>
-                  <label className="block text-sm font-semibold text-gray-700 mb-2">
-                    Address
-                  </label>
-                  <div className="relative">
-                    <div className="absolute top-3 left-0 pl-4 flex items-start pointer-events-none">
-                      <MapPin
-                        className="w-5 h-5 text-gray-400"
-                        strokeWidth={2}
-                      />
-                    </div>
-                    <textarea
-                      value={formData.address}
-                      onChange={(e) =>
-                        setFormData({ ...formData, address: e.target.value })
-                      }
-                      placeholder="123 Main Street, City, Province, Postal Code"
-                      rows={3}
-                      className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-300 transition-all duration-200 resize-none"
                     />
                   </div>
                 </div>
@@ -548,7 +576,7 @@ export default function NextSteps() {
                     disabled={isSubmitting}
                     whileHover={!isSubmitting ? { scale: 1.02, y: -2 } : {}}
                     whileTap={!isSubmitting ? { scale: 0.98 } : {}}
-                    className="w-full bg-gradient-to-r from-purple-700 to-pink-600 text-white py-4 rounded-xl font-bold hover:from-purple-800 hover:to-pink-700 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                    className="w-full bg-gradient-to-r from-purple-700 to-pink-600 text-white py-3 rounded-xl font-semibold hover:from-purple-800 hover:to-pink-700 transition-all duration-300 shadow-sm hover:shadow-md flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed"
                   >
                     {isSubmitting ? (
                       <>
@@ -582,15 +610,15 @@ export default function NextSteps() {
           {currentView === "payment-success" && (
             <motion.div
               key="payment-success"
-              initial={{ opacity: 0, scale: 0.8 }}
+              initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, type: "spring" }}
-              className="bg-white rounded-3xl shadow-xl p-8 md:p-12 text-center"
+              transition={{ duration: 0.45, type: "spring" }}
+              className="bg-white rounded-2xl shadow-lg p-6 md:p-10 text-center"
             >
               <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.1, type: "spring", stiffness: 220 }}
                 className="inline-block mb-6"
               >
                 <div className="w-24 h-24 rounded-full bg-gradient-to-r from-green-100 to-emerald-100 flex items-center justify-center">
@@ -601,19 +629,19 @@ export default function NextSteps() {
                 </div>
               </motion.div>
 
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-3">
                 Payment Successful!
               </h2>
-              <p className="text-gray-600 text-lg mb-8">
+              <p className="text-gray-600 text-base mb-6">
                 Thank you for your payment. We'll begin processing your company
                 registration immediately.
               </p>
 
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                className="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-2xl"
+                transition={{ delay: 0.2 }}
+                className="bg-gradient-to-r from-purple-50 to-pink-50 p-4 rounded-xl"
               >
                 <p className="text-sm text-gray-700">
                   You'll receive a confirmation email shortly with next steps
@@ -626,15 +654,15 @@ export default function NextSteps() {
           {currentView === "reminder-success" && (
             <motion.div
               key="reminder-success"
-              initial={{ opacity: 0, scale: 0.8 }}
+              initial={{ opacity: 0, scale: 0.98 }}
               animate={{ opacity: 1, scale: 1 }}
-              transition={{ duration: 0.5, type: "spring" }}
-              className="bg-white rounded-3xl shadow-xl p-8 md:p-12 text-center"
+              transition={{ duration: 0.45, type: "spring" }}
+              className="bg-white rounded-2xl shadow-lg p-6 md:p-10 text-center"
             >
               <motion.div
-                initial={{ scale: 0 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+                initial={{ scale: 0.8, opacity: 0 }}
+                animate={{ scale: 1, opacity: 1 }}
+                transition={{ delay: 0.1, type: "spring", stiffness: 220 }}
                 className="inline-block mb-6"
               >
                 <div className="w-24 h-24 rounded-full bg-gradient-to-r from-purple-100 to-pink-100 flex items-center justify-center">
@@ -645,19 +673,19 @@ export default function NextSteps() {
                 </div>
               </motion.div>
 
-              <h2 className="text-3xl md:text-4xl font-bold text-gray-800 mb-4">
+              <h2 className="text-2xl md:text-3xl font-bold text-gray-800 mb-3">
                 Reminder Set!
               </h2>
-              <p className="text-gray-600 text-lg mb-8">
+              <p className="text-gray-600 text-base mb-6">
                 We'll send you a friendly reminder at your chosen time. Check
                 your email for confirmation.
               </p>
 
               <motion.div
-                initial={{ opacity: 0, y: 20 }}
+                initial={{ opacity: 0, y: 8 }}
                 animate={{ opacity: 1, y: 0 }}
-                transition={{ delay: 0.4 }}
-                className="bg-gradient-to-r from-purple-50 to-pink-50 p-6 rounded-2xl"
+                transition={{ delay: 0.2 }}
+                className="bg-gradient-to-r from-purple-50 to-pink-50 p-4 rounded-xl"
               >
                 <p className="text-sm text-gray-700">
                   You can complete your payment anytime by clicking the link in

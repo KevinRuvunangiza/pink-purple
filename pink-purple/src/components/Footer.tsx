@@ -8,6 +8,7 @@ import {
   Instagram,
   Facebook,
 } from "lucide-react";
+import { Link } from "react-router";
 
 const fadeIn = {
   initial: { opacity: 0, y: 20 },
@@ -22,12 +23,12 @@ interface FooterLinkProps {
 }
 
 const FooterLink: React.FC<FooterLinkProps> = ({ href, children }) => (
-  <a
-    href={href}
+  <Link
+    to={href}
     className="text-neutral-400 hover:text-white transition-colors duration-200 text-[15px]"
   >
     {children}
-  </a>
+  </Link>
 );
 
 interface SocialLinkProps {
@@ -57,28 +58,24 @@ export default function Footer() {
       title: "Services",
       links: [
         { label: "Business Registration", href: "#services" },
-        { label: "CRM & Automation", href: "#services" },
-        { label: "Marketing & Branding", href: "#services" },
-        { label: "Consulting", href: "#services" },
       ],
     },
     {
       title: "Company",
       links: [
-        { label: "About Us", href: "#about" },
-        { label: "Why Choose Us", href: "#why" },
-        { label: "Contact", href: "#contact" },
-        { label: "Get Started", href: "#register" },
+        { label: "About Us", href: "/about" },
+        { label: "Contact", href: "/contact" },
+        { label: "Get Started", href: "/next-steps" },
       ],
     },
-    {
-      title: "Legal",
-      links: [
-        { label: "Privacy Policy", href: "#privacy" },
-        { label: "Terms of Service", href: "#terms" },
-        { label: "Cookie Policy", href: "#cookies" },
-      ],
-    },
+    // {
+    //   title: "Legal",
+    //   links: [
+    //     { label: "Privacy Policy", href: "#privacy" },
+    //     { label: "Terms of Service", href: "#terms" },
+    //     { label: "Cookie Policy", href: "#cookies" },
+    //   ],
+    // },
   ];
 
   return (
@@ -93,7 +90,7 @@ export default function Footer() {
                 Pink & Purple
               </h3>
               <p className="text-neutral-400 text-[15px] leading-relaxed mb-6 max-w-xs">
-                Empowering South African SMEs with business solutions,
+                Empowering SMEs with business solutions,
                 automation, and strategic guidance.
               </p>
 
@@ -104,18 +101,18 @@ export default function Footer() {
                   className="flex items-center gap-3 text-neutral-400 hover:text-white transition-colors duration-200"
                 >
                   <Mail className="w-4 h-4" strokeWidth={2} />
-                  <span className="text-[14px]">info@pinkandpurple.co.za</span>
+                  <span className="text-[14px]">hello@pinkandp.com</span>
                 </a>
                 <a
                   href="tel:+27123456789"
                   className="flex items-center gap-3 text-neutral-400 hover:text-white transition-colors duration-200"
                 >
                   <Phone className="w-4 h-4" strokeWidth={2} />
-                  <span className="text-[14px]">+27 12 345 6789</span>
+                  <span className="text-[14px]">+27 66 422 8087</span>
                 </a>
                 <div className="flex items-center gap-3 text-neutral-400">
                   <MapPin className="w-4 h-4" strokeWidth={2} />
-                  <span className="text-[14px]">Sasolburg, Free State, ZA</span>
+                  <span className="text-[14px]">Pretoria, Gauteng, South Africa</span>
                 </div>
               </div>
             </motion.div>

@@ -4,7 +4,6 @@ interface RequestBody {
   email: string;
   name?: string;
   businessName?: string;
-  address?: string;
   reminderTime: string;
 }
 
@@ -37,7 +36,7 @@ const handler: Handler = async (event) => {
 
   try {
     const body: RequestBody = JSON.parse(event.body || "{}");
-    const { email, name, businessName, address, reminderTime } = body;
+    const { email, name, businessName, reminderTime } = body;
 
     // Validate email
     if (!email || !email.trim()) {
@@ -64,19 +63,22 @@ const handler: Handler = async (event) => {
     const getReminderDate = (option: string): string => {
       const now = new Date();
       switch (option) {
-        case "tomorrow":
-          now.setDate(now.getDate() + 1);
-          break;
         case "3days":
           now.setDate(now.getDate() + 3);
           break;
         case "1week":
           now.setDate(now.getDate() + 7);
           break;
+        case "2weeks":
+          now.setDate(now.getDate() + 14);
+          break;
+        case "1month":
+          now.setDate(now.getDate() + 30);
+          break;
         default:
           now.setDate(now.getDate() + 1);
       }
-      return now.toISOString().split('T')[0]; // Format as YYYY-MM-DD
+      return now.toISOString().split("T")[0]; // Format as YYYY-MM-DD
     };
 
     // Prepare subscriber data for MailerLite API
@@ -86,7 +88,6 @@ const handler: Handler = async (event) => {
       fields: {
         name: name || "",
         business_name: businessName || "",
-        address: address || "",
         reminder_date: getReminderDate(reminderTime),
         payment_status: "pending",
       },
@@ -94,18 +95,24 @@ const handler: Handler = async (event) => {
       status: "active",
     };
 
-    console.log("Sending to MailerLite:", JSON.stringify(subscriberData, null, 2));
+    console.log(
+      "Sending to MailerLite:",
+      JSON.stringify(subscriberData, null, 2)
+    );
 
     // Call MailerLite API to add/update subscriber
-    const response = await fetch("https://connect.mailerlite.com/api/subscribers", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": `Bearer ${MAILERLITE_API_KEY}`,
-        "Accept": "application/json",
-      },
-      body: JSON.stringify(subscriberData),
-    });
+    const response = await fetch(
+      "https://connect.mailerlite.com/api/subscribers",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${MAILERLITE_API_KEY}`,
+          Accept: "application/json",
+        },
+        body: JSON.stringify(subscriberData),
+      }
+    );
 
     const responseText = await response.text();
     console.log("MailerLite response status:", response.status);
@@ -129,18 +136,20 @@ const handler: Handler = async (event) => {
     if (!response.ok) {
       console.error("MailerLite API error:", data);
       console.error("Full error details:", JSON.stringify(data, null, 2));
-      
+
       // Handle duplicate subscriber - update instead
       if (response.status === 422 || response.status === 409) {
         // Try to update the subscriber instead
         const updateResponse = await fetch(
-          `https://connect.mailerlite.com/api/subscribers/${encodeURIComponent(email)}`,
+          `https://connect.mailerlite.com/api/subscribers/${encodeURIComponent(
+            email
+          )}`,
           {
             method: "PUT",
             headers: {
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${MAILERLITE_API_KEY}`,
-              "Accept": "application/json",
+              Authorization: `Bearer ${MAILERLITE_API_KEY}`,
+              Accept: "application/json",
             },
             body: JSON.stringify({
               fields: subscriberData.fields,
