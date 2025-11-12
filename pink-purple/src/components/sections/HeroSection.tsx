@@ -69,19 +69,9 @@ export default function HeroSection() {
               className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-brand-purple-700 text-white px-8 py-4 rounded-xl text-[16px] font-medium hover:bg-purple-700 transition-colors duration-200 shadow-lg"
             >
               Register Your Business
-              <ArrowRight className="w-5 h-5" strokeWidth={2} />
             </motion.a>
             </Link>
             
-            <motion.a
-              href="#about"
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              transition={{ duration: 0.2 }}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-transparent text-white border-2 border-neutral-700 px-8 py-4 rounded-xl text-[16px] font-medium hover:border-neutral-600 hover:bg-neutral-800 transition-all duration-200"
-            >
-              Learn More
-            </motion.a>
           </motion.div>
 
           {/* Optional: Trust indicators */}

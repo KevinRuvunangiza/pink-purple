@@ -8,7 +8,7 @@ import Services from "./pages/Services"
 // import Register from "./pages/Register";
 import Blog from "./pages/Blog";
 import Contact from "./pages/Contact";
-import NextSteps from "./components/NextSteps";
+import NextSteps from "./pages/NextSteps";
 
 
 function App() {
