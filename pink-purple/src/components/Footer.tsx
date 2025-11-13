@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { m } from "framer-motion"; // Changed from 'motion' to 'm'
 import {
   Mail,
   Phone,
@@ -38,7 +38,7 @@ interface SocialLinkProps {
 }
 
 const SocialLink: React.FC<SocialLinkProps> = ({ href, icon, label }) => (
-  <motion.a
+  <m.a
     href={href}
     whileHover={{ scale: 1.1 }}
     whileTap={{ scale: 0.95 }}
@@ -47,7 +47,7 @@ const SocialLink: React.FC<SocialLinkProps> = ({ href, icon, label }) => (
     aria-label={label}
   >
     {icon}
-  </motion.a>
+  </m.a>
 );
 
 export default function Footer() {
@@ -85,7 +85,7 @@ export default function Footer() {
         <div className="py-16 lg:py-20">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-12 lg:gap-8">
             {/* Brand Column */}
-            <motion.div {...fadeIn} className="lg:col-span-4">
+            <m.div {...fadeIn} className="lg:col-span-4">
               <h3 className="text-2xl font-semibold text-white mb-4">
                 Pink & Purple
               </h3>
@@ -115,11 +115,11 @@ export default function Footer() {
                   <span className="text-[14px]">Pretoria, Gauteng, South Africa</span>
                 </div>
               </div>
-            </motion.div>
+            </m.div>
 
             {/* Links Columns */}
             {footerSections.map((section, index) => (
-              <motion.div
+              <m.div
                 key={section.title}
                 initial={{ opacity: 0, y: 20 }}
                 whileInView={{ opacity: 1, y: 0 }}
@@ -141,11 +141,11 @@ export default function Footer() {
                     </li>
                   ))}
                 </ul>
-              </motion.div>
+              </m.div>
             ))}
 
             {/* Social Links Column */}
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
@@ -181,12 +181,12 @@ export default function Footer() {
                   label="Facebook"
                 />
               </div>
-            </motion.div>
+            </m.div>
           </div>
         </div>
 
         {/* Bottom Bar */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0 }}
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
@@ -203,7 +203,7 @@ export default function Footer() {
               <FooterLink href="#cookies">Cookies</FooterLink>
             </div>
           </div>
-        </motion.div>
+        </m.div>
       </div>
     </footer>
   );

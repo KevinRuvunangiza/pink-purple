@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { m } from "framer-motion"; // Changed from 'motion' to 'm'
 import { Sparkles, Users, Shield, TrendingUp } from "lucide-react";
 
 const fadeIn = {
@@ -16,7 +16,7 @@ interface FeatureCardProps {
 }
 
 const FeatureCard: React.FC<FeatureCardProps> = ({ icon, title, description, delay }) => (
-  <motion.div
+  <m.div
     initial={{ opacity: 0, y: 16 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true }}
@@ -37,7 +37,7 @@ const FeatureCard: React.FC<FeatureCardProps> = ({ icon, title, description, del
         {description}
       </p>
     </div>
-  </motion.div>
+  </m.div>
 );
 
 interface StatItemProps {
@@ -47,7 +47,7 @@ interface StatItemProps {
 }
 
 const StatItem: React.FC<StatItemProps> = ({ number, label, delay }) => (
-  <motion.div
+  <m.div
     initial={{ opacity: 0, scale: 0.95 }}
     whileInView={{ opacity: 1, scale: 1 }}
     viewport={{ once: true }}
@@ -60,7 +60,7 @@ const StatItem: React.FC<StatItemProps> = ({ number, label, delay }) => (
     <div className="text-neutral-400 text-[15px] font-medium">
       {label}
     </div>
-  </motion.div>
+  </m.div>
 );
 
 export default function WhyChooseUs() {
@@ -101,7 +101,7 @@ export default function WhyChooseUs() {
       
       <div className="max-w-[1200px] mx-auto px-8 lg:px-12 relative">
         {/* Heading Section */}
-        <motion.div {...fadeIn} className="mb-16 text-center max-w-[780px] mx-auto">
+        <m.div {...fadeIn} className="mb-16 text-center max-w-[780px] mx-auto">
           <h2 className="text-[48px] lg:text-[56px] font-semibold text-white mb-5 leading-[1.1] tracking-tight">
             Why Choose{" "}
             <span className="text-pink-600">
@@ -113,7 +113,7 @@ export default function WhyChooseUs() {
           <p className="text-[19px] text-neutral-400 leading-[1.5]">
             We focus on clarity, quality, and real growth — no buzzwords, no fluff.
           </p>
-        </motion.div>
+        </m.div>
 
         {/* Stats Row */}
         <div className="grid grid-cols-3 gap-8 mb-20 max-w-[900px] mx-auto">

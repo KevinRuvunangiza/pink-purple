@@ -1,11 +1,9 @@
-import  { motion } from "motion/react";
+import { LazyMotion, domAnimation, m } from "framer-motion"; // Fixed import
 import Footer from "../components/Footer";
-import CTASection from "../components/sections/CTASection";
 import HeroSection from "../components/sections/HeroSection";
 import ServicesSection from "../components/sections/ServiceSection";
 import WhoWeAre from "../components/sections/WhoWeAre";
 import WhyChooseUs from "../components/sections/WhyChooseUs";
-
 
 const fadeInUpVariants = {
   hidden: { 
@@ -23,54 +21,45 @@ const fadeInUpVariants = {
 };
 
 export default function About() {
-  return(
-
-    <>
-      <motion.div
+  return (
+    <LazyMotion features={domAnimation} strict>
+      <m.div
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={fadeInUpVariants}
       >
         <HeroSection />
-      </motion.div>
+      </m.div>
 
-      <motion.div
+      <m.div
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={fadeInUpVariants}
       >
         <WhoWeAre />
-      </motion.div>
+      </m.div>
 
-      <motion.div
+      <m.div
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={fadeInUpVariants}
       >
         <ServicesSection />
-      </motion.div>
+      </m.div>
 
-      <motion.div
+      <m.div
         initial="hidden"
         whileInView="visible"
         viewport={{ once: true, margin: "-100px" }}
         variants={fadeInUpVariants}
       >
         <WhyChooseUs />
-      </motion.div>
-{/* 
-      <motion.div
-        initial="hidden"
-        whileInView="visible"
-        viewport={{ once: true, margin: "-100px" }}
-        variants={fadeInUpVariants}
-      >
-        <CTASection />
-      </motion.div> */}
+      </m.div>
+
       <Footer />
-    </>
-  )
+    </LazyMotion>
+  );
 }

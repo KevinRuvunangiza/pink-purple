@@ -1,4 +1,4 @@
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { Eye, Target, Check } from 'lucide-react';
 
 const fadeIn = {
@@ -14,7 +14,7 @@ interface ValueItemProps {
 }
 
 const ValueItem: React.FC<ValueItemProps> = ({ value, index }) => (
-  <motion.div
+  <m.div
     initial={{ opacity: 0, x: -8 }}
     whileInView={{ opacity: 1, x: 0 }}
     viewport={{ once: true }}
@@ -23,7 +23,7 @@ const ValueItem: React.FC<ValueItemProps> = ({ value, index }) => (
   >
     <Check className="w-5 h-5 text-brand-purple-700 flex-shrink-0 mt-0.5" strokeWidth={2.5} />
     <span className="text-gray-700 text-[17px] leading-relaxed">{value}</span>
-  </motion.div>
+  </m.div>
 );
 
 interface CardProps {
@@ -34,7 +34,7 @@ interface CardProps {
 }
 
 const Card: React.FC<CardProps> = ({ icon, title, description, delay }) => (
-  <motion.div
+  <m.div
     initial={{ opacity: 0, y: 20 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true }}
@@ -50,7 +50,7 @@ const Card: React.FC<CardProps> = ({ icon, title, description, delay }) => (
     <p className="text-gray-600 text-[17px] leading-relaxed">
       {description}
     </p>
-  </motion.div>
+  </m.div>
 );
 
 export default function WhoWeAre() {
@@ -65,15 +65,15 @@ export default function WhoWeAre() {
     <section className="py-28 lg:py-36 bg-white">
       <div className="max-w-[1200px] mx-auto px-8 lg:px-12">
         {/* Heading Section */}
-        <motion.div {...fadeIn} className="mb-20">
+        <m.div {...fadeIn} className="mb-20">
           <h2 className="text-[56px] lg:text-[72px] font-semibold text-gray-900 mb-6 leading-[1.1] tracking-tight">
             Who We Are
           </h2>
           
           <p className="text-[21px] text-gray-600 leading-[1.6] max-w-[840px]">
-            Pink & Brand-purple is a South African-based business solutions company helping small and medium enterprises (SMEs) establish strong foundations. From company registration and system automation to CRM setup and digital marketing, we empower businesses with structure, technology, and strategic guidance.
+            Pink & Purple is a South African-based business solutions company helping small and medium enterprises (SMEs) establish strong foundations. From company registration and system automation to CRM setup and digital marketing, we empower businesses with structure, technology, and strategic guidance.
           </p>
-        </motion.div>
+        </m.div>
         
         {/* Vision & Mission */}
         <div className="grid lg:grid-cols-2 gap-16 lg:gap-20 mb-28">
@@ -101,7 +101,7 @@ export default function WhoWeAre() {
         </div>
         
         {/* Core Values */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -115,7 +115,7 @@ export default function WhoWeAre() {
               <ValueItem key={index} value={value} index={index} />
             ))}
           </div>
-        </motion.div>
+        </m.div>
       </div>
     </section>
   );

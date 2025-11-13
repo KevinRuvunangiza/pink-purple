@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { m } from "framer-motion"; // Changed from 'motion' to 'm'
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import PaymentOptionModal from "../PaymentOptionsModal";
@@ -79,7 +79,7 @@ export default function CTASection() {
     <section className="py-28 lg:py-36 bg-brand-purple-600 relative overflow-hidden">
       {/* Animated gradient orbs */}
       <div className="absolute inset-0 overflow-hidden">
-        <motion.div
+        <m.div
           animate={{
             scale: [1, 1.2, 1],
             opacity: [0.3, 0.5, 0.3],
@@ -91,7 +91,7 @@ export default function CTASection() {
           }}
           className="absolute -top-1/2 -left-1/4 w-[800px] h-[800px] bg-pink-400 rounded-full blur-3xl"
         />
-        <motion.div
+        <m.div
           animate={{
             scale: [1.2, 1, 1.2],
             opacity: [0.2, 0.4, 0.2],
@@ -120,9 +120,9 @@ export default function CTASection() {
       </div>
 
       <div className="max-w-[1200px] mx-auto px-8 lg:px-12 relative z-10">
-        <motion.div {...fadeIn} className="max-w-[780px] mx-auto text-center">
+        <m.div {...fadeIn} className="max-w-[780px] mx-auto text-center">
           {/* Heading */}
-          <motion.h2
+          <m.h2
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -131,10 +131,10 @@ export default function CTASection() {
           >
             Ready to Build Your Business the{" "}
             <span>Smart Way?</span>
-          </motion.h2>
+          </m.h2>
 
           {/* Subtext */}
-          <motion.p
+          <m.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -146,10 +146,10 @@ export default function CTASection() {
             className="text-xl text-brand-purple-100 mb-8 leading-relaxed"
           >
             Get your company up and running in days, not weeks. Professional, hassle-free business registration.
-          </motion.p>
+          </m.p>
 
           {/* Benefits */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -161,7 +161,7 @@ export default function CTASection() {
             className="flex flex-wrap items-center justify-center gap-6 mb-10"
           >
             {benefits.map((benefit, index) => (
-              <motion.div
+              <m.div
                 key={benefit}
                 initial={{ opacity: 0, x: -20 }}
                 whileInView={{ opacity: 1, x: 0 }}
@@ -175,12 +175,12 @@ export default function CTASection() {
               >
                 <CheckCircle2 className="w-5 h-5 text-pink-300" />
                 <span className="text-sm font-medium">{benefit}</span>
-              </motion.div>
+              </m.div>
             ))}
-          </motion.div>
+          </m.div>
 
           {/* CTA Button */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -191,7 +191,7 @@ export default function CTASection() {
             }}
           >
             <Link to="next-steps" >
-              <motion.button
+              <m.button
               // onClick={handleStartRegistration}
               whileHover={{ scale: 1.05, y: -2 }}
               whileTap={{ scale: 0.98 }}
@@ -200,13 +200,13 @@ export default function CTASection() {
             >
               Start Registration
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform duration-200" strokeWidth={2.5} />
-            </motion.button>
+            </m.button>
             </Link>
             
-          </motion.div>
+          </m.div>
 
           {/* Trust indicator */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0 }}
             whileInView={{ opacity: 1 }}
             viewport={{ once: true }}
@@ -228,8 +228,8 @@ export default function CTASection() {
             <p className="text-brand-purple-100 text-sm font-medium">
               Join 100+ businesses already growing with us
             </p>
-          </motion.div>
-        </motion.div>
+          </m.div>
+        </m.div>
 
         {/* Payment Options Modal */}
         <PaymentOptionModal
