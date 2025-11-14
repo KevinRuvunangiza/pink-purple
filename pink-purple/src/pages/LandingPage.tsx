@@ -138,7 +138,7 @@ const PricingCard = memo(
           <span className="text-6xl font-extrabold text-slate-900">
             R{price}
           </span>
-          <span className="text-slate-500 ml-2">/once</span>
+          <span className="text-slate-500 ml-2">/Once Off</span>
         </div>
         <ul className="text-slate-600 text-left space-y-4 mb-10">
           {features.map((feature, index) => (
@@ -310,7 +310,7 @@ export default function LandingPage() {
               transition={{ duration: 0.4, delay: 0.1 }}
               className="text-6xl lg:text-8xl font-black text-white leading-[1.1] tracking-tight mb-8"
             >
-              Register Your Business,
+              Register My Business,
               <br />
               <span className="bg-linear-to-r from-purple-400 to-pink-400 text-transparent bg-clip-text">
                 With Less Headache.
@@ -430,7 +430,7 @@ export default function LandingPage() {
           <div className="relative z-10 max-w-7xl mx-auto px-8 lg:px-12">
             <m.div {...fadeIn} className="text-center mb-20">
               <span className="inline-block px-4 py-2 rounded-full bg-purple-600/10 border border-purple-600/20 text-purple-600 font-semibold mb-6">
-                Simple Process
+                Use Our Simple Process
               </span>
               <h2 className="text-5xl lg:text-7xl font-black text-slate-900 mb-6">
                 As Easy as{" "}
