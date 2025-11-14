@@ -54,6 +54,7 @@ const SERVICE_OPTIONS: ServiceOption[] = [
   // },
 ];
 
+
 export default function PaymentOptionModal({
   showModal,
   setShowModal,
