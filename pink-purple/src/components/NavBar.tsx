@@ -108,7 +108,7 @@ export default function NavBar() {
                     to="/register"
                     className="block px-4 py-3 text-sm text-gray-700 hover:bg-pink-50 hover:text-pink-600 transition-colors"
                   >
-                    <div className="font-bold">Register Your Business</div>
+                    <div className="font-bold">Business Registration</div>
                     <div className="text-xs text-gray-500 mt-0.5">
                       Get started today
                     </div>

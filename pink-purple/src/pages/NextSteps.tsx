@@ -44,7 +44,7 @@ export default function NextSteps() {
 
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const continueButtonDelay: number = 10000;
+  const continueButtonDelay: number = 120000;
 
   // Listen for ClickUp form submission
   useEffect(() => {
