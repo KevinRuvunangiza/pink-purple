@@ -91,12 +91,8 @@ export default function NavBar() {
           {/* CTA Button Desktop */}
           <div className="hidden md:block">
             <Link
-              to="/get-started"
-              className={`px-6 py-3 rounded-full font-bold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200 ${
-                scrolled
-                  ? "bg-gradient-to-r from-pink-500 to-purple-500 text-white"
-                  : "bg-white text-pink-600"
-              }`}
+              to="/next-steps"
+              className={`px-6 py-3 rounded-full font-bold shadow-lg hover:shadow-xl hover:scale-105 transition-all duration-200 bg-pink-600 text-white hover:bg-brand-purple-600 duration-75`}
             >
               Get Started
             </Link>
@@ -181,7 +177,7 @@ export default function NavBar() {
             {/* CTA Button Mobile */}
             <div className="pt-4">
               <button
-                onClick={() => handleNavClick("/get-started")}
+                onClick={() => handleNavClick("/next-steps")}
                 className="flex w-full items-center justify-center gap-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white px-6 py-4 rounded-2xl text-base font-bold shadow-lg hover:shadow-xl hover:from-pink-600 hover:to-purple-600 transition-all active:scale-95"
               >
                 Get Started
