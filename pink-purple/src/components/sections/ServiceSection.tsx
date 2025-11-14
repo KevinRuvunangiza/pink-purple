@@ -1,4 +1,4 @@
-import { motion } from "framer-motion";
+import { m } from "framer-motion";
 import { FileText, Settings, Megaphone, Lightbulb } from "lucide-react";
 
 const fadeIn = {
@@ -16,7 +16,7 @@ interface ServiceCardProps {
 }
 
 const ServiceCard: React.FC<ServiceCardProps> = ({ icon, title, description, delay }) => (
-  <motion.div
+  <m.div
     initial={{ opacity: 0, y: 16 }}
     whileInView={{ opacity: 1, y: 0 }}
     viewport={{ once: true }}
@@ -35,7 +35,7 @@ const ServiceCard: React.FC<ServiceCardProps> = ({ icon, title, description, del
     <p className="text-gray-600 text-[16px] leading-relaxed">
       {description}
     </p>
-  </motion.div>
+  </m.div>
 );
 
 export default function ServicesSection() {
@@ -66,14 +66,14 @@ export default function ServicesSection() {
     <section id="services" className="py-28 lg:py-36 bg-white ">
       <div className="max-w-[1200px] mx-auto px-8 lg:px-12 mt-[-50px]">
         {/* Section Header */}
-        <motion.div {...fadeIn} className="mb-20 max-w-[720px]">
+        <m.div {...fadeIn} className="mb-20 max-w-[720px]">
           <h2 className="text-[48px] lg:text-[56px] font-semibold text-gray-900 mb-5 leading-[1.1] tracking-tight">
             What We Do
           </h2>
           <p className="text-[19px] text-gray-600 leading-[1.5]">
             We provide all-in-one business solutions that help you start, manage, and grow seamlessly.
           </p>
-        </motion.div>
+        </m.div>
         
         {/* Services Grid */}
         <div className="grid md:grid-cols-2 lg:grid-cols-4 gap-x-12 gap-y-16">

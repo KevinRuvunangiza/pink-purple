@@ -1,5 +1,4 @@
-import { motion } from "framer-motion";
-import { ArrowRight } from "lucide-react";
+import { m } from "framer-motion";
 import { Link } from "react-router";
 
 const fadeIn = {
@@ -32,7 +31,7 @@ export default function HeroSection() {
       <div className="max-w-[1200px] mx-auto px-8 lg:px-12 relative">
         <div className="max-w-[880px] mx-auto text-center">
           {/* Headline */}
-          <motion.h1 
+          <m.h1 
             {...fadeIn}
             className="text-[56px] lg:text-[72px] font-semibold text-white leading-[1.1] tracking-tight mb-6"
           >
@@ -40,10 +39,10 @@ export default function HeroSection() {
             <span className="text-brand-purple-700">
               Grow Smarter
             </span>
-          </motion.h1>
+          </m.h1>
 
           {/* Subtext */}
-          <motion.p 
+          <m.p 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.1, ease: [0.25, 0.1, 0.25, 1] }}
@@ -52,30 +51,29 @@ export default function HeroSection() {
             Pink & Purple helps entrepreneurs simplify business registration,
             automate operations, and unlock the tools they need to scale. Your
             business deserves a system that works as hard as you do.
-          </motion.p>
+          </m.p>
 
           {/* CTA Buttons */}
-          <motion.div 
+          <m.div 
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.6, delay: 0.2, ease: [0.25, 0.1, 0.25, 1] }}
             className="flex flex-col sm:flex-row gap-4 justify-center items-center"
           >
-            <Link to="next-steps">
-            <motion.a
-              whileHover={{ scale: 1.02 }}
-              whileTap={{ scale: 0.98 }}
-              transition={{ duration: 0.2 }}
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-brand-purple-700 text-white px-8 py-4 rounded-xl text-[16px] font-medium hover:bg-purple-700 transition-colors duration-200 shadow-lg"
-            >
-              Register Your Business
-            </motion.a>
+            <Link to="/next-steps">
+              <m.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.98 }}
+                transition={{ duration: 0.2 }}
+                className="w-full sm:w-auto inline-flex items-center justify-center gap-2 bg-brand-purple-700 text-white px-8 py-4 rounded-xl text-[16px] font-medium hover:bg-purple-700 transition-colors duration-200 shadow-lg"
+              >
+                Register Your Business
+              </m.button>
             </Link>
-            
-          </motion.div>
+          </m.div>
 
           {/* Optional: Trust indicators */}
-          <motion.div
+          <m.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             transition={{ duration: 0.6, delay: 0.4, ease: [0.25, 0.1, 0.25, 1] }}
@@ -93,7 +91,7 @@ export default function HeroSection() {
               <div className="w-2 h-2 bg-purple-500 rounded-full" />
               <span>24/7 Support</span>
             </div>
-          </motion.div>
+          </m.div>
         </div>
       </div>
     </section>
