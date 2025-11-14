@@ -264,10 +264,10 @@ export default function LandingPage() {
               transition={{ duration: 0.4, delay: 0.1 }}
               className="text-6xl lg:text-8xl font-black text-white leading-[1.1] tracking-tight mb-8"
             >
-              Your Business,
+              Register Your Business,
               <br />
-              <span className="bg-gradient-to-r from-purple-400 to-pink-400 text-transparent bg-clip-text">
-                But Way Less Headache.
+              <span className="bg-linear-to-r from-purple-400 to-pink-400 text-transparent bg-clip-text">
+                With Less Headache.
               </span>
             </m.h1>
 
@@ -378,7 +378,7 @@ export default function LandingPage() {
         </section>
 
         {/* How It Works Section */}
-        <section className="relative py-32 bg-gradient-to-br from-purple-50 via-pink-50 to-purple-50">
+        <section className="relative py-32 bg-linear-to-br from-purple-50 via-pink-50 to-purple-50">
           <div className="relative z-10 max-w-7xl mx-auto px-8 lg:px-12">
             <m.div {...fadeIn} className="text-center mb-20">
               <span className="inline-block px-4 py-2 rounded-full bg-purple-600/10 border border-purple-600/20 text-purple-600 font-semibold mb-6">
@@ -386,7 +386,7 @@ export default function LandingPage() {
               </span>
               <h2 className="text-5xl lg:text-7xl font-black text-slate-900 mb-6">
                 As Easy as{" "}
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
+                <span className="text-transparent bg-clip-text bg-linear-to-r from-purple-600 to-pink-600">
                   1-2-3
                 </span>
               </h2>
@@ -429,7 +429,7 @@ export default function LandingPage() {
               <h2 className="text-5xl lg:text-7xl font-black text-slate-900 mb-6">
                 Clear Pricing.
                 <br />
-                <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
+                <span className="text-transparent bg-clip-text bg-linear-to-r from-purple-600 to-pink-600">
                   Real Value.
                 </span>
               </h2>
@@ -437,8 +437,8 @@ export default function LandingPage() {
 
             {/* Horizontal scroll container on mobile, grid on desktop */}
             <div className="md:px-8 lg:px-12">
-              <div className="flex md:grid md:grid-cols-2 gap-2 md:gap-10 max-w-5xl mx-auto overflow-x-auto md:overflow-x-visible snap-x snap-mandatory scrollbar-hide px-8 md:px-0 pb-4">
-                <div className="min-w-[80vw] md:min-w-0 snap-center flex-shrink-0">
+              <div className="flex md:grid md:grid-cols-2 md:gap-10 max-w-5xl mx-auto overflow-x-auto md:overflow-x-visible snap-x snap-mandatory scrollbar-hide px-8 md:px-0 pb-4">
+                <div className="min-w-[80vw] md:min-w-0 snap-center shrink-0">
                   <PricingCard
                     title="Private Company"
                     price="650"
@@ -448,10 +448,10 @@ export default function LandingPage() {
                     delay={0}
                   />
                 </div>
-                <div className="min-w-[80vw] md:min-w-0 snap-center flex-shrink-0">
+                <div className="min-w-[80vw] md:min-w-0 snap-center shrink-0">
                   <PricingCard
                     title="Public Company"
-                    price="850"
+                    price="950"
                     features={pricingFeatures}
                     isPrimary={false}
                     buttonText="Register Public Co."
