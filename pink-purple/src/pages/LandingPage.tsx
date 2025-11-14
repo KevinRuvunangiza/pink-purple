@@ -1,4 +1,10 @@
-import { useScroll, useTransform, LazyMotion, domAnimation, m } from "framer-motion";
+import {
+  useScroll,
+  useTransform,
+  LazyMotion,
+  domAnimation,
+  m,
+} from "framer-motion";
 import { useState, memo, useMemo, lazy, Suspense } from "react";
 import {
   Check,
@@ -30,163 +36,201 @@ const fadeIn = {
 };
 
 // Memoized components with displayName - ALL using 'm' not 'motion'
-const PainPointCard = memo(({ icon, title, description, delay = 0 }: {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-  delay?: number;
-}) => (
-  <m.div
-    initial={{ opacity: 0, y: 20 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true, amount: 0.2 }}
-    transition={{ duration: 0.4, delay, ease: "easeOut" }}
-    className="group relative p-8 rounded-3xl bg-gradient-to-br from-neutral-800/50 to-neutral-900/50 backdrop-blur-sm border border-neutral-700/50 hover:border-purple-500/50 transition-colors duration-300"
-  >
-    <div className="text-6xl mb-6">{icon}</div>
-    <h3 className="text-2xl font-bold text-white mb-3">{title}</h3>
-    <p className="text-neutral-400 text-base leading-relaxed">{description}</p>
-  </m.div>
-));
+const PainPointCard = memo(
+  ({
+    icon,
+    title,
+    description,
+    delay = 0,
+  }: {
+    icon: React.ReactNode;
+    title: string;
+    description: string;
+    delay?: number;
+  }) => (
+    <m.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.4, delay, ease: "easeOut" }}
+      className="group relative p-8 rounded-3xl bg-gradient-to-br from-neutral-800/50 to-neutral-900/50 backdrop-blur-sm border border-neutral-700/50 hover:border-purple-500/50 transition-colors duration-300"
+    >
+      <div className="text-6xl mb-6">{icon}</div>
+      <h3 className="text-2xl font-bold text-white mb-3">{title}</h3>
+      <p className="text-neutral-400 text-base leading-relaxed">
+        {description}
+      </p>
+    </m.div>
+  )
+);
 PainPointCard.displayName = "PainPointCard";
 
-const StepCard = memo(({ number, title, description, delay = 0 }: {
-  number: number;
-  title: string;
-  description: string;
-  delay?: number;
-}) => (
-  <m.div
-    initial={{ opacity: 0, y: 20 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true, amount: 0.2 }}
-    transition={{ duration: 0.4, delay, ease: "easeOut" }}
-    className="relative bg-white/80 backdrop-blur-sm p-10 rounded-3xl shadow-xl border border-purple-100 flex flex-col items-center text-center"
-  >
-    <div className="w-20 h-20 bg-gradient-to-br from-purple-600 to-pink-600 text-white rounded-2xl flex items-center justify-center text-3xl font-bold mb-8 shadow-lg">
-      {number}
-    </div>
-    <h3 className="text-2xl font-bold text-slate-800 mb-4">{title}</h3>
-    <p className="text-slate-600 text-base leading-relaxed">{description}</p>
-  </m.div>
-));
+const StepCard = memo(
+  ({
+    number,
+    title,
+    description,
+    delay = 0,
+  }: {
+    number: number;
+    title: string;
+    description: string;
+    delay?: number;
+  }) => (
+    <m.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.4, delay, ease: "easeOut" }}
+      className="relative bg-white/80 backdrop-blur-sm p-10 rounded-3xl shadow-xl border border-purple-100 flex flex-col items-center text-center"
+    >
+      <div className="w-20 h-20 bg-gradient-to-br from-purple-600 to-pink-600 text-white rounded-2xl flex items-center justify-center text-3xl font-bold mb-8 shadow-lg">
+        {number}
+      </div>
+      <h3 className="text-2xl font-bold text-slate-800 mb-4">{title}</h3>
+      <p className="text-slate-600 text-base leading-relaxed">{description}</p>
+    </m.div>
+  )
+);
 StepCard.displayName = "StepCard";
 
-const PricingCard = memo(({ title, price, features, isPrimary, buttonText, delay = 0 }: {
-  title: string;
-  price: string;
-  features: string[];
-  isPrimary: boolean;
-  buttonText: string;
-  delay?: number;
-}) => (
-  <m.div
-    initial={{ opacity: 0, y: 20 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true, amount: 0.2 }}
-    transition={{ duration: 0.4, delay, ease: "easeOut" }}
-    className={`relative bg-white/90 backdrop-blur-sm p-10 rounded-3xl shadow-xl border-2 flex flex-col justify-between ${
-      isPrimary
-        ? "border-purple-400 shadow-purple-200/50"
-        : "border-pink-300 shadow-pink-200/50"
-    }`}
-  >
-    {isPrimary && (
-      <div className="absolute top-0 right-0 bg-gradient-to-br from-purple-600 to-pink-600 text-white px-6 py-2 text-sm font-bold rounded-bl-2xl rounded-tr-2xl">
-        POPULAR
+const PricingCard = memo(
+  ({
+    title,
+    price,
+    features,
+    isPrimary,
+    buttonText,
+    delay = 0,
+  }: {
+    title: string;
+    price: string;
+    features: string[];
+    isPrimary: boolean;
+    buttonText: string;
+    delay?: number;
+  }) => (
+    <m.div
+      initial={{ opacity: 0, y: 20 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.4, delay, ease: "easeOut" }}
+      className={`relative bg-white/90 backdrop-blur-sm p-10 rounded-3xl shadow-xl border-2 flex flex-col justify-between ${
+        isPrimary
+          ? "border-purple-400 shadow-purple-200/50"
+          : "border-pink-300 shadow-pink-200/50"
+      }`}
+    >
+      {isPrimary && (
+        <div className="absolute top-0 right-0 bg-gradient-to-br from-purple-600 to-pink-600 text-white px-6 py-2 text-sm font-bold rounded-bl-2xl rounded-tr-2xl">
+          POPULAR
+        </div>
+      )}
+      <div>
+        <h3
+          className={`text-3xl font-bold mb-6 ${
+            isPrimary ? "text-purple-600" : "text-pink-600"
+          }`}
+        >
+          {title}
+        </h3>
+        <div className="flex items-baseline mb-8">
+          <span className="text-6xl font-extrabold text-slate-900">
+            R{price}
+          </span>
+          <span className="text-slate-500 ml-2">/once</span>
+        </div>
+        <ul className="text-slate-600 text-left space-y-4 mb-10">
+          {features.map((feature, index) => (
+            <li key={index} className="flex items-start gap-3">
+              <Check
+                className="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5"
+                strokeWidth={2.5}
+              />
+              <span className="text-base leading-relaxed">{feature}</span>
+            </li>
+          ))}
+        </ul>
       </div>
-    )}
-    <div>
-      <h3
-        className={`text-3xl font-bold mb-6 ${
-          isPrimary ? "text-purple-600" : "text-pink-600"
-        }`}
-      >
-        {title}
-      </h3>
-      <div className="flex items-baseline mb-8">
-        <span className="text-6xl font-extrabold text-slate-900">R{price}</span>
-        <span className="text-slate-500 ml-2">/once</span>
-      </div>
-      <ul className="text-slate-600 text-left space-y-4 mb-10">
-        {features.map((feature, index) => (
-          <li key={index} className="flex items-start gap-3">
-            <Check
-              className="w-6 h-6 text-green-500 flex-shrink-0 mt-0.5"
-              strokeWidth={2.5}
-            />
-            <span className="text-base leading-relaxed">{feature}</span>
-          </li>
-        ))}
-      </ul>
-    </div>
-    <Link to="/next-steps">
-      <button
-        className={`w-full py-4 px-6 rounded-xl font-semibold transition-all duration-300 ${
-          isPrimary
-            ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:shadow-xl"
-            : "bg-white border-2 border-pink-500 text-pink-600 hover:bg-pink-50"
-        }`}
-      >
-        {buttonText}
-      </button>
-    </Link>
-  </m.div>
-));
+      <Link to="/next-steps">
+        <button
+          className={`w-full py-4 px-6 rounded-xl font-semibold transition-all duration-300 ${
+            isPrimary
+              ? "bg-gradient-to-r from-purple-600 to-pink-600 text-white hover:shadow-xl"
+              : "bg-white border-2 border-pink-500 text-pink-600 hover:bg-pink-50"
+          }`}
+        >
+          {buttonText}
+        </button>
+      </Link>
+    </m.div>
+  )
+);
 PricingCard.displayName = "PricingCard";
 
-const BenefitCard = memo(({ icon, title, description, delay = 0 }: {
-  icon: React.ReactNode;
-  title: string;
-  description: string;
-  delay?: number;
-}) => (
-  <m.div
-    initial={{ opacity: 0, y: 15 }}
-    whileInView={{ opacity: 1, y: 0 }}
-    viewport={{ once: true, amount: 0.2 }}
-    transition={{ duration: 0.4, delay, ease: "easeOut" }}
-    className="relative p-8 rounded-3xl bg-white/90 backdrop-blur-sm shadow-lg border border-white/50"
-  >
-    <div className="mb-6 text-purple-600">{icon}</div>
-    <h3 className="font-bold text-xl mb-4 text-slate-900">{title}</h3>
-    <p className="text-slate-600 text-base leading-relaxed">{description}</p>
-  </m.div>
-));
+const BenefitCard = memo(
+  ({
+    icon,
+    title,
+    description,
+    delay = 0,
+  }: {
+    icon: React.ReactNode;
+    title: string;
+    description: string;
+    delay?: number;
+  }) => (
+    <m.div
+      initial={{ opacity: 0, y: 15 }}
+      whileInView={{ opacity: 1, y: 0 }}
+      viewport={{ once: true, amount: 0.2 }}
+      transition={{ duration: 0.4, delay, ease: "easeOut" }}
+      className="relative p-8 rounded-3xl bg-white/90 backdrop-blur-sm shadow-lg border border-white/50"
+    >
+      <div className="mb-6 text-purple-600">{icon}</div>
+      <h3 className="font-bold text-xl mb-4 text-slate-900">{title}</h3>
+      <p className="text-slate-600 text-base leading-relaxed">{description}</p>
+    </m.div>
+  )
+);
 BenefitCard.displayName = "BenefitCard";
 
-const FAQItem = memo(({ question, answer }: { question: string; answer: string }) => {
-  const [isOpen, setIsOpen] = useState(false);
+const FAQItem = memo(
+  ({ question, answer }: { question: string; answer: string }) => {
+    const [isOpen, setIsOpen] = useState(false);
 
-  return (
-    <div className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-md border border-purple-100">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="w-full flex justify-between items-center text-left"
-        aria-expanded={isOpen}
-      >
-        <span className="font-bold text-xl text-slate-900 pr-4">{question}</span>
-        <ChevronDown
-          className={`w-6 h-6 text-purple-600 flex-shrink-0 transition-transform duration-300 ${
-            isOpen ? "rotate-180" : ""
+    return (
+      <div className="bg-white/80 backdrop-blur-sm p-8 rounded-2xl shadow-md border border-purple-100">
+        <button
+          onClick={() => setIsOpen(!isOpen)}
+          className="w-full flex justify-between items-center text-left"
+          aria-expanded={isOpen}
+        >
+          <span className="font-bold text-xl text-slate-900 pr-4">
+            {question}
+          </span>
+          <ChevronDown
+            className={`w-6 h-6 text-purple-600 flex-shrink-0 transition-transform duration-300 ${
+              isOpen ? "rotate-180" : ""
+            }`}
+          />
+        </button>
+        <div
+          className={`overflow-hidden transition-all duration-300 ${
+            isOpen ? "max-h-96 opacity-100 mt-6" : "max-h-0 opacity-0"
           }`}
-        />
-      </button>
-      <div
-        className={`overflow-hidden transition-all duration-300 ${
-          isOpen ? "max-h-96 opacity-100 mt-6" : "max-h-0 opacity-0"
-        }`}
-      >
-        <p className="text-slate-600 leading-relaxed text-base">{answer}</p>
+        >
+          <p className="text-slate-600 leading-relaxed text-base">{answer}</p>
+        </div>
       </div>
-    </div>
-  );
-});
+    );
+  }
+);
 FAQItem.displayName = "FAQItem";
 
 export default function LandingPage() {
   const { scrollY } = useScroll();
-  
+
   // Reduce scroll animation range for better performance
   const heroY = useTransform(scrollY, [0, 300], [0, 50]);
   const heroOpacity = useTransform(scrollY, [0, 200], [1, 0.7]);
@@ -254,7 +298,9 @@ export default function LandingPage() {
               className="inline-flex items-center gap-2 px-6 py-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white mb-8"
             >
               <Sparkles className="w-4 h-4" />
-              <span className="text-sm font-medium">Trusted by 100+ businesses</span>
+              <span className="text-sm font-medium">
+                Trusted by 100+ businesses
+              </span>
             </m.div>
 
             {/* Main headline */}
@@ -278,8 +324,8 @@ export default function LandingPage() {
               transition={{ duration: 0.4, delay: 0.2 }}
               className="text-xl lg:text-2xl text-neutral-300 mb-12 leading-relaxed max-w-3xl mx-auto"
             >
-              Simplify business registration, automate operations, and unlock the
-              tools you need to scale. Your business deserves better.
+              Simplify business registration, automate operations, and unlock
+              the tools you need to scale. Your business deserves better.
             </m.p>
 
             {/* CTA Buttons */}
@@ -315,7 +361,9 @@ export default function LandingPage() {
                   key={i}
                   className="flex items-center justify-center gap-3 text-white"
                 >
-                  <div className={`p-2 rounded-lg bg-gradient-to-br ${stat.color}`}>
+                  <div
+                    className={`p-2 rounded-lg bg-gradient-to-br ${stat.color}`}
+                  >
                     {stat.icon}
                   </div>
                   <span className="font-semibold">{stat.label}</span>
@@ -391,7 +439,8 @@ export default function LandingPage() {
                 </span>
               </h2>
               <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
-                We've simplified the entire process so you can get official without the stress
+                We've simplified the entire process so you can get official
+                without the stress
               </p>
             </m.div>
 
@@ -419,7 +468,7 @@ export default function LandingPage() {
         </section>
 
         {/* Pricing Section */}
-  {/* Pricing Section */}
+
         <section className="relative py-32 bg-white">
           <div className="relative z-10 max-w-7xl mx-auto">
             <m.div {...fadeIn} className="text-center mb-20 px-8 lg:px-12">
@@ -429,16 +478,16 @@ export default function LandingPage() {
               <h2 className="text-5xl lg:text-7xl font-black text-slate-900 mb-6">
                 Clear Pricing.
                 <br />
-                <span className="text-transparent bg-clip-text bg-linear-to-r from-purple-600 to-pink-600">
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
                   Real Value.
                 </span>
               </h2>
             </m.div>
 
-            {/* Horizontal scroll container on mobile, grid on desktop */}
+            {/* Stacked cards on mobile, side-by-side on desktop */}
             <div className="md:px-8 lg:px-12">
-              <div className="flex md:grid md:grid-cols-2 md:gap-10 max-w-5xl mx-auto overflow-x-auto md:overflow-x-visible snap-x snap-mandatory scrollbar-hide px-8 md:px-0 pb-4">
-                <div className="min-w-[80vw] md:min-w-0 snap-center shrink-0">
+              <div className="flex flex-col md:flex-row md:gap-10 gap-6 max-w-5xl mx-auto px-8 md:px-0">
+                <div className="w-full">
                   <PricingCard
                     title="Private Company"
                     price="650"
@@ -448,7 +497,7 @@ export default function LandingPage() {
                     delay={0}
                   />
                 </div>
-                <div className="min-w-[80vw] md:min-w-0 snap-center shrink-0">
+                <div className="w-full">
                   <PricingCard
                     title="Public Company"
                     price="950"
@@ -479,7 +528,8 @@ export default function LandingPage() {
                 </span>
               </h2>
               <p className="text-xl text-neutral-300 max-w-3xl mx-auto leading-relaxed">
-                Beyond ticking a box, official registration unlocks serious advantages
+                Beyond ticking a box, official registration unlocks serious
+                advantages
               </p>
             </m.div>
 
