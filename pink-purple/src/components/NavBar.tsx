@@ -241,7 +241,7 @@ export default function NavBar() {
                   onClick={() => handleNavClick("/register")}
                   className="block w-full text-left px-4 py-3 ml-2 text-sm font-semibold text-gray-700 rounded-xl transition-all hover:bg-gradient-to-r hover:from-pink-50 hover:to-purple-50 hover:text-pink-600 active:scale-95"
                 >
-                  Register Your Business
+                  Business Registration
                 </button>
               </div>
 

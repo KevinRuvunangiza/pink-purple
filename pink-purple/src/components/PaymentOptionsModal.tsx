@@ -37,7 +37,7 @@ const SERVICE_OPTIONS: ServiceOption[] = [
   {
     value: "public_company",
     label: "Public Company",
-    price: 850,
+    price: 950,
     description: "Complete registration package for public companies",
   },
   // {
