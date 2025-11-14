@@ -92,7 +92,7 @@ const PricingCard = memo(({ title, price, features, isPrimary, buttonText, delay
     }`}
   >
     {isPrimary && (
-      <div className="absolute top-0 right-0 bg-gradient-to-br from-purple-600 to-pink-600 text-white px-6 py-2 text-sm font-bold rounded-bl-2xl">
+      <div className="absolute top-0 right-0 bg-gradient-to-br from-purple-600 to-pink-600 text-white px-6 py-2 text-sm font-bold rounded-bl-2xl rounded-tr-2xl">
         POPULAR
       </div>
     )}
@@ -419,9 +419,10 @@ export default function LandingPage() {
         </section>
 
         {/* Pricing Section */}
+  {/* Pricing Section */}
         <section className="relative py-32 bg-white">
-          <div className="relative z-10 max-w-7xl mx-auto px-8 lg:px-12">
-            <m.div {...fadeIn} className="text-center mb-20">
+          <div className="relative z-10 max-w-7xl mx-auto">
+            <m.div {...fadeIn} className="text-center mb-20 px-8 lg:px-12">
               <span className="inline-block px-4 py-2 rounded-full bg-green-600/10 border border-green-600/20 text-green-600 font-semibold mb-6">
                 Transparent Pricing
               </span>
@@ -434,26 +435,33 @@ export default function LandingPage() {
               </h2>
             </m.div>
 
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-10 max-w-5xl mx-auto">
-              <PricingCard
-                title="Private Company"
-                price="650"
-                features={pricingFeatures}
-                isPrimary={true}
-                buttonText="Register Pty Ltd"
-                delay={0}
-              />
-              <PricingCard
-                title="Public Company"
-                price="850"
-                features={pricingFeatures}
-                isPrimary={false}
-                buttonText="Register Public Co."
-                delay={0.05}
-              />
+            {/* Horizontal scroll container on mobile, grid on desktop */}
+            <div className="md:px-8 lg:px-12">
+              <div className="flex md:grid md:grid-cols-2 gap-2 md:gap-10 max-w-5xl mx-auto overflow-x-auto md:overflow-x-visible snap-x snap-mandatory scrollbar-hide px-8 md:px-0 pb-4">
+                <div className="min-w-[80vw] md:min-w-0 snap-center flex-shrink-0">
+                  <PricingCard
+                    title="Private Company"
+                    price="650"
+                    features={pricingFeatures}
+                    isPrimary={true}
+                    buttonText="Register Pty Ltd"
+                    delay={0}
+                  />
+                </div>
+                <div className="min-w-[80vw] md:min-w-0 snap-center flex-shrink-0">
+                  <PricingCard
+                    title="Public Company"
+                    price="850"
+                    features={pricingFeatures}
+                    isPrimary={false}
+                    buttonText="Register Public Co."
+                    delay={0.05}
+                  />
+                </div>
+              </div>
             </div>
 
-            <p className="text-center text-slate-500 text-sm mt-16 font-medium">
+            <p className="text-center text-slate-500 text-sm mt-16 font-medium px-8 lg:px-12">
               *CIPC fees included. No hidden surprises!
             </p>
           </div>

@@ -96,7 +96,7 @@ const LogoLoadingScreen = ({ children, duration = 3500 }) => {
 
             {/* Main Logo Container */}
             <div className="relative z-10 flex flex-col items-center">
-              {/* Logo with sophisticated animations */}
+         
               <motion.div
                 initial={{ scale: 0, opacity: 0, rotateY: -180 }}
                 animate={{ 
@@ -111,7 +111,7 @@ const LogoLoadingScreen = ({ children, duration = 3500 }) => {
                 className="relative mb-8"
               >
                 {/* Logo glow ring */}
-                <motion.div
+                {/* <motion.div
                   animate={{
                     scale: [1, 1.15, 1],
                     opacity: [0.5, 0.8, 0.5],
@@ -122,7 +122,7 @@ const LogoLoadingScreen = ({ children, duration = 3500 }) => {
                     ease: "easeInOut"
                   }}
                   className="absolute inset-0 rounded-full bg-purple-500 blur-2xl"
-                />
+                /> */}
                 
                 {/* Logo */}
                 <div className="relative w-32 h-32 flex items-center justify-center">
