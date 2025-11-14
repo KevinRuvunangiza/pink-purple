@@ -1,0 +1,68 @@
+[
+  {
+    "id": 1,
+    "title": "Understanding Modern Web Development",
+    "author": "Sarah Johnson",
+    "date": "2024-11-10",
+    "excerpt": "Explore the latest trends and best practices in modern web development, from React to TypeScript.",
+    "image": "https://images.unsplash.com/photo-1498050108023-c5249f4df085?w=800",
+    "category": "Development",
+    "readTime": "5 min read",
+    "content": "Full article content would go here..."
+  },
+  {
+    "id": 2,
+    "title": "The Power of User Experience Design",
+    "author": "Michael Chen",
+    "date": "2024-11-08",
+    "excerpt": "Learn how great UX design can transform your digital products and drive user engagement.",
+    "image": "https://images.unsplash.com/photo-1561070791-2526d30994b5?w=800",
+    "category": "Design",
+    "readTime": "7 min read",
+    "content": "Full article content would go here..."
+  },
+  {
+    "id": 3,
+    "title": "Building Scalable Applications",
+    "author": "Emily Rodriguez",
+    "date": "2024-11-05",
+    "excerpt": "Best practices for architecting applications that can grow with your business needs.",
+    "image": "https://images.unsplash.com/photo-1460925895917-afdab827c52f?w=800",
+    "category": "Architecture",
+    "readTime": "10 min read",
+    "content": "Full article content would go here..."
+  },
+  {
+    "id": 4,
+    "title": "SEO Strategies for 2024",
+    "author": "David Park",
+    "date": "2024-11-02",
+    "excerpt": "Stay ahead of the curve with the latest SEO techniques and algorithm updates.",
+    "image": "https://images.unsplash.com/photo-1432888622747-4eb9a8f2c293?w=800",
+    "category": "Marketing",
+    "readTime": "6 min read",
+    "content": "Full article content would go here..."
+  },
+  {
+    "id": 5,
+    "title": "Cloud Computing Essentials",
+    "author": "Lisa Anderson",
+    "date": "2024-10-28",
+    "excerpt": "A comprehensive guide to getting started with cloud infrastructure and services.",
+    "image": "https://images.unsplash.com/photo-1451187580459-43490279c0fa?w=800",
+    "category": "Cloud",
+    "readTime": "8 min read",
+    "content": "Full article content would go here..."
+  },
+  {
+    "id": 6,
+    "title": "Cybersecurity Best Practices",
+    "author": "James Wilson",
+    "date": "2024-10-25",
+    "excerpt": "Protect your applications and data with these essential security measures.",
+    "image": "https://images.unsplash.com/photo-1550751827-4bd374c3f58b?w=800",
+    "category": "Security",
+    "readTime": "9 min read",
+    "content": "Full article content would go here..."
+  }
+]
