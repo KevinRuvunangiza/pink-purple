@@ -76,7 +76,7 @@ export default function CTASection() {
   ];
 
   return (
-    <section className="py-28 lg:py-36 bg-brand-purple-600 relative overflow-hidden">
+    <section className="py-28 lg:py-36 bg-neutral-900 relative overflow-hidden">
       {/* Animated gradient orbs */}
       <div className="absolute inset-0 overflow-hidden">
         <m.div
@@ -89,7 +89,7 @@ export default function CTASection() {
             repeat: Infinity,
             ease: "easeInOut",
           }}
-          className="absolute -top-1/2 -left-1/4 w-[800px] h-[800px] bg-pink-400 rounded-full blur-3xl"
+          className="absolute -top-1/2 -left-1/4 w-[800px] h-[800px] bg-pink-600 rounded-full blur-3xl"
         />
         <m.div
           animate={{
@@ -101,7 +101,7 @@ export default function CTASection() {
             repeat: Infinity,
             ease: "easeInOut",
           }}
-          className="absolute -bottom-1/2 -right-1/4 w-[800px] h-[800px] bg-brand-purple-600 rounded-full blur-3xl"
+          className="absolute -bottom-1/2 -right-1/4 w-[800px] h-[800px] bg-brand-purple-700 rounded-full blur-3xl"
         />
       </div>
 

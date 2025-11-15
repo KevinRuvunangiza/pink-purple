@@ -3,47 +3,82 @@ import blogPosts from "../data/blogPost.json";
 
 export default function Blog() {
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4">
-      <div className="max-w-7xl mx-auto">
-        <div className="text-center mb-12">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">Our Blog</h1>
-          <p className="text-xl text-gray-600">
-            Insights, tutorials, and updates from our team
-          </p>
-        </div>
+    <div className="min-h-screen bg-neutral-950 relative overflow-hidden pt-10">
+      {/* Subtle animated background pattern */}
+      <div className="absolute inset-0 opacity-30 ">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `radial-gradient(circle at 2px 2px, rgb(168, 85, 247) 1px, transparent 0)`,
+          backgroundSize: '40px 40px'
+        }}></div>
+      </div>
+      
+      {/* Gradient orbs for atmosphere */}
+      <div className="absolute top-0 left-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-0 right-1/4 w-96 h-96 bg-pink-600/10 rounded-full blur-3xl"></div>
+      
+      <div className="relative z-10 py-20 px-4">
+        <div className="max-w-7xl mx-auto">
+          {/* Header Section */}
+          <div className="text-center mb-16">
+            <div className="inline-block mb-4">
+              <span className="text-purple-400 text-sm font-bold tracking-widest uppercase">
+                Latest Articles
+              </span>
+            </div>
+            <h1 className="text-5xl md:text-6xl font-bold mb-6 text-white">
+              Our Blog
+            </h1>
+            <p className="text-xl text-gray-400 max-w-2xl mx-auto">
+              Insights, tutorials, and updates from our team
+            </p>
+          </div>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {blogPosts.map((post) => (
-            <Link
-              key={post.id}
-              to={`/blog/${post.id}`}
-              className="bg-white rounded-lg shadow-md overflow-hidden hover:shadow-xl transition-shadow duration-300"
-            >
-              <div className="h-48 overflow-hidden">
-                <img
-                  src={post.image}
-                  alt={post.title}
-                  className="w-full h-full object-cover hover:scale-105 transition-transform duration-300"
-                />
-              </div>
-              <div className="p-6">
-                <div className="flex items-center justify-between mb-3">
-                  <span className="text-sm font-semibold text-brand-purple-600 uppercase">
-                    {post.category}
-                  </span>
-                  <span className="text-sm text-gray-500">{post.readTime}</span>
+          {/* Blog Grid */}
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {blogPosts.map((post) => (
+              <Link
+                key={post.id}
+                to={`/blog/${post.id}`}
+                className="group relative bg-neutral-900/50 backdrop-blur-sm rounded-2xl overflow-hidden border border-purple-500/20 hover:border-pink-500/50 transition-all duration-500 hover:shadow-2xl hover:shadow-purple-500/20 hover:-translate-y-2"
+              >
+                {/* Image Container */}
+                <div className="h-48 overflow-hidden relative">
+                  <img
+                    src={post.image}
+                    alt={post.title}
+                    className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-700"
+                  />
+                  <div className="absolute inset-0 bg-gradient-to-t from-neutral-900 via-transparent to-transparent opacity-60"></div>
                 </div>
-                <h2 className="text-xl font-bold text-gray-900 mb-2 hover:text-brand-purple-600 transition-colors">
-                  {post.title}
-                </h2>
-                <p className="text-gray-600 mb-4">{post.excerpt}</p>
-                <div className="flex items-center justify-between text-sm text-gray-500">
-                  <span>{post.author}</span>
-                  <span>{post.date}</span>
+
+                {/* Content */}
+                <div className="p-6">
+                  <div className="flex items-center justify-between mb-3">
+                    <span className="text-xs font-bold text-purple-400 uppercase tracking-wider">
+                      {post.category}
+                    </span>
+                    <span className="text-sm text-gray-500">{post.readTime}</span>
+                  </div>
+                  
+                  <h2 className="text-xl font-bold text-white mb-3 group-hover:text-purple-400 transition-colors duration-300">
+                    {post.title}
+                  </h2>
+                  
+                  <p className="text-gray-400 mb-4 line-clamp-2">
+                    {post.excerpt}
+                  </p>
+                  
+                  <div className="flex items-center justify-between pt-4 border-t border-purple-500/20">
+                    <span className="text-sm text-gray-500">{post.author}</span>
+                    <span className="text-sm text-gray-500">{post.date}</span>
+                  </div>
                 </div>
-              </div>
-            </Link>
-          ))}
+
+                {/* Hover gradient effect */}
+                <div className="absolute inset-0 bg-gradient-to-br from-purple-600/0 via-pink-600/0 to-purple-600/0 group-hover:from-purple-600/5 group-hover:via-pink-600/5 group-hover:to-purple-600/5 transition-all duration-500 pointer-events-none"></div>
+              </Link>
+            ))}
+          </div>
         </div>
       </div>
     </div>

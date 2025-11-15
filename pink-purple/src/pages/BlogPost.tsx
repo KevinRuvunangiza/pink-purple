@@ -7,17 +7,17 @@ export default function BlogPost() {
 
   if (!post) {
     return (
-      <div className="min-h-screen bg-gray-50 py-12 px-4">
-        <div className="max-w-4xl mx-auto text-center">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
+      <div className="min-h-screen bg-neutral-950 py-12 px-4">
+        <div className="max-w-4xl mx-auto text-center pt-32">
+          <h1 className="text-4xl font-bold text-white mb-4">
             Post Not Found
           </h1>
-          <p className="text-xl text-gray-600 mb-8">
+          <p className="text-xl text-gray-400 mb-8">
             The blog post you're looking for doesn't exist.
           </p>
           <Link
             to="/blog"
-            className="inline-block bg-pink-600 text-white px-6 py-3 rounded-lg hover:bg-pink-700 transition-colors"
+            className="inline-block bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-pink-600 transition-colors"
           >
             Back to Blog
           </Link>
@@ -27,98 +27,109 @@ export default function BlogPost() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 py-12 px-4 mt-[80px]">
-      <article className="max-w-4xl mx-auto bg-white rounded-lg shadow-lg overflow-hidden">
-        <div className="h-96 overflow-hidden">
-          <img
-            src={post.image}
-            alt={post.title}
-            className="w-full h-full object-cover"
-          />
-        </div>
-        
-        <div className="p-8 md:p-12">
-          <div className="mb-6">
+    <div className="min-h-screen bg-neutral-950 relative overflow-hidden">
+      {/* Subtle background pattern */}
+      <div className="absolute inset-0 opacity-20">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `radial-gradient(circle at 2px 2px, rgb(168, 85, 247) 1px, transparent 0)`,
+          backgroundSize: '40px 40px'
+        }}></div>
+      </div>
+
+      {/* Gradient orbs */}
+      <div className="absolute top-0 right-1/4 w-96 h-96 bg-purple-600/10 rounded-full blur-3xl"></div>
+      <div className="absolute bottom-0 left-1/4 w-96 h-96 bg-pink-600/10 rounded-full blur-3xl"></div>
+
+      <div className="relative z-10 py-12 px-4 pt-32">
+        <article className="max-w-4xl mx-auto">
+          {/* Back button */}
+          <div className="mb-8">
             <Link
               to="/blog"
-              className="text-pink-600 hover:text-pink-700 font-medium"
+              className="inline-flex items-center text-purple-400 hover:text-pink-400 font-medium transition-colors"
             >
-              ← Back to Blog
+              <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+              </svg>
+              Back to Blog
             </Link>
           </div>
 
-          <div className="flex items-center gap-4 mb-6 text-sm text-gray-600">
-            <span className="font-semibold text-pink-600 uppercase">
-              {post.category}
-            </span>
-            <span>•</span>
-            <span>{post.readTime}</span>
-            <span>•</span>
-            <span>{post.date}</span>
+          {/* Hero Image */}
+          <div className="relative h-80 md:h-96 rounded-2xl overflow-hidden mb-8 border border-purple-500/20">
+            <img
+              src={post.image}
+              alt={post.title}
+              className="w-full h-full object-cover"
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-neutral-950 via-transparent to-transparent"></div>
           </div>
 
-          <h1 className="text-4xl md:text-5xl font-bold text-gray-900 mb-4">
-            {post.title}
-          </h1>
-
-          <div className="flex items-center mb-8 pb-8 border-b border-gray-200">
-            <div className="w-12 h-12 bg-brand-purple-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
-              {post.author.charAt(0)}
+          {/* Content Card */}
+          <div className="bg-neutral-900/50 backdrop-blur-sm rounded-2xl border border-purple-500/20 p-8 md:p-12">
+            {/* Meta info */}
+            <div className="flex flex-wrap items-center gap-4 mb-6 text-sm">
+              <span className="text-purple-400 font-bold uppercase tracking-wider">
+                {post.category}
+              </span>
+              <span className="text-gray-500">•</span>
+              <span className="text-gray-400">{post.readTime}</span>
+              <span className="text-gray-500">•</span>
+              <span className="text-gray-400">{post.date}</span>
             </div>
-            <div className="ml-4">
-              <p className="font-semibold text-gray-900">{post.author}</p>
-              <p className="text-sm text-gray-600">Author</p>
-            </div>
-          </div>
 
-          <div className="prose prose-lg max-w-none">
-            <p className="text-xl text-gray-700 mb-6 leading-relaxed">
-              {post.excerpt}
-            </p>
-            
-            <div className="text-gray-700 leading-relaxed space-y-4">
-              <p>
+            {/* Title */}
+            <h1 className="text-3xl md:text-5xl font-bold text-white mb-6 leading-tight">
+              {post.title}
+            </h1>
+
+            {/* Author */}
+            <div className="flex items-center mb-8 pb-8 border-b border-purple-500/20">
+              <div className="w-12 h-12 bg-gradient-to-br from-purple-600 to-pink-600 rounded-full flex items-center justify-center text-white font-bold text-xl">
+                {post.author.charAt(0)}
+              </div>
+              <div className="ml-4">
+                <p className="font-semibold text-white">{post.author}</p>
+                <p className="text-sm text-gray-400">Author</p>
+              </div>
+            </div>
+
+            {/* Excerpt */}
+            <div className="bg-purple-500/10 border-l-4 border-purple-500 p-6 rounded-r-lg mb-8">
+              <p className="text-lg text-gray-300 leading-relaxed italic">
+                {post.excerpt}
+              </p>
+            </div>
+
+            {/* Content */}
+            <div className="prose prose-invert prose-lg max-w-none">
+              <div className="text-gray-300 leading-relaxed space-y-4 whitespace-pre-line">
                 {post.content}
-              </p>
-              
-              <p>
-                Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod 
-                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, 
-                quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-              </p>
+              </div>
+            </div>
 
-              <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">
-                Key Takeaways
-              </h2>
+            {/* Bottom CTA */}
+            <div className="mt-12 pt-8 border-t border-purple-500/20 flex flex-col sm:flex-row gap-4 justify-between items-center">
+              <Link
+                to="/blog"
+                className="inline-flex items-center text-purple-400 hover:text-pink-400 font-medium transition-colors"
+              >
+                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                </svg>
+                Back to All Posts
+              </Link>
               
-              <p>
-                Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore 
-                eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, 
-                sunt in culpa qui officia deserunt mollit anim id est laborum.
-              </p>
-
-              <h2 className="text-2xl font-bold text-gray-900 mt-8 mb-4">
-                Conclusion
-              </h2>
-              
-              <p>
-                Sed ut perspiciatis unde omnis iste natus error sit voluptatem accusantium 
-                doloremque laudantium, totam rem aperiam, eaque ipsa quae ab illo inventore 
-                veritatis et quasi architecto beatae vitae dicta sunt explicabo.
-              </p>
+              <Link
+                to="/contact"
+                className="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-pink-600 transition-colors font-semibold"
+              >
+                Get Help with Registration
+              </Link>
             </div>
           </div>
-
-          <div className="mt-12 pt-8 border-t border-gray-200">
-            <Link
-              to="/blog"
-              className="inline-block bg-pink-600 text-white px-6 py-3 rounded-lg hover:bg-pink-700 transition-colors"
-            >
-              ← Back to All Posts
-            </Link>
-          </div>
-        </div>
-      </article>
+        </article>
+      </div>
     </div>
   );
 }
