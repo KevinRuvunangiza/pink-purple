@@ -20,8 +20,11 @@ import {
   AlarmClock,
   FormInput,
   MailQuestion,
+  User,
+  Clock,
 } from "lucide-react";
 import { Link } from "react-router";
+import RemindMeLaterModal from "../components/RemindMeLaterModal";
 
 // Lazy load heavy components
 const CTASection = lazy(() => import("../components/sections/CTASection"));
@@ -230,6 +233,7 @@ FAQItem.displayName = "FAQItem";
 
 export default function LandingPage() {
   const { scrollY } = useScroll();
+  const [showRemindModal, setShowRemindModal] = useState(false);
 
   // Reduce scroll animation range for better performance
   const heroY = useTransform(scrollY, [0, 300], [0, 50]);
@@ -271,9 +275,8 @@ export default function LandingPage() {
   return (
     <LazyMotion features={domAnimation} strict>
       <div className="bg-slate-50">
-        {/* Hero Section - Critical content, no lazy loading */}
+        {/* Hero Section */}
         <section className="relative min-h-screen flex items-center justify-center bg-neutral-950 overflow-hidden">
-          {/* Static background - minimal animations */}
           <div className="absolute inset-0">
             <div className="absolute inset-0 bg-gradient-to-br from-purple-950/30 via-neutral-950 to-pink-950/30" />
             <m.div
@@ -290,7 +293,6 @@ export default function LandingPage() {
             style={{ opacity: heroOpacity }}
             className="relative z-10 max-w-7xl mx-auto px-8 lg:px-12 py-32 text-center"
           >
-            {/* Badge */}
             <m.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -303,7 +305,6 @@ export default function LandingPage() {
               </span>
             </m.div>
 
-            {/* Main headline */}
             <m.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -317,7 +318,6 @@ export default function LandingPage() {
               </span>
             </m.h1>
 
-            {/* Subtext */}
             <m.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -328,7 +328,6 @@ export default function LandingPage() {
               the tools you need to scale. Your business deserves better.
             </m.p>
 
-            {/* CTA Buttons */}
             <m.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
@@ -349,7 +348,6 @@ export default function LandingPage() {
               </Link>
             </m.div>
 
-            {/* Stats */}
             <m.div
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
@@ -372,7 +370,6 @@ export default function LandingPage() {
             </m.div>
           </m.div>
 
-          {/* Scroll indicator */}
           <m.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1, y: [0, 10, 0] }}
@@ -433,7 +430,7 @@ export default function LandingPage() {
                 Use Our Simple Process
               </span>
               <h2 className="text-5xl lg:text-7xl font-black text-slate-900 mb-6">
-                As Easy as{" "}
+                Registering is as easy as{" "}
                 <span className="text-transparent bg-clip-text bg-linear-to-r from-purple-600 to-pink-600">
                   1-2-3
                 </span>
@@ -468,7 +465,6 @@ export default function LandingPage() {
         </section>
 
         {/* Pricing Section */}
-
         <section className="relative py-32 bg-white">
           <div className="relative z-10 max-w-7xl mx-auto">
             <m.div {...fadeIn} className="text-center mb-20 px-8 lg:px-12">
@@ -484,7 +480,6 @@ export default function LandingPage() {
               </h2>
             </m.div>
 
-            {/* Stacked cards on mobile, side-by-side on desktop */}
             <div className="md:px-8 lg:px-12">
               <div className="flex flex-col md:flex-row md:gap-10 gap-6 max-w-5xl mx-auto px-8 md:px-0">
                 <div className="w-full">
@@ -562,6 +557,73 @@ export default function LandingPage() {
           </div>
         </section>
 
+        {/* Next Steps After Registration Section */}
+        <section className="relative py-32 bg-white">
+          <div className="relative z-10 max-w-7xl mx-auto px-8 lg:px-12">
+            <m.div {...fadeIn} className="text-center mb-20">
+              <span className="inline-block px-4 py-2 rounded-full bg-purple-600/10 border border-purple-600/20 text-purple-600 font-semibold mb-6">
+                What's Next?
+              </span>
+              <h2 className="text-5xl lg:text-7xl font-black text-slate-900 mb-6">
+                After Registration,
+                <br />
+                <span className="text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-pink-600">
+                  We're Still Here.
+                </span>
+              </h2>
+              <p className="text-xl text-slate-600 max-w-3xl mx-auto leading-relaxed">
+                Your business journey doesn't end at registration. We offer
+                additional services to help you grow.
+              </p>
+            </m.div>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+              <m.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+                className="relative p-10 rounded-3xl bg-gradient-to-br from-purple-50 to-pink-50 border-2 border-purple-100 shadow-lg"
+              >
+                <div className="w-16 h-16 bg-gradient-to-br from-purple-600 to-pink-600 rounded-2xl flex items-center justify-center mb-6 shadow-md">
+                  <DollarSign
+                    className="w-8 h-8 text-white"
+                    strokeWidth={2.5}
+                  />
+                </div>
+                <h3 className="text-2xl font-bold text-slate-900 mb-4">
+                  Business Bank Account Opening
+                </h3>
+                <p className="text-slate-600 text-base leading-relaxed">
+                  Ready to separate your business finances? We'll guide you
+                  through the process of opening a dedicated business bank
+                  account, making financial management a breeze.
+                </p>
+              </m.div>
+
+              <m.div
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                viewport={{ once: true, amount: 0.2 }}
+                transition={{ duration: 0.4, delay: 0.05, ease: "easeOut" }}
+                className="relative p-10 rounded-3xl bg-gradient-to-br from-pink-50 to-purple-50 border-2 border-pink-100 shadow-lg"
+              >
+                <div className="w-16 h-16 bg-gradient-to-br from-pink-600 to-purple-600 rounded-2xl flex items-center justify-center mb-6 shadow-md">
+                  <User className="w-8 h-8 text-white" strokeWidth={2.5} />
+                </div>
+                <h3 className="text-2xl font-bold text-slate-900 mb-4">
+                  UIF Registration Assistance
+                </h3>
+                <p className="text-slate-600 text-base leading-relaxed">
+                  If you plan to hire staff, UIF registration is essential.
+                  We'll help you navigate the process to ensure compliance and
+                  protect your employees.
+                </p>
+              </m.div>
+            </div>
+          </div>
+        </section>
+
         {/* FAQs Section */}
         <section className="relative py-32 bg-gradient-to-br from-pink-50 via-purple-50 to-pink-50">
           <div className="relative z-10 max-w-4xl mx-auto px-8 lg:px-12">
@@ -599,13 +661,48 @@ export default function LandingPage() {
           </div>
         </section>
 
-        {/* Lazy load heavy footer components */}
+        {/* CTA Section */}
         <Suspense fallback={<div className="h-96 bg-purple-600" />}>
           <CTASection />
         </Suspense>
+
+        {/* Not Quite Ready Section */}
+        <section className="relative py-32 bg-gradient-to-br from-purple-50 via-white to-pink-50">
+          <div className="relative z-10 max-w-4xl mx-auto px-8 lg:px-12 text-center">
+            <m.div {...fadeIn}>
+              <h2 className="text-5xl lg:text-6xl font-black text-slate-900 mb-6 leading-tight">
+                Not Quite Ready Yet?
+                <br />
+                No Worries!
+              </h2>
+              <p className="text-xl text-slate-600 mb-12 leading-relaxed max-w-2xl mx-auto">
+                We get it, starting a business is a big step. If you're not
+                ready to hit 'go' just yet, we can send you a friendly reminder.
+              </p>
+
+              <m.button
+                onClick={() => setShowRemindModal(true)}
+                whileHover={{ scale: 1.05, y: -3 }}
+                whileTap={{ scale: 0.98 }}
+                className="inline-flex items-center gap-3 px-12 py-6 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-xl font-bold rounded-2xl shadow-xl hover:shadow-2xl hover:shadow-purple-500/30 transition-all duration-300"
+              >
+                <Clock className="w-6 h-6" strokeWidth={2.5} />
+                Remind Me Later
+              </m.button>
+            </m.div>
+          </div>
+        </section>
+
+        {/* Footer */}
         <Suspense fallback={<div className="h-64 bg-neutral-900" />}>
           <Footer />
         </Suspense>
+
+        {/* Remind Me Later Modal */}
+        <RemindMeLaterModal
+          isOpen={showRemindModal}
+          onClose={() => setShowRemindModal(false)}
+        />
       </div>
     </LazyMotion>
   );
