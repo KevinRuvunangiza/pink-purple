@@ -4,12 +4,11 @@ import LogoLoadingScreen from "./components/LoadingScreen";
 import NavBar from "./components/NavBar";
 import LandingPage from "./pages/LandingPage";
 import About from "./pages/About";
-import Services from "./pages/Services"
-// import Register from "./pages/Register";
+import Services from "./pages/Services";
 import Blog from "./pages/Blog";
+import BlogPost from "./pages/BlogPost";
 import Contact from "./pages/Contact";
 import NextSteps from "./pages/NextSteps";
-
 
 function App() {
   return (
@@ -20,12 +19,10 @@ function App() {
           <Route path="/" element={<LandingPage />} />
           <Route path="/about" element={<About />} />
           <Route path="/services" element={<Services />} />
-
-          {/* <Route path="/register" element={<Register />} /> */}
           <Route path="/blog" element={<Blog />} />
-
+          <Route path="/blog/:id" element={<BlogPost />} />
           <Route path="/contact" element={<Contact />} />
-           <Route path="/next-steps" element={<NextSteps />} />
+          <Route path="/next-steps" element={<NextSteps />} />
         </Routes>
       </LogoLoadingScreen>
     </Router>
