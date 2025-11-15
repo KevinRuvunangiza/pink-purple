@@ -161,7 +161,14 @@ export default function NextSteps() {
   };
 
   return (
-    <div className="min-h-screen bg-gray-950 py-12 px-4">
+    <div className="min-h-screen bg-gray-950 py-12 px-4 pt-[100px]">
+      {/* Subtle animated background pattern */}
+      <div className="absolute inset-0 opacity-30 ">
+        <div className="absolute inset-0" style={{
+          backgroundImage: `radial-gradient(circle at 2px 2px, rgb(168, 85, 247) 1px, transparent 0)`,
+          backgroundSize: '40px 40px'
+        }}></div>
+      </div>
       <div className="max-w-3xl mx-auto mt-8">
         {/* Friendly header */}
         <div className="flex items-center justify-between mb-6">

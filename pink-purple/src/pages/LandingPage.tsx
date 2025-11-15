@@ -311,7 +311,7 @@ export default function LandingPage() {
               transition={{ duration: 0.4, delay: 0.1 }}
               className="text-6xl lg:text-8xl font-black text-white leading-[1.1] tracking-tight mb-8"
             >
-              Register My Business,
+              Register Your Business,
               <br />
               <span className="bg-linear-to-r from-purple-400 to-pink-400 text-transparent bg-clip-text">
                 With Less Headache.
@@ -336,7 +336,7 @@ export default function LandingPage() {
             >
               <Link to="/next-steps">
                 <button className="group px-10 py-5 bg-gradient-to-r from-purple-600 to-pink-600 text-white text-lg font-bold rounded-2xl shadow-2xl flex items-center gap-3 hover:shadow-purple-500/70 transition-shadow duration-300">
-                  Register Your Business
+                  Register My Business
                   <ArrowRight className="w-5 h-5" />
                 </button>
               </Link>
