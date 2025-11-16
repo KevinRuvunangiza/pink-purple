@@ -8,6 +8,7 @@ import {
   Instagram,
   Facebook,
 } from "lucide-react";
+import { FaTiktok } from "react-icons/fa";
 import { Link } from "react-router";
 
 const fadeIn = {
@@ -45,6 +46,7 @@ const SocialLink: React.FC<SocialLinkProps> = ({ href, icon, label }) => (
     transition={{ duration: 0.2 }}
     className="w-10 h-10 rounded-lg bg-neutral-800 hover:bg-neutral-700 flex items-center justify-center text-neutral-400 hover:text-white transition-colors duration-200"
     aria-label={label}
+    target="_blank"
   >
     {icon}
   </m.a>
@@ -161,25 +163,16 @@ export default function Footer() {
               </h4>
               <div className="flex gap-3">
                 <SocialLink
-                  href="https://linkedin.com"
+                  href="https://www.linkedin.com/company/yourmarketingandautomautomationpartner/"
                   icon={<Linkedin className="w-5 h-5" strokeWidth={2} />}
                   label="LinkedIn"
                 />
                 <SocialLink
-                  href="https://twitter.com"
-                  icon={<Twitter className="w-5 h-5" strokeWidth={2} />}
+                  href="https://www.tiktok.com/@pinkandpurplemarketing?_r=1&_t=ZS-91EtVB8yi7c"
+                  icon={<FaTiktok />}
                   label="Twitter"
                 />
-                <SocialLink
-                  href="https://instagram.com"
-                  icon={<Instagram className="w-5 h-5" strokeWidth={2} />}
-                  label="Instagram"
-                />
-                <SocialLink
-                  href="https://facebook.com"
-                  icon={<Facebook className="w-5 h-5" strokeWidth={2} />}
-                  label="Facebook"
-                />
+            
               </div>
             </m.div>
           </div>
