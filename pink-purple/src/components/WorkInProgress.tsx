@@ -1,8 +1,11 @@
 import { Link } from "react-router";
 import { motion } from "framer-motion";
+import NavBarSolid from "./AltNavBar";
 
 export default function WorkInProgress({ pageName }: { pageName: string }) {
   return (
+    <>
+    <NavBarSolid />
     <div className="min-h-screen bg-gradient-to-br from-pink-50 via-purple-50 to-pink-100 flex items-center justify-center px-4 pt-20">
       <div className="max-w-2xl w-full text-center">
         {/* Cute Floating Paint Palette */}
@@ -217,5 +220,6 @@ export default function WorkInProgress({ pageName }: { pageName: string }) {
         </Link>
       </div>
     </div>
+    </>
   );
 }
