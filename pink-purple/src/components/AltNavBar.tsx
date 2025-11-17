@@ -17,7 +17,7 @@ export default function NavBarSolid() {
         <div className="flex justify-between items-center h-20">
           {/* Logo/Brand */}
           <Link to="/" className="flex items-center z-10">
-            <img src={MainLogo} alt="Logo" className="h-12 w-auto" />
+            <img src={MainLogo} alt="Logo" className="h-10 w-auto" />
           </Link>
 
           {/* Desktop Navigation */}
