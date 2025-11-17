@@ -41,7 +41,7 @@ export default function Blog() {
             {blogPosts.map((post) => (
               <Link
                 key={post.id}
-                to={`/blog/${post.id}`}
+                to={`/blog/${post.title}`}
                 className="group relative bg-white backdrop-blur-sm rounded-2xl overflow-hidden border border-purple-200 hover:border-pink-400 transition-all duration-500 hover:shadow-2xl hover:shadow-purple-300/40 hover:-translate-y-2"
               >
                 {/* Image Container */}

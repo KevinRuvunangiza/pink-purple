@@ -3,8 +3,8 @@ import blogPosts from "../data/blogPost.json";
 import NavBarSolid from "../components/AltNavBar";
 
 export default function BlogPost() {
-  const { id } = useParams();
-  const post = blogPosts.find((p) => p.id === Number(id));
+  const { title } = useParams();
+  const post = blogPosts.find((p) => p.title === (title));
 
   if (!post) {
     return (
@@ -61,7 +61,7 @@ export default function BlogPost() {
                 alt={post.title}
                 className="w-full h-full object-cover"
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-white via-transparent to-transparent"></div>
+              <div className="absolute inset-0 bg-linear-to-t from-white via-transparent to-transparent"></div>
             </div>
 
             {/* Content Card */}
@@ -71,14 +71,14 @@ export default function BlogPost() {
                 <span className="text-purple-600 font-bold uppercase tracking-wider">
                   {post.category}
                 </span>
-                <span className="text-gray-400">•</span>
-                <span className="text-gray-600">{post.readTime}</span>
-                <span className="text-gray-400">•</span>
-                <span className="text-gray-600">{post.date}</span>
+                <span className="text-black">•</span>
+                <span className="text-black">{post.readTime}</span>
+                <span className="text-black">•</span>
+                <span className="text-black">{post.date}</span>
               </div>
 
               {/* Title */}
-              <h1 className="text-3xl md:text-5xl font-bold text-gray-900 mb-6 leading-tight">
+              <h1 className="text-3xl md:text-5xl font-bold text-stone-900 mb-6 leading-tight">
                 {post.title}
               </h1>
 
@@ -95,7 +95,7 @@ export default function BlogPost() {
 
               {/* Excerpt */}
               <div className="bg-purple-50 border-l-4 border-purple-500 p-6 rounded-r-lg mb-8">
-                <p className="text-lg text-gray-700 leading-relaxed italic">
+                <p className="text-lg text-black leading-relaxed italic">
                   {post.excerpt}
                 </p>
               </div>
@@ -149,7 +149,7 @@ export default function BlogPost() {
         }
         
         .blog-content p {
-          color: #374151;
+          color: black;
           line-height: 1.75;
           margin-bottom: 1rem;
         }
@@ -179,8 +179,8 @@ export default function BlogPost() {
         }
         
         .blog-content strong {
-          font-weight: 600;
-          color: #7c3aed;
+          font-weight: 700;
+          color: black;
         }
         
         .blog-content table {
