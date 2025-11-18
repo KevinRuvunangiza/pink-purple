@@ -78,7 +78,10 @@ const handler: Handler = async (event) => {
         default:
           now.setDate(now.getDate() + 1);
       }
-      return now.toISOString().split("T")[0]; // Format as YYYY-MM-DD
+      const day = String(now.getDate()).padStart(2, '0');
+      const month = String(now.getMonth() + 1).padStart(2, '0');
+      const year = now.getFullYear();
+      return `${day}-${month}-${year}`; // Format as DD-MM-YYYY
     };
 
     // Prepare subscriber data for MailerLite API
