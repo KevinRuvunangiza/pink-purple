@@ -59,6 +59,7 @@ export default function NextSteps() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showContinueButton, setShowContinueButton] = useState(false);
   const [iframeLoaded, setIframeLoaded] = useState(false);
+  const [submissionId, setSubmissionId] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -69,7 +70,7 @@ export default function NextSteps() {
 
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const continueButtonDelay = 120000;
+  const continueButtonDelay = 1200;
 
   // Optimized message listener with passive event
   useEffect(() => {
@@ -606,15 +607,13 @@ export default function NextSteps() {
       </div>
 
       {showPaymentModal && (
-        <PaymentOptionModal
-          showModal={showPaymentModal}
-          setShowModal={setShowPaymentModal}
-          onPaymentSuccess={() => setCurrentView("payment-success")}
-          onContactUs={() =>
-            alert("Redirect to contact section or support email")
-          }
-        />
-      )}
+  <PaymentOptionModal
+    showModal={showPaymentModal}
+    setShowModal={setShowPaymentModal}
+    onPaymentSuccess={() => setCurrentView("payment-success")}
+    submissionId={submissionId || undefined}
+  />
+)}
     </div>
   );
 }

@@ -24,7 +24,7 @@ import {
   Clock,
 } from "lucide-react";
 import { Link } from "react-router";
-import RemindMeLaterModal from "../components/RemindMeLaterModal";
+import ReminderForm  from "../components/RemindMeLaterModal";
 
 // Lazy load heavy components
 const CTASection = lazy(() => import("../components/sections/CTASection"));
@@ -699,7 +699,7 @@ export default function LandingPage() {
         </Suspense>
 
         {/* Remind Me Later Modal */}
-        <RemindMeLaterModal
+        <ReminderForm
           isOpen={showRemindModal}
           onClose={() => setShowRemindModal(false)}
         />

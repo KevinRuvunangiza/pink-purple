@@ -37,11 +37,17 @@ serve(async (req) => {
     return new Response("ok", { headers: corsHeaders });
   }
 
+  console.log("🎯 Webhook received:", {
+    method: req.method,
+    url: req.url,
+    headers: Object.fromEntries(req.headers.entries()),
+  });
+
   try {
     // Get Paystack signature from headers
     const signature = req.headers.get("x-paystack-signature");
     if (!signature) {
-      console.error("Missing Paystack signature");
+      console.error("❌ Missing Paystack signature");
       return new Response(
         JSON.stringify({ error: "Missing signature" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -50,11 +56,12 @@ serve(async (req) => {
 
     // Get request body as text for signature verification
     const bodyText = await req.text();
+    console.log("📦 Raw body received:", bodyText);
     
     // Verify Paystack signature
     const paystackSecret = Deno.env.get("PAYSTACK_SECRET_KEY");
     if (!paystackSecret) {
-      console.error("PAYSTACK_SECRET_KEY not configured");
+      console.error("❌ PAYSTACK_SECRET_KEY not configured");
       return new Response(
         JSON.stringify({ error: "Server configuration error" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -63,31 +70,43 @@ serve(async (req) => {
 
     const isValid = verifyPaystackSignature(bodyText, signature, paystackSecret);
     if (!isValid) {
-      console.error("Invalid Paystack signature");
+      console.error("❌ Invalid Paystack signature");
       return new Response(
         JSON.stringify({ error: "Invalid signature" }),
         { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
+    console.log("✅ Signature verified successfully");
+
     // Parse the verified body
     const event: PaystackEvent = JSON.parse(bodyText);
     
-    console.log("Paystack event received:", event.event);
+    console.log("📨 Paystack event received:", {
+      event: event.event,
+      reference: event.data.reference,
+      amount: event.data.amount,
+      status: event.data.status,
+    });
 
     // Initialize Supabase client
     const supabaseUrl = Deno.env.get("SUPABASE_URL");
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
     
     if (!supabaseUrl || !supabaseServiceKey) {
-      console.error("Supabase configuration missing");
+      console.error("❌ Supabase configuration missing");
       return new Response(
         JSON.stringify({ error: "Server configuration error" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    const supabase = createClient(supabaseUrl, supabaseServiceKey);
+    const supabase = createClient(supabaseUrl, supabaseServiceKey, {
+      auth: {
+        autoRefreshToken: false,
+        persistSession: false,
+      },
+    });
 
     // Handle charge.success event
     if (event.event === "charge.success") {
@@ -96,15 +115,26 @@ serve(async (req) => {
       // Convert amount from kobo to naira
       const amountInNaira = amount / 100;
 
+      console.log("💰 Processing payment:", {
+        reference,
+        amountInNaira,
+        email: customer.email,
+        metadata,
+      });
+
       // Check if payment already exists
-      const { data: existingPayment } = await supabase
+      const { data: existingPayment, error: checkError } = await supabase
         .from("payments")
         .select("id")
         .eq("paystack_reference", reference)
         .single();
 
+      if (checkError && checkError.code !== 'PGRST116') { // PGRST116 = no rows returned
+        console.error("❌ Error checking existing payment:", checkError);
+      }
+
       if (existingPayment) {
-        console.log("Payment already processed:", reference);
+        console.log("⚠️ Payment already processed:", reference);
         return new Response(
           JSON.stringify({ message: "Payment already processed" }),
           { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -115,8 +145,10 @@ serve(async (req) => {
       let submissionId = metadata?.submission_id;
 
       if (!submissionId) {
+        console.log("🔍 Submission ID not in metadata, searching by email:", customer.email);
+        
         // Try to find submission by email
-        const { data: submission } = await supabase
+        const { data: submission, error: submissionError } = await supabase
           .from("submissions")
           .select("id")
           .eq("email", customer.email)
@@ -124,48 +156,73 @@ serve(async (req) => {
           .limit(1)
           .single();
 
-        if (submission) {
+        if (submissionError) {
+          console.warn("⚠️ Could not find submission by email:", submissionError);
+        } else if (submission) {
           submissionId = submission.id;
+          console.log("✅ Found submission:", submissionId);
         }
       }
 
       // Insert payment record
+      const paymentData = {
+        submission_id: submissionId || null,
+        amount: amountInNaira,
+        status: status === "success" ? "paid" : "failed",
+        reference: reference,
+        paystack_reference: reference,
+        payment_method: "paystack",
+        metadata: metadata || {},
+        paid_at: paid_at,
+      };
+
+      console.log("💾 Inserting payment data:", paymentData);
+
       const { data: payment, error: paymentError } = await supabase
         .from("payments")
-        .insert({
-          submission_id: submissionId,
-          amount: amountInNaira,
-          status: status === "success" ? "paid" : "failed",
-          reference: reference,
-          paystack_reference: reference,
-          payment_method: "paystack",
-          metadata: metadata || {},
-          paid_at: paid_at,
-        })
+        .insert(paymentData)
         .select()
         .single();
 
       if (paymentError) {
-        console.error("Error inserting payment:", paymentError);
+        console.error("❌ Error inserting payment:", {
+          error: paymentError,
+          code: paymentError.code,
+          message: paymentError.message,
+          details: paymentError.details,
+          hint: paymentError.hint,
+        });
         return new Response(
-          JSON.stringify({ error: "Failed to record payment" }),
+          JSON.stringify({ 
+            error: "Failed to record payment",
+            details: paymentError.message 
+          }),
           { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
         );
       }
 
+      console.log("✅ Payment inserted successfully:", payment.id);
+
       // Update submission status to 'paid' if submission exists
       if (submissionId) {
+        console.log("📝 Updating submission status:", submissionId);
+        
         const { error: updateError } = await supabase
           .from("submissions")
-          .update({ status: "paid" })
+          .update({ 
+            status: "paid",
+            updated_at: new Date().toISOString(),
+          })
           .eq("id", submissionId);
 
         if (updateError) {
-          console.error("Error updating submission:", updateError);
+          console.error("❌ Error updating submission:", updateError);
+        } else {
+          console.log("✅ Submission updated successfully");
         }
       }
 
-      console.log("Payment processed successfully:", payment.id);
+      console.log("🎉 Payment processed successfully:", payment.id);
 
       return new Response(
         JSON.stringify({ 
@@ -178,15 +235,23 @@ serve(async (req) => {
     }
 
     // Handle other events if needed
+    console.log("ℹ️ Unhandled event type:", event.event);
     return new Response(
       JSON.stringify({ message: "Event received" }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
 
   } catch (error) {
-    console.error("Webhook error:", error);
+    console.error("💥 Webhook error:", {
+      error: error,
+      message: error.message,
+      stack: error.stack,
+    });
     return new Response(
-      JSON.stringify({ error: error.message }),
+      JSON.stringify({ 
+        error: error.message,
+        stack: error.stack,
+      }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   }

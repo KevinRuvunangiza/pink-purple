@@ -1,5 +1,4 @@
 // src/pages/admin/PaymentsPage.tsx
-
 import { useEffect, useState } from 'react';
 import { ApiService } from '../../services/api.service';
 import { DataTable } from '../../components/admin/DataTable';
@@ -10,6 +9,7 @@ import type { Payment, PaginatedResponse, FilterParams } from '../../types/datab
 export function PaymentsPage() {
   const [data, setData] = useState<PaginatedResponse<Payment> | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [pageSize] = useState(10);
   const [statusFilter, setStatusFilter] = useState<string>('');
@@ -20,6 +20,8 @@ export function PaymentsPage() {
 
   const loadPayments = async () => {
     setLoading(true);
+    setError(null);
+    
     try {
       const filters: FilterParams = {};
       if (statusFilter) {
@@ -34,6 +36,7 @@ export function PaymentsPage() {
       setData(result);
     } catch (error) {
       console.error('Failed to load payments:', error);
+      setError('Failed to load payments. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -51,9 +54,9 @@ export function PaymentsPage() {
   };
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-NG', {
+    return new Intl.NumberFormat('en-ZA', {
       style: 'currency',
-      currency: 'NGN',
+      currency: 'ZAR',
     }).format(amount);
   };
 
@@ -70,10 +73,10 @@ export function PaymentsPage() {
       header: 'Reference',
       sortable: true,
       render: (item: Payment) => (
-        <div>
-          <p className="font-medium text-sm">{item.reference}</p>
+        <div className="min-w-[120px]">
+          <p className="font-medium text-sm truncate">{item.reference}</p>
           {item.paystack_reference && (
-            <p className="text-xs text-gray-500">{item.paystack_reference}</p>
+            <p className="text-xs text-gray-500 truncate">{item.paystack_reference}</p>
           )}
         </div>
       ),
@@ -83,7 +86,9 @@ export function PaymentsPage() {
       header: 'Amount',
       sortable: true,
       render: (item: Payment) => (
-        <span className="font-semibold text-gray-900">{formatCurrency(item.amount)}</span>
+        <span className="font-semibold text-gray-900 text-sm">
+          {formatCurrency(item.amount)}
+        </span>
       ),
     },
     {
@@ -107,46 +112,60 @@ export function PaymentsPage() {
         <span className="text-sm text-gray-600">{formatDate(item.paid_at)}</span>
       ),
     },
-    {
-      key: 'created_at',
-      header: 'Created',
-      sortable: true,
-      render: (item: Payment) => (
-        <span className="text-sm text-gray-600">{formatDate(item.created_at)}</span>
-      ),
-    },
   ];
 
   return (
-    <div>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Payments</h1>
-        <p className="mt-2 text-gray-600">Track and manage all payment transactions</p>
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Payments</h1>
+          <p className="mt-1 text-sm sm:text-base text-gray-600">
+            Track and manage all payment transactions
+          </p>
+        </div>
       </div>
 
-      {/* Summary Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
-          <p className="text-sm text-gray-600">Total Payments</p>
-          <p className="text-2xl font-bold text-gray-900 mt-2">{data?.total || 0}</p>
+      {/* Error Message */}
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <div className="flex items-center justify-between">
+            <p className="text-red-800 text-sm">{error}</p>
+            <button
+              onClick={loadPayments}
+              className="text-sm text-red-600 hover:text-red-700 font-medium"
+            >
+              Retry
+            </button>
+          </div>
         </div>
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+      )}
+
+      {/* Summary Cards - Mobile Optimized */}
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+          <p className="text-sm text-gray-600">Total Payments</p>
+          <p className="text-xl sm:text-2xl font-bold text-gray-900 mt-2">
+            {data?.total || 0}
+          </p>
+        </div>
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
           <p className="text-sm text-gray-600">Paid Payments</p>
-          <p className="text-2xl font-bold text-green-600 mt-2">
+          <p className="text-xl sm:text-2xl font-bold text-green-600 mt-2">
             {data?.data.filter((p) => p.status === 'paid').length || 0}
           </p>
         </div>
-        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-6">
+        <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
           <p className="text-sm text-gray-600">Total Revenue</p>
-          <p className="text-2xl font-bold text-gray-900 mt-2">
+          <p className="text-xl sm:text-2xl font-bold text-gray-900 mt-2">
             {formatCurrency(calculateTotalRevenue())}
           </p>
         </div>
       </div>
 
-      {/* Filter Bar */}
-      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4 mb-6">
-        <div className="flex items-center space-x-4">
+      {/* Filter Bar - Mobile Optimized */}
+      <div className="bg-white rounded-xl shadow-sm border border-gray-200 p-4">
+        <div className="flex flex-col sm:flex-row sm:items-center gap-3">
           <label className="text-sm font-medium text-gray-700">Filter by Status:</label>
           <select
             value={statusFilter}
@@ -154,7 +173,7 @@ export function PaymentsPage() {
               setStatusFilter(e.target.value);
               setPage(1);
             }}
-            className="px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
+            className="w-full sm:w-auto px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500"
           >
             <option value="">All Statuses</option>
             <option value="paid">Paid</option>

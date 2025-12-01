@@ -1,6 +1,12 @@
 import { X, ArrowRight, Mail, DollarSign } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState, useEffect, useCallback, useMemo } from "react";
+import { createClient } from "@supabase/supabase-js";
+
+// Initialize Supabase client
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "";
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || "";
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 interface PaymentOptionModalProps {
   showModal: boolean;
@@ -8,6 +14,7 @@ interface PaymentOptionModalProps {
   onPaymentSuccess: () => void;
   preselectedService?: string;
   preselectedPrice?: number;
+  submissionId?: string; // Add this to link payment to submission
 }
 
 interface ServiceOption {
@@ -25,7 +32,7 @@ interface PaystackResponse {
   trxref: string;
 }
 
-const PUBLIC_PAYMENT_KEY = "pk_live_7f35457821ca77d85c3151a34f4feb430ef5ab53";
+const PUBLIC_PAYMENT_KEY = "pk_test_3492412833f812c4dd9984e8d550a0b332816e1d";
 
 const SERVICE_OPTIONS: ServiceOption[] = [
   {
@@ -40,20 +47,7 @@ const SERVICE_OPTIONS: ServiceOption[] = [
     price: 950,
     description: "Complete registration package for public companies",
   },
-  // {
-  //   value: "consultation",
-  //   label: "Business Consultation",
-  //   price: 500,
-  //   description: "Expert consultation for your business needs",
-  // },
-  // {
-  //   value: "other",
-  //   label: "Other Services",
-  //   price: 0,
-  //   description: "Custom pricing - we'll contact you",
-  // },
 ];
-
 
 export default function PaymentOptionModal({
   showModal,
@@ -61,6 +55,7 @@ export default function PaymentOptionModal({
   onPaymentSuccess,
   preselectedService = "private_company",
   preselectedPrice = 0,
+  submissionId,
 }: PaymentOptionModalProps) {
   const [email, setEmail] = useState("");
   const [selectedService, setSelectedService] = useState(preselectedService);
@@ -99,6 +94,66 @@ export default function PaymentOptionModal({
     if (!emailRegex.test(email)) return "Please enter a valid email address";
     return "";
   }, []);
+
+  // Save payment to Supabase
+  const savePaymentToDatabase = async (paymentResponse: PaystackResponse) => {
+    try {
+      console.log("💾 Saving payment to database:", paymentResponse);
+
+      const paymentData = {
+        submission_id: submissionId || null,
+        amount: finalPrice,
+        status: "paid",
+        reference: paymentResponse.reference,
+        paystack_reference: paymentResponse.reference,
+        payment_method: "paystack",
+        metadata: {
+          service_type: currentService?.label || "Custom Service",
+          service_value: selectedService,
+          email: email,
+          transaction_id: paymentResponse.transaction,
+        },
+        paid_at: new Date().toISOString(),
+      };
+
+      const { data, error } = await supabase
+        .from("payments")
+        .insert(paymentData)
+        .select()
+        .single();
+
+      if (error) {
+        console.error("❌ Error saving payment:", error);
+        throw error;
+      }
+
+      console.log("✅ Payment saved successfully:", data);
+
+      // Update submission status if we have a submission_id
+      if (submissionId) {
+        const { error: updateError } = await supabase
+          .from("submissions")
+          .update({ 
+            status: "paid",
+            updated_at: new Date().toISOString(),
+          })
+          .eq("id", submissionId);
+
+        if (updateError) {
+          console.error("⚠️ Could not update submission:", updateError);
+        } else {
+          console.log("✅ Submission status updated to paid");
+        }
+      }
+
+      return data;
+    } catch (error) {
+      console.error("💥 Failed to save payment:", error);
+      // Don't throw - payment was successful with Paystack
+      // You might want to log this to a monitoring service
+      return null;
+    }
+  };
 
   // Handle payment submission
   const handleContinueToPayment = useCallback((): void => {
@@ -139,10 +194,23 @@ export default function PaymentOptionModal({
             variable_name: "service_value",
             value: selectedService,
           },
+          {
+            display_name: "Submission ID",
+            variable_name: "submission_id",
+            value: submissionId || "N/A",
+          },
         ],
       },
       callback: function (response: PaystackResponse) {
-        console.log("Payment successful:", response);
+        console.log("✅ Payment successful with Paystack:", response);
+        
+        // Save payment to Supabase database (don't await - let it run in background)
+        savePaymentToDatabase(response).then(() => {
+          console.log("✅ Payment saved to database");
+        }).catch((err) => {
+          console.error("⚠️ Failed to save payment to database:", err);
+        });
+        
         setIsProcessing(false);
         handleCloseModal();
         onPaymentSuccess();
@@ -154,11 +222,20 @@ export default function PaymentOptionModal({
     });
 
     handler.openIframe();
-  }, [email, selectedService, customPrice, finalPrice, currentService, validateEmail, onPaymentSuccess]);
+  }, [
+    email,
+    selectedService,
+    customPrice,
+    finalPrice,
+    currentService,
+    validateEmail,
+    onPaymentSuccess,
+    submissionId,
+  ]);
 
   // Reset form and close modal
   const handleCloseModal = useCallback((): void => {
-    if (isProcessing) return; // Prevent closing during payment
+    if (isProcessing) return;
     setShowModal(false);
     setEmail("");
     setEmailError("");
@@ -169,7 +246,6 @@ export default function PaymentOptionModal({
   // Handle service selection change
   const handleServiceChange = useCallback((value: string): void => {
     setSelectedService(value);
-    // Reset custom price when switching away from "other"
     if (value !== "other") {
       setCustomPrice(0);
     }

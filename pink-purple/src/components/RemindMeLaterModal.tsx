@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { X, Mail, User, Building, Calendar, ArrowRight } from "lucide-react";
+import { saveReminderForm } from "../utils/formSubmission"; // Import your utility here
 
 const REMINDER_OPTIONS = [
   { value: "3days", label: "In 3 Days" },
@@ -48,23 +49,17 @@ export default function RemindMeLaterModal({
     setIsSubmitting(true);
 
     try {
-      const response = await fetch(
-        "/.netlify/functions/add-mailerlite-subscriber",
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        }
-      );
-
-      if (!response.ok) {
-        throw new Error("Failed to add subscriber");
-      }
+      // UPDATED: Using the utility function to save to BOTH Supabase and MailerLite
+      await saveReminderForm({
+        email: formData.email,
+        name: formData.name,
+        businessName: formData.businessName,
+        reminderTime: formData.reminderTime,
+      });
 
       setIsSuccess(true);
       
+      // Handle success UI transition
       setTimeout(() => {
         onClose();
         setTimeout(() => {
@@ -77,6 +72,7 @@ export default function RemindMeLaterModal({
           });
         }, 300);
       }, 3000);
+
     } catch (error) {
       console.error("Error submitting reminder:", error);
       alert("There was an error setting up your reminder. Please try again.");

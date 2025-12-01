@@ -15,7 +15,7 @@
         "npm:@netlify/functions@^5.1.0",
         "npm:@supabase/supabase-js@^2.86.0",
         "npm:@tailwindcss/vite@^4.1.16",
-        "npm:@types/node@^24.6.0",
+        "npm:@types/node@^24.10.1",
         "npm:@types/react-dom@^19.1.9",
         "npm:@types/react@^19.1.16",
         "npm:@vitejs/plugin-react@^5.0.4",

@@ -1,5 +1,4 @@
 // src/pages/admin/SubmissionsPage.tsx
-
 import { useEffect, useState } from 'react';
 import { ApiService } from '../../services/api.service';
 import { DataTable } from '../../components/admin/DataTable';
@@ -16,6 +15,7 @@ import type {
 export function SubmissionsPage() {
   const [data, setData] = useState<PaginatedResponse<SubmissionWithPayment> | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const [page, setPage] = useState(1);
   const [pageSize] = useState(10);
   const [filters, setFilters] = useState<FilterParams>({});
@@ -42,6 +42,8 @@ export function SubmissionsPage() {
 
   const loadSubmissions = async () => {
     setLoading(true);
+    setError(null);
+    
     try {
       const result = await ApiService.getSubmissions({
         page,
@@ -51,6 +53,7 @@ export function SubmissionsPage() {
       setData(result);
     } catch (error) {
       console.error('Failed to load submissions:', error);
+      setError('Failed to load submissions. Please try again.');
     } finally {
       setLoading(false);
     }
@@ -63,7 +66,7 @@ export function SubmissionsPage() {
 
   const handleFilterChange = (newFilters: FilterParams) => {
     setFilters(newFilters);
-    setPage(1); // Reset to first page when filters change
+    setPage(1);
   };
 
   const formatDate = (dateString: string) => {
@@ -80,9 +83,9 @@ export function SubmissionsPage() {
       header: 'Name',
       sortable: true,
       render: (item: SubmissionWithPayment) => (
-        <div>
-          <p className="font-medium">{item.name}</p>
-          <p className="text-xs text-gray-500">{item.email}</p>
+        <div className="min-w-[150px]">
+          <p className="font-medium text-sm">{item.name}</p>
+          <p className="text-xs text-gray-500 truncate max-w-[200px]">{item.email}</p>
         </div>
       ),
     },
@@ -130,13 +133,36 @@ export function SubmissionsPage() {
   ];
 
   return (
-    <div>
-      <div className="mb-8">
-        <h1 className="text-3xl font-bold text-gray-900">Submissions</h1>
-        <p className="mt-2 text-gray-600">
-          Manage all customer inquiries and service requests
-        </p>
+    <div className="space-y-4">
+      {/* Header */}
+      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Submissions</h1>
+          <p className="mt-1 text-sm sm:text-base text-gray-600">
+            Manage all customer inquiries and service requests
+          </p>
+        </div>
+        {data && (
+          <div className="text-sm text-gray-600">
+            Total: <span className="font-semibold">{data.total}</span> submissions
+          </div>
+        )}
       </div>
+
+      {/* Error Message */}
+      {error && (
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4">
+          <div className="flex items-center justify-between">
+            <p className="text-red-800 text-sm">{error}</p>
+            <button
+              onClick={loadSubmissions}
+              className="text-sm text-red-600 hover:text-red-700 font-medium"
+            >
+              Retry
+            </button>
+          </div>
+        </div>
+      )}
 
       <FilterBar onFilterChange={handleFilterChange} serviceTypes={serviceTypes} />
 

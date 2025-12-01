@@ -1,11 +1,10 @@
-// src/components/admin/AdminLayout.tsx
-
+// src/components/admin/AdminLayout.tsx - Mobile Optimized
 import { useState } from 'react';
 import { Outlet, Link, useNavigate, useLocation } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 
 export function AdminLayout() {
-  const [isSidebarOpen, setIsSidebarOpen] = useState(true);
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -23,23 +22,25 @@ export function AdminLayout() {
 
   const isActive = (path: string) => location.pathname === path;
 
+  const closeSidebar = () => setIsSidebarOpen(false);
+
   return (
     <div className="min-h-screen bg-gray-50">
       {/* Sidebar */}
       <aside
-        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 transform transition-transform duration-200 ease-in-out ${
+        className={`fixed inset-y-0 left-0 z-50 w-64 bg-white border-r border-gray-200 transform transition-transform duration-300 ease-in-out ${
           isSidebarOpen ? 'translate-x-0' : '-translate-x-full'
         } lg:translate-x-0`}
       >
         <div className="flex flex-col h-full">
           {/* Logo */}
           <div className="flex items-center justify-between h-16 px-6 border-b border-gray-200">
-            <h1 className="text-xl font-bold bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
-              Pink & Purple
+            <h1 className="text-lg sm:text-xl font-bold bg-gradient-to-r from-pink-500 to-purple-600 bg-clip-text text-transparent">
+              Business Reg
             </h1>
             <button
-              onClick={() => setIsSidebarOpen(false)}
-              className="lg:hidden text-gray-500 hover:text-gray-700"
+              onClick={closeSidebar}
+              className="lg:hidden text-gray-500 hover:text-gray-700 text-2xl"
             >
               ✕
             </button>
@@ -51,6 +52,7 @@ export function AdminLayout() {
               <Link
                 key={item.path}
                 to={item.path}
+                onClick={closeSidebar}
                 className={`flex items-center space-x-3 px-4 py-3 rounded-lg transition-colors ${
                   isActive(item.path)
                     ? 'bg-gradient-to-r from-pink-500 to-purple-600 text-white'
@@ -58,7 +60,7 @@ export function AdminLayout() {
                 }`}
               >
                 <span className="text-xl">{item.icon}</span>
-                <span className="font-medium">{item.label}</span>
+                <span className="font-medium text-sm">{item.label}</span>
               </Link>
             ))}
           </nav>
@@ -70,19 +72,19 @@ export function AdminLayout() {
               className="w-full flex items-center space-x-3 px-4 py-3 rounded-lg text-gray-700 hover:bg-red-50 hover:text-red-600 transition-colors"
             >
               <span className="text-xl">🚪</span>
-              <span className="font-medium">Logout</span>
+              <span className="font-medium text-sm">Logout</span>
             </button>
           </div>
         </div>
       </aside>
 
       {/* Main Content */}
-      <div className={`transition-all duration-200 ${isSidebarOpen ? 'lg:ml-64' : ''}`}>
+      <div className="lg:ml-64 min-h-screen">
         {/* Top Bar */}
-        <header className="h-16 bg-white border-b border-gray-200 flex items-center justify-between px-6">
+        <header className="sticky top-0 z-40 h-16 bg-white border-b border-gray-200 flex items-center justify-between px-4 sm:px-6">
           <button
             onClick={() => setIsSidebarOpen(!isSidebarOpen)}
-            className="text-gray-500 hover:text-gray-700"
+            className="text-gray-500 hover:text-gray-700 lg:hidden"
           >
             <svg
               className="w-6 h-6"
@@ -99,13 +101,15 @@ export function AdminLayout() {
             </svg>
           </button>
 
-          <div className="flex items-center space-x-4">
-            <span className="text-sm text-gray-600">Admin Dashboard</span>
+          <div className="flex items-center space-x-2 sm:space-x-4">
+            <span className="text-xs sm:text-sm text-gray-600 font-medium">
+              Admin Dashboard
+            </span>
           </div>
         </header>
 
         {/* Page Content */}
-        <main className="p-6">
+        <main className="p-4 sm:p-6">
           <Outlet />
         </main>
       </div>
@@ -113,8 +117,8 @@ export function AdminLayout() {
       {/* Mobile Overlay */}
       {isSidebarOpen && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden"
-          onClick={() => setIsSidebarOpen(false)}
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 lg:hidden transition-opacity"
+          onClick={closeSidebar}
         />
       )}
     </div>
