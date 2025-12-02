@@ -1,5 +1,6 @@
 // src/components/admin/StatusBadge.tsx
 
+import { CheckCircle, Clock, XCircle, RotateCcw, Circle, Phone } from 'lucide-react';
 import type { SubmissionStatus, PaymentStatus } from '../../types/database.types';
 
 interface StatusBadgeProps {
@@ -47,31 +48,31 @@ export function StatusBadge({ status, type = 'submission' }: StatusBadgeProps) {
     if (type === 'payment') {
       switch (status) {
         case 'paid':
-          return '✓';
+          return <CheckCircle className="w-4 h-4" />;
         case 'pending':
-          return '⏳';
+          return <Clock className="w-4 h-4" />;
         case 'failed':
-          return '✗';
+          return <XCircle className="w-4 h-4" />;
         case 'refunded':
-          return '↩';
+          return <RotateCcw className="w-4 h-4" />;
         default:
-          return '•';
+          return <Circle className="w-4 h-4" />;
       }
     }
 
     switch (status) {
       case 'paid':
-        return '✓';
+        return <CheckCircle className="w-4 h-4" />;
       case 'completed':
-        return '✓';
+        return <CheckCircle className="w-4 h-4" />;
       case 'contacted':
-        return '📞';
+        return <Phone className="w-4 h-4" />;
       case 'pending':
-        return '⏳';
+        return <Clock className="w-4 h-4" />;
       case 'cancelled':
-        return '✗';
+        return <XCircle className="w-4 h-4" />;
       default:
-        return '•';
+        return <Circle className="w-4 h-4" />;
     }
   };
 

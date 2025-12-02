@@ -1,9 +1,10 @@
 // src/components/admin/StatCard.tsx
+import { ReactNode } from 'react';
 
 interface StatCardProps {
   title: string;
   value: string | number;
-  icon: string;
+  icon: ReactNode;
   trend?: {
     value: number;
     isPositive: boolean;
@@ -38,7 +39,7 @@ export function StatCard({ title, value, icon, trend, subtitle }: StatCardProps)
         </div>
         
         <div className="ml-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-pink-100 to-purple-100 rounded-lg flex items-center justify-center text-2xl">
+          <div className="w-12 h-12 bg-gradient-to-br from-pink-100 to-purple-100 rounded-lg flex items-center justify-center text-gray-700">
             {icon}
           </div>
         </div>

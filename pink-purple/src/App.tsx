@@ -21,7 +21,7 @@ function App() {
   return (
     <Router>
       <LogoLoadingScreen duration={3500}>
-        <NavBar />
+        
         <Routes>
           <Route path="/" element={<LandingPage />} />
           <Route path="/about" element={<About />} />

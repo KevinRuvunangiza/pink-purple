@@ -4,6 +4,7 @@ import HeroSection from "../components/sections/HeroSection";
 import ServicesSection from "../components/sections/ServiceSection";
 import WhoWeAre from "../components/sections/WhoWeAre";
 import WhyChooseUs from "../components/sections/WhyChooseUs";
+import NavBar from "../components/NavBar";
 
 const fadeInUpVariants = {
   hidden: { 
@@ -23,6 +24,7 @@ const fadeInUpVariants = {
 export default function About() {
   return (
     <LazyMotion features={domAnimation} strict>
+      <NavBar />
       <m.div
         initial="hidden"
         whileInView="visible"

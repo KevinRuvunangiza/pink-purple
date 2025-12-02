@@ -14,6 +14,7 @@ import {
 
 import PaymentOptionModal from "../components/PaymentOptionsModal";
 import { saveReminderForm } from "../utils/formSubmission";
+import NavBar from "../components/NavBar";
 
 const REMINDER_OPTIONS = [
   { value: "3days", label: "In 3 Days" },
@@ -161,6 +162,7 @@ export default function NextSteps() {
 
   return (
     <div className="min-h-screen bg-gray-950 py-12 px-4 pt-[100px]">
+      <NavBar />
       {/* OPTIMIZED: Static background, no animation, positioned absolute instead of rendering pattern */}
       <div
         className="fixed inset-0 opacity-20 pointer-events-none"

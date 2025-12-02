@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import { ApiService } from '../../services/api.service';
 import { Pagination } from '../../components/admin/Pagination';
+import { Edit2, Trash2, Plus, Eye, FileText } from 'lucide-react';
 import type { ActivityLog, PaginatedResponse } from '../../types/database.types';
 
 export function ActivityLogsPage() {
@@ -41,15 +42,15 @@ export function ActivityLogsPage() {
   const getActionIcon = (action: string) => {
     switch (action) {
       case 'update_status':
-        return '✏️';
+        return <Edit2 className="w-5 h-5" />;
       case 'delete':
-        return '🗑️';
+        return <Trash2 className="w-5 h-5" />;
       case 'create':
-        return '➕';
+        return <Plus className="w-5 h-5" />;
       case 'view':
-        return '👁️';
+        return <Eye className="w-5 h-5" />;
       default:
-        return '📝';
+        return <FileText className="w-5 h-5" />;
     }
   };
 
@@ -94,7 +95,7 @@ export function ActivityLogsPage() {
                       log.action
                     )}`}
                   >
-                    <span className="text-lg">{getActionIcon(log.action)}</span>
+                    {getActionIcon(log.action)}
                   </div>
 
                   <div className="flex-1 min-w-0">

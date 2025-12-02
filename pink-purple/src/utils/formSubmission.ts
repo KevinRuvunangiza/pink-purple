@@ -45,14 +45,6 @@ export async function saveReminderForm(formData: ReminderFormData): Promise<void
 
   // Save to Supabase first (most important)
   try {
-    const { data, error } = await supabase
-      name: formData.name || 'Not provided',
-      email: formData.email,
-      company_name: formData.businessName,
-      service_type: 'Reminder Request',
-      reminder_date: calculateReminderDate(formData.reminderTime),
-    });
-    
     const submission = await ApiService.createSubmission({
       name: formData.name || 'Not provided',
       email: formData.email,

@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react';
 import { ApiService } from '../../services/api.service';
 import { StatCard } from '../../components/admin/StatCard';
+import { RefreshCw, Trash2, FileText, CheckCircle, Clock, DollarSign } from 'lucide-react';
 import type { DashboardStats } from '../../types/database.types';
 
 export function DashboardPage() {
@@ -95,27 +96,31 @@ export function DashboardPage() {
 
   return (
     <div className="space-y-6">
-      {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
-        <div>
-          <h1 className="text-2xl sm:text-3xl font-bold text-gray-900">Dashboard</h1>
-          <p className="mt-1 text-sm sm:text-base text-gray-600">
-            Welcome back! Here's what's happening.
-          </p>
-        </div>
-        <div className="flex gap-2">
-          <button
-            onClick={loadStats}
-            className="self-start sm:self-auto px-4 py-2 text-sm bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-          >
-            🔄 Refresh
-          </button>
-          <button
-            onClick={() => setShowConfirmDialog(true)}
-            className="self-start sm:self-auto px-4 py-2 text-sm bg-red-50 border border-red-300 text-red-600 rounded-lg hover:bg-red-100 transition-colors"
-          >
-            🗑️ Clear Data
-          </button>
+      {/* Header - Mobile Optimized */}
+      <div className="bg-gradient-to-r from-pink-500 to-purple-600 rounded-2xl shadow-lg p-6 sm:p-8">
+        <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-6">
+          <div>
+            <h1 className="text-3xl sm:text-4xl font-bold text-white">Dashboard</h1>
+            <p className="mt-2 text-pink-100 text-sm sm:text-base">
+              Monitor your business metrics and performance
+            </p>
+          </div>
+          <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+            <button
+              onClick={loadStats}
+              className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium bg-white text-purple-600 rounded-lg hover:bg-gray-50 transition-colors shadow-md"
+            >
+              <RefreshCw className="w-4 h-4" />
+              <span>Refresh</span>
+            </button>
+            <button
+              onClick={() => setShowConfirmDialog(true)}
+              className="flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium bg-red-100 text-red-700 rounded-lg hover:bg-red-200 transition-colors shadow-md"
+            >
+              <Trash2 className="w-4 h-4" />
+              <span>Clear Data</span>
+            </button>
+          </div>
         </div>
       </div>
 
@@ -124,25 +129,25 @@ export function DashboardPage() {
         <StatCard
           title="Total Submissions"
           value={stats.total_submissions}
-          icon="📝"
+          icon={<FileText className="w-6 h-6" />}
           subtitle={`${stats.submissions_this_week} this week`}
         />
         <StatCard
           title="Paid Submissions"
           value={stats.paid_submissions}
-          icon="✅"
+          icon={<CheckCircle className="w-6 h-6" />}
           subtitle={`${conversionRate}% conversion`}
         />
         <StatCard
           title="Pending"
           value={stats.pending_submissions}
-          icon="⏳"
+          icon={<Clock className="w-6 h-6" />}
           subtitle="Awaiting action"
         />
         <StatCard
           title="Total Revenue"
           value={formatCurrency(stats.total_revenue)}
-          icon="💰"
+          icon={<DollarSign className="w-6 h-6" />}
           subtitle={`${stats.payments_this_week} payments this week`}
         />
       </div>
@@ -234,7 +239,7 @@ export function DashboardPage() {
             <div className="relative inline-block bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md w-full">
               {/* Header */}
               <div className="bg-gradient-to-r from-red-500 to-red-600 px-6 py-4">
-                <h3 className="text-lg font-medium text-white">⚠️ Delete All Data</h3>
+                <h3 className="text-lg font-medium text-white">Delete All Data</h3>
               </div>
 
               {/* Content */}
