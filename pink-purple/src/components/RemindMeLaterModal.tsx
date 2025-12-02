@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { X, Mail, User, Building, Calendar, ArrowRight } from "lucide-react";
-import { saveReminderForm } from "../utils/formSubmission"; // Import your utility here
+import { saveReminderForm } from "../utils/formSubmission";
 
 const REMINDER_OPTIONS = [
   { value: "3days", label: "In 3 Days" },
@@ -49,7 +49,6 @@ export default function RemindMeLaterModal({
     setIsSubmitting(true);
 
     try {
-      // UPDATED: Using the utility function to save to BOTH Supabase and MailerLite
       await saveReminderForm({
         email: formData.email,
         name: formData.name,
@@ -58,8 +57,7 @@ export default function RemindMeLaterModal({
       });
 
       setIsSuccess(true);
-      
-      // Handle success UI transition
+
       setTimeout(() => {
         onClose();
         setTimeout(() => {
@@ -72,10 +70,10 @@ export default function RemindMeLaterModal({
           });
         }, 300);
       }, 3000);
-
-    } catch (error) {
-      console.error("Error submitting reminder:", error);
-      alert("There was an error setting up your reminder. Please try again.");
+    } catch (error: any) {
+      alert(
+        `There was an error: ${error.message || "Please try again."}`
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -85,18 +83,15 @@ export default function RemindMeLaterModal({
 
   return (
     <>
-      {/* Backdrop */}
       <div
         onClick={onClose}
         className="fixed inset-0 bg-black/60 backdrop-blur-sm z-50 animate-fade-in"
       />
 
-      {/* Modal */}
       <div className="fixed inset-0 flex items-center justify-center z-50 p-4 pointer-events-none">
         <div className="bg-white rounded-3xl shadow-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto animate-scale-in pointer-events-auto">
           {!isSuccess ? (
             <>
-              {/* Header */}
               <div className="bg-gradient-to-r from-purple-600 to-pink-600 px-8 py-6 rounded-t-3xl relative">
                 <button
                   onClick={onClose}
@@ -108,13 +103,12 @@ export default function RemindMeLaterModal({
                   Set up your reminder
                 </h2>
                 <p className="text-purple-100">
-                  We'll send you a friendly reminder to complete your registration
+                  We'll send you a friendly reminder to complete your
+                  registration
                 </p>
               </div>
 
-              {/* Form */}
               <div className="p-8 space-y-6">
-                {/* Email Field */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
                     Email Address <span className="text-red-500">*</span>
@@ -150,17 +144,13 @@ export default function RemindMeLaterModal({
                   )}
                 </div>
 
-                {/* Name Field */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
                     Your Name
                   </label>
                   <div className="relative">
                     <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                      <User
-                        className="w-5 h-5 text-gray-400"
-                        strokeWidth={2}
-                      />
+                      <User className="w-5 h-5 text-gray-400" strokeWidth={2} />
                     </div>
                     <input
                       type="text"
@@ -174,7 +164,6 @@ export default function RemindMeLaterModal({
                   </div>
                 </div>
 
-                {/* Business Name Field */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-2">
                     Business Name
@@ -201,7 +190,6 @@ export default function RemindMeLaterModal({
                   </div>
                 </div>
 
-                {/* Reminder Time */}
                 <div>
                   <label className="block text-sm font-semibold text-gray-700 mb-3">
                     When should we remind you?
@@ -251,7 +239,6 @@ export default function RemindMeLaterModal({
                   </div>
                 </div>
 
-                {/* Submit Button */}
                 <button
                   onClick={handleSubmit}
                   disabled={isSubmitting}
@@ -272,7 +259,6 @@ export default function RemindMeLaterModal({
               </div>
             </>
           ) : (
-            // Success State
             <div className="p-12 text-center">
               <div className="inline-block mb-6">
                 <div className="w-24 h-24 rounded-full bg-gradient-to-r from-green-100 to-emerald-100 flex items-center justify-center animate-scale-in">

@@ -47,9 +47,9 @@ export function DetailModal({ submission, isOpen, onClose, onUpdate }: DetailMod
 
   const formatCurrency = (amount?: number) => {
     if (!amount) return 'N/A';
-    return new Intl.NumberFormat('en-NG', {
+    return new Intl.NumberFormat('en-ZA', {
       style: 'currency',
-      currency: 'NGN',
+      currency: 'ZAR',
     }).format(amount);
   };
 

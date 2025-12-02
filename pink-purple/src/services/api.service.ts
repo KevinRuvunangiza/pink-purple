@@ -8,23 +8,154 @@ import type {
   DashboardStats,
   TableParams,
   PaginatedResponse,
-  ActivityLog,
+  SubmissionStatus,
 } from '../types/database.types';
 
 export class ApiService {
-  // =============================================
-  // SUBMISSIONS
-  // =============================================
+  // Create a new submission
+  static async createSubmission(data: Partial<Submission>): Promise<Submission> {
+    const { data: submission, error } = await supabase
+      .from('submissions')
+      .insert([data])
+      .select()
+      .single();
 
+    if (error) {
+      console.error('Supabase error creating submission:', error);
+      throw new Error(`Failed to create submission: ${error.message}`);
+    }
+
+    return submission;
+  }
+
+  // Update submission status (and sync to MailerLite)
+  static async updateSubmissionStatus(
+    id: string,
+    status: SubmissionStatus,
+    syncToMailerLite: boolean = true
+  ): Promise<Submission> {
+    // First, update in Supabase
+    const { data: submission, error } = await supabase
+      .from('submissions')
+      .update({ status, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) {
+      console.error('Supabase error updating submission:', error);
+      throw new Error(`Failed to update submission: ${error.message}`);
+    }
+
+    // Sync to MailerLite if enabled and status is 'paid'
+    if (syncToMailerLite && submission.email && (status === 'paid' || status === 'completed')) {
+      try {
+        await this.syncStatusToMailerLite(
+          submission.email,
+          status,
+          submission.name,
+          submission.company_name
+        );
+      } catch (error) {
+        console.warn('Failed to sync to MailerLite, but DB updated:', error);
+        // Don't throw - DB update succeeded
+      }
+    }
+
+    return submission;
+  }
+
+  // Sync status to MailerLite
+  private static async syncStatusToMailerLite(
+    email: string,
+    status: string,
+    name?: string,
+    businessName?: string
+  ): Promise<void> {
+    const response = await fetch('/.netlify/functions/update-mailerlite-status', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        email,
+        status,
+        name,
+        businessName,
+      }),
+    });
+
+    if (!response.ok) {
+      const error = await response.json();
+      throw new Error(`MailerLite sync failed: ${JSON.stringify(error)}`);
+    }
+  }
+
+  // Get payments with pagination and filters
+  static async getPayments(
+    params: TableParams
+  ): Promise<PaginatedResponse<Payment>> {
+    const { page, pageSize, filters, sort } = params;
+    const from = (page - 1) * pageSize;
+    const to = from + pageSize - 1;
+
+    let query = supabase
+      .from('payments')
+      .select('*', { count: 'exact' });
+
+    // Apply filters
+    if (filters?.payment_status) {
+      query = query.eq('status', filters.payment_status);
+    }
+    if (filters?.search) {
+      query = query.or(
+        `reference.ilike.%${filters.search}%,paystack_reference.ilike.%${filters.search}%`
+      );
+    }
+    if (filters?.date_from) {
+      query = query.gte('created_at', filters.date_from);
+    }
+    if (filters?.date_to) {
+      query = query.lte('created_at', filters.date_to);
+    }
+
+    // Apply sorting
+    if (sort) {
+      query = query.order(sort.field, { ascending: sort.direction === 'asc' });
+    } else {
+      query = query.order('created_at', { ascending: false });
+    }
+
+    // Apply pagination
+    query = query.range(from, to);
+
+    const { data, error, count } = await query;
+
+    if (error) {
+      console.error('Supabase error fetching payments:', error);
+      throw new Error(`Failed to fetch payments: ${error.message}`);
+    }
+
+    return {
+      data: data || [],
+      total: count || 0,
+      page,
+      pageSize,
+      totalPages: Math.ceil((count || 0) / pageSize),
+    };
+  }
+
+  // Get submissions with pagination and filters
   static async getSubmissions(
     params: TableParams
   ): Promise<PaginatedResponse<SubmissionWithPayment>> {
     const { page, pageSize, filters, sort } = params;
-    const offset = (page - 1) * pageSize;
+    const from = (page - 1) * pageSize;
+    const to = from + pageSize - 1;
 
     let query = supabase
-      .from('submissions_with_payments')
-      .select('*', { count: 'exact' });
+      .from('submissions')
+      .select('*, payments(*)', { count: 'exact' });
 
     // Apply filters
     if (filters?.status) {
@@ -44,9 +175,6 @@ export class ApiService {
     if (filters?.date_to) {
       query = query.lte('created_at', filters.date_to);
     }
-    if (filters?.payment_status) {
-      query = query.eq('payment_status', filters.payment_status);
-    }
 
     // Apply sorting
     if (sort) {
@@ -56,14 +184,27 @@ export class ApiService {
     }
 
     // Apply pagination
-    query = query.range(offset, offset + pageSize - 1);
+    query = query.range(from, to);
 
     const { data, error, count } = await query;
 
-    if (error) throw error;
+    if (error) {
+      console.error('Supabase error fetching submissions:', error);
+      throw new Error(`Failed to fetch submissions: ${error.message}`);
+    }
+
+    // Transform data to include payment info
+    const submissions: SubmissionWithPayment[] = (data || []).map((sub: any) => ({
+      ...sub,
+      payment_id: sub.payments?.[0]?.id,
+      amount: sub.payments?.[0]?.amount,
+      payment_status: sub.payments?.[0]?.status,
+      payment_reference: sub.payments?.[0]?.reference,
+      paid_at: sub.payments?.[0]?.paid_at,
+    }));
 
     return {
-      data: data || [],
+      data: submissions,
       total: count || 0,
       page,
       pageSize,
@@ -71,139 +212,135 @@ export class ApiService {
     };
   }
 
-  static async getSubmissionById(id: string): Promise<SubmissionWithPayment | null> {
-    const { data, error } = await supabase
-      .from('submissions_with_payments')
+  // Get dashboard statistics
+  static async getDashboardStats(): Promise<DashboardStats> {
+    const oneWeekAgo = new Date();
+    oneWeekAgo.setDate(oneWeekAgo.getDate() - 7);
+
+    // Get all submissions
+    const { data: submissions, error: submissionsError } = await supabase
+      .from('submissions')
+      .select('*');
+
+    if (submissionsError) {
+      throw new Error(`Failed to fetch submissions: ${submissionsError.message}`);
+    }
+
+    // Get all payments
+    const { data: payments, error: paymentsError } = await supabase
+      .from('payments')
       .select('*')
+      .eq('status', 'paid');
+
+    if (paymentsError) {
+      throw new Error(`Failed to fetch payments: ${paymentsError.message}`);
+    }
+
+    const total_submissions = submissions?.length || 0;
+    const paid_submissions =
+      submissions?.filter((s) => s.status === 'paid').length || 0;
+    const pending_submissions =
+      submissions?.filter((s) => s.status === 'pending').length || 0;
+
+    const submissions_this_week =
+      submissions?.filter(
+        (s) => new Date(s.created_at) >= oneWeekAgo
+      ).length || 0;
+
+    const total_payments = payments?.length || 0;
+    const total_revenue =
+      payments?.reduce((sum, p) => sum + (p.amount || 0), 0) || 0;
+
+    const payments_this_week =
+      payments?.filter(
+        (p) => p.paid_at && new Date(p.paid_at) >= oneWeekAgo
+      ).length || 0;
+
+    return {
+      total_submissions,
+      paid_submissions,
+      pending_submissions,
+      total_payments,
+      total_revenue,
+      submissions_this_week,
+      payments_this_week,
+    };
+  }
+
+  // Get a single submission
+  static async getSubmission(id: string): Promise<SubmissionWithPayment> {
+    const { data, error } = await supabase
+      .from('submissions')
+      .select('*, payments(*)')
       .eq('id', id)
       .single();
 
-    if (error) throw error;
-    return data;
-  }
-
-  static async updateSubmissionStatus(id: string, status: string): Promise<void> {
-    const { error } = await supabase.rpc('update_submission_status', {
-      p_submission_id: id,
-      p_status: status,
-    });
-
-    if (error) throw error;
-  }
-
-  static async deleteSubmission(id: string): Promise<void> {
-    const { error } = await supabase
-      .from('submissions')
-      .delete()
-      .eq('id', id);
-
-    if (error) throw error;
-
-    // Log activity
-    await this.logActivity('delete', 'submission', id);
-  }
-
-  static async createSubmission(submission: Omit<Submission, 'id' | 'created_at' | 'updated_at'>): Promise<Submission> {
-    const { data, error } = await supabase
-      .from('submissions')
-      .insert(submission)
-      .select()
-      .single();
-
-    if (error) throw error;
-    return data;
-  }
-
-  // =============================================
-  // PAYMENTS
-  // =============================================
-
-  static async getPayments(
-    params: TableParams
-  ): Promise<PaginatedResponse<Payment>> {
-    const { page, pageSize, filters, sort } = params;
-    const offset = (page - 1) * pageSize;
-
-    let query = supabase
-      .from('payments')
-      .select('*', { count: 'exact' });
-
-    // Apply filters
-    if (filters?.payment_status) {
-      query = query.eq('status', filters.payment_status);
+    if (error) {
+      throw new Error(`Failed to fetch submission: ${error.message}`);
     }
-    if (filters?.date_from) {
-      query = query.gte('created_at', filters.date_from);
-    }
-    if (filters?.date_to) {
-      query = query.lte('created_at', filters.date_to);
-    }
-
-    // Apply sorting
-    if (sort) {
-      query = query.order(sort.field, { ascending: sort.direction === 'asc' });
-    } else {
-      query = query.order('created_at', { ascending: false });
-    }
-
-    // Apply pagination
-    query = query.range(offset, offset + pageSize - 1);
-
-    const { data, error, count } = await query;
-
-    if (error) throw error;
 
     return {
-      data: data || [],
-      total: count || 0,
-      page,
-      pageSize,
-      totalPages: Math.ceil((count || 0) / pageSize),
+      ...data,
+      payment_id: data.payments?.[0]?.id,
+      amount: data.payments?.[0]?.amount,
+      payment_status: data.payments?.[0]?.status,
+      payment_reference: data.payments?.[0]?.reference,
+      paid_at: data.payments?.[0]?.paid_at,
     };
   }
 
-  // =============================================
-  // DASHBOARD STATS
-  // =============================================
-
-  static async getDashboardStats(): Promise<DashboardStats> {
-    const { data, error } = await supabase
-      .from('dashboard_stats')
-      .select('*')
+  // Create a payment
+  static async createPayment(data: Partial<Payment>): Promise<Payment> {
+    const { data: payment, error } = await supabase
+      .from('payments')
+      .insert([data])
+      .select()
       .single();
 
-    if (error) throw error;
+    if (error) {
+      throw new Error(`Failed to create payment: ${error.message}`);
+    }
+
+    return payment;
+  }
+
+  // Update payment status
+  static async updatePaymentStatus(
+    id: string,
+    status: string
+  ): Promise<Payment> {
+    const { data, error } = await supabase
+      .from('payments')
+      .update({ status, updated_at: new Date().toISOString() })
+      .eq('id', id)
+      .select()
+      .single();
+
+    if (error) {
+      throw new Error(`Failed to update payment: ${error.message}`);
+    }
+
     return data;
   }
 
-  // =============================================
-  // ACTIVITY LOGS
-  // =============================================
-
-  static async logActivity(
-    action: string,
-    entity_type: string,
-    entity_id?: string,
-    metadata?: Record<string, any>
-  ): Promise<void> {
-    await supabase.rpc('log_admin_activity', {
-      p_action: action,
-      p_entity_type: entity_type,
-      p_entity_id: entity_id,
-      p_metadata: metadata,
-    });
-  }
-
-  static async getActivityLogs(page: number = 1, pageSize: number = 50): Promise<PaginatedResponse<ActivityLog>> {
-    const offset = (page - 1) * pageSize;
+  // Get activity logs with pagination
+  static async getActivityLogs(
+    page: number,
+    pageSize: number
+  ): Promise<PaginatedResponse<any>> {
+    const from = (page - 1) * pageSize;
+    const to = from + pageSize - 1;
 
     const { data, error, count } = await supabase
       .from('activity_logs')
       .select('*', { count: 'exact' })
       .order('created_at', { ascending: false })
-      .range(offset, offset + pageSize - 1);
+      .range(from, to);
 
-    if (error) throw error;
+    if (error) {
+      console.error('Supabase error fetching activity logs:', error);
+      throw new Error(`Failed to fetch activity logs: ${error.message}`);
+    }
 
     return {
       data: data || [],
@@ -214,19 +351,52 @@ export class ApiService {
     };
   }
 
-  // =============================================
-  // SERVICE TYPES (for filters)
-  // =============================================
-
+  // Get all service types
   static async getServiceTypes(): Promise<string[]> {
     const { data, error } = await supabase
       .from('submissions')
       .select('service_type')
-      .order('service_type');
+      .neq('service_type', null);
 
-    if (error) throw error;
+    if (error) {
+      console.error('Supabase error fetching service types:', error);
+      throw new Error(`Failed to fetch service types: ${error.message}`);
+    }
 
-    const uniqueTypes = [...new Set(data.map(item => item.service_type))];
-    return uniqueTypes;
+    // Get unique service types
+    const uniqueTypes = Array.from(
+      new Set((data || []).map((item: any) => item.service_type).filter(Boolean))
+    ) as string[];
+
+    return uniqueTypes.sort();
+  }
+
+  // Clear all dashboard data (delete all submissions and payments)
+  static async clearAllData(): Promise<void> {
+    try {
+      // Delete all payments first (due to foreign key constraints)
+      const { error: paymentsError } = await supabase
+        .from('payments')
+        .delete()
+        .gt('created_at', '1970-01-01'); // Delete all records with created_at after epoch (which is all records)
+
+      if (paymentsError) {
+        throw new Error(`Failed to delete payments: ${paymentsError.message}`);
+      }
+
+      // Delete all submissions
+      const { error: submissionsError } = await supabase
+        .from('submissions')
+        .delete()
+        .gt('created_at', '1970-01-01'); // Delete all records with created_at after epoch (which is all records)
+
+      if (submissionsError) {
+        throw new Error(`Failed to delete submissions: ${submissionsError.message}`);
+      }
+
+    } catch (error) {
+      console.error('Error clearing data:', error);
+      throw new Error(`Failed to clear data: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    }
   }
 }

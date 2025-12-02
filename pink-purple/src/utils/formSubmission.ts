@@ -18,7 +18,6 @@ interface ContactFormData {
   message?: string;
 }
 
-// Calculate reminder date
 function calculateReminderDate(option: string): string {
   const now = new Date();
   switch (option) {
@@ -37,17 +36,25 @@ function calculateReminderDate(option: string): string {
     default:
       now.setDate(now.getDate() + 1);
   }
-  return now.toISOString().split('T')[0]; // Returns YYYY-MM-DD
+  return now.toISOString();
 }
 
-// Save reminder form to both systems
 export async function saveReminderForm(formData: ReminderFormData): Promise<void> {
   const errors: string[] = [];
+  let submissionId: string | null = null;
 
-  // 1. Save to Supabase
+  // Save to Supabase first (most important)
   try {
-    await ApiService.createSubmission({
-      name: formData.name || '',
+    const { data, error } = await supabase
+      name: formData.name || 'Not provided',
+      email: formData.email,
+      company_name: formData.businessName,
+      service_type: 'Reminder Request',
+      reminder_date: calculateReminderDate(formData.reminderTime),
+    });
+    
+    const submission = await ApiService.createSubmission({
+      name: formData.name || 'Not provided',
       email: formData.email,
       company_name: formData.businessName,
       service_type: 'Reminder Request',
@@ -55,50 +62,58 @@ export async function saveReminderForm(formData: ReminderFormData): Promise<void
       status: 'pending',
       source: 'reminder_form',
     });
-    console.log('✅ Saved to Supabase');
-  } catch (error) {
-    console.error('❌ Supabase save failed:', error);
-    errors.push('Failed to save to database');
+    
+    submissionId = submission.id;
+  } catch (error: any) {
+    console.error('Failed to save to database:', error.message);
+    errors.push('Failed to save to database: ' + error.message);
   }
 
-  // 2. Save to MailerLite
+  // Save to MailerLite (secondary)
   try {
     const response = await fetch('/.netlify/functions/add-mailerlite-subscriber', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(formData),
+      body: JSON.stringify({
+        ...formData,
+        submissionId, // Include DB ID for reference
+      }),
     });
 
+    const responseData = await response.json();
+    
     if (!response.ok) {
-      throw new Error(`MailerLite API error: ${response.status}`);
+      throw new Error(`MailerLite API error: ${response.status} - ${JSON.stringify(responseData)}`);
     }
-
-    console.log('✅ Saved to MailerLite');
-  } catch (error) {
+  } catch (error: any) {
     console.error('❌ MailerLite save failed:', error);
-    errors.push('Failed to add to mailing list');
+    errors.push('Failed to add to mailing list: ' + error.message);
   }
 
-  // If both failed, throw error
+  // Handle errors
   if (errors.length === 2) {
     throw new Error('Failed to save data: ' + errors.join(', '));
   }
 
-  // If only one failed, log warning but don't throw
   if (errors.length === 1) {
-    console.warn('⚠️ Partial save:', errors[0]);
+    console.warn('Partial save:', errors[0]);
+    // Don't throw if DB saved successfully but MailerLite failed
+    if (!submissionId) {
+      throw new Error(errors[0]);
+    }
   }
 }
 
-// Save contact form to both systems
 export async function saveContactForm(formData: ContactFormData): Promise<void> {
   const errors: string[] = [];
+  let submissionId: string | null = null;
 
-  // 1. Save to Supabase
   try {
-    await ApiService.createSubmission({
+    console.log('💾 Saving contact form to Supabase...');
+    
+    const submission = await ApiService.createSubmission({
       name: formData.name,
       email: formData.email,
       phone: formData.phone,
@@ -108,13 +123,13 @@ export async function saveContactForm(formData: ContactFormData): Promise<void> 
       status: 'pending',
       source: 'landing_page',
     });
-    console.log('✅ Saved to Supabase');
-  } catch (error) {
-    console.error('❌ Supabase save failed:', error);
-    errors.push('Failed to save to database');
+    
+    submissionId = submission.id;
+  } catch (error: any) {
+    console.error('Failed to save to database:', error.message);
+    errors.push('Failed to save to database: ' + error.message);
   }
 
-  // 2. Save to MailerLite
   try {
     const response = await fetch('/.netlify/functions/add-mailerlite-subscriber', {
       method: 'POST',
@@ -125,27 +140,27 @@ export async function saveContactForm(formData: ContactFormData): Promise<void> 
         email: formData.email,
         name: formData.name,
         businessName: formData.companyName,
-        // Add any other fields your MailerLite function expects
+        submissionId,
       }),
     });
 
     if (!response.ok) {
-      throw new Error(`MailerLite API error: ${response.status}`);
+      const errorData = await response.json();
+      throw new Error(`MailerLite API error: ${response.status} - ${JSON.stringify(errorData)}`);
     }
-
-    console.log('✅ Saved to MailerLite');
-  } catch (error) {
-    console.error('❌ MailerLite save failed:', error);
-    errors.push('Failed to add to mailing list');
+  } catch (error: any) {
+    console.error('Failed to save to MailerLite:', error.message);
+    errors.push('Failed to add to mailing list: ' + error.message);
   }
 
-  // If both failed, throw error
   if (errors.length === 2) {
     throw new Error('Failed to save data: ' + errors.join(', '));
   }
 
-  // If only one failed, log warning but don't throw
   if (errors.length === 1) {
     console.warn('⚠️ Partial save:', errors[0]);
+    if (!submissionId) {
+      throw new Error(errors[0]);
+    }
   }
 }

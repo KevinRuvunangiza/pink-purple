@@ -37,17 +37,11 @@ serve(async (req) => {
     return new Response("ok", { headers: corsHeaders });
   }
 
-  console.log("🎯 Webhook received:", {
-    method: req.method,
-    url: req.url,
-    headers: Object.fromEntries(req.headers.entries()),
-  });
-
   try {
     // Get Paystack signature from headers
     const signature = req.headers.get("x-paystack-signature");
     if (!signature) {
-      console.error("❌ Missing Paystack signature");
+      console.error("Missing Paystack signature");
       return new Response(
         JSON.stringify({ error: "Missing signature" }),
         { status: 400, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -56,12 +50,11 @@ serve(async (req) => {
 
     // Get request body as text for signature verification
     const bodyText = await req.text();
-    console.log("📦 Raw body received:", bodyText);
     
     // Verify Paystack signature
     const paystackSecret = Deno.env.get("PAYSTACK_SECRET_KEY");
     if (!paystackSecret) {
-      console.error("❌ PAYSTACK_SECRET_KEY not configured");
+      console.error("PAYSTACK_SECRET_KEY not configured");
       return new Response(
         JSON.stringify({ error: "Server configuration error" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -70,23 +63,19 @@ serve(async (req) => {
 
     const isValid = verifyPaystackSignature(bodyText, signature, paystackSecret);
     if (!isValid) {
-      console.error("❌ Invalid Paystack signature");
+      console.error("Invalid Paystack signature");
       return new Response(
         JSON.stringify({ error: "Invalid signature" }),
         { status: 401, headers: { ...corsHeaders, "Content-Type": "application/json" } }
       );
     }
 
-    console.log("✅ Signature verified successfully");
-
     // Parse the verified body
     const event: PaystackEvent = JSON.parse(bodyText);
     
-    console.log("📨 Paystack event received:", {
+    console.log("Paystack event received:", {
       event: event.event,
       reference: event.data.reference,
-      amount: event.data.amount,
-      status: event.data.status,
     });
 
     // Initialize Supabase client
@@ -94,7 +83,7 @@ serve(async (req) => {
     const supabaseServiceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY");
     
     if (!supabaseUrl || !supabaseServiceKey) {
-      console.error("❌ Supabase configuration missing");
+      console.error("Supabase configuration missing");
       return new Response(
         JSON.stringify({ error: "Server configuration error" }),
         { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -115,11 +104,10 @@ serve(async (req) => {
       // Convert amount from kobo to naira
       const amountInNaira = amount / 100;
 
-      console.log("💰 Processing payment:", {
+      console.log("Processing payment:", {
         reference,
         amountInNaira,
         email: customer.email,
-        metadata,
       });
 
       // Check if payment already exists
@@ -130,11 +118,11 @@ serve(async (req) => {
         .single();
 
       if (checkError && checkError.code !== 'PGRST116') { // PGRST116 = no rows returned
-        console.error("❌ Error checking existing payment:", checkError);
+        console.error("Error checking existing payment:", checkError);
       }
 
       if (existingPayment) {
-        console.log("⚠️ Payment already processed:", reference);
+        console.log("Payment already processed:", reference);
         return new Response(
           JSON.stringify({ message: "Payment already processed" }),
           { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
@@ -145,7 +133,7 @@ serve(async (req) => {
       let submissionId = metadata?.submission_id;
 
       if (!submissionId) {
-        console.log("🔍 Submission ID not in metadata, searching by email:", customer.email);
+        console.log("Searching submission by email:", customer.email);
         
         // Try to find submission by email
         const { data: submission, error: submissionError } = await supabase
@@ -157,10 +145,10 @@ serve(async (req) => {
           .single();
 
         if (submissionError) {
-          console.warn("⚠️ Could not find submission by email:", submissionError);
+          console.warn("Could not find submission by email:", submissionError.message);
         } else if (submission) {
           submissionId = submission.id;
-          console.log("✅ Found submission:", submissionId);
+          console.log("Found submission:", submissionId);
         }
       }
 
@@ -176,7 +164,7 @@ serve(async (req) => {
         paid_at: paid_at,
       };
 
-      console.log("💾 Inserting payment data:", paymentData);
+      console.log("Inserting payment data");
 
       const { data: payment, error: paymentError } = await supabase
         .from("payments")
@@ -185,12 +173,9 @@ serve(async (req) => {
         .single();
 
       if (paymentError) {
-        console.error("❌ Error inserting payment:", {
-          error: paymentError,
+        console.error("Error inserting payment:", {
           code: paymentError.code,
           message: paymentError.message,
-          details: paymentError.details,
-          hint: paymentError.hint,
         });
         return new Response(
           JSON.stringify({ 
@@ -201,12 +186,18 @@ serve(async (req) => {
         );
       }
 
-      console.log("✅ Payment inserted successfully:", payment.id);
+      console.log("Payment inserted successfully:", payment.id);
 
       // Update submission status to 'paid' if submission exists
       if (submissionId) {
-        console.log("📝 Updating submission status:", submissionId);
+        console.log("Updating submission status:", submissionId);
         
+        const { data: submission, error: fetchError } = await supabase
+          .from("submissions")
+          .select("name, email, company_name")
+          .eq("id", submissionId)
+          .single();
+
         const { error: updateError } = await supabase
           .from("submissions")
           .update({ 
@@ -216,13 +207,47 @@ serve(async (req) => {
           .eq("id", submissionId);
 
         if (updateError) {
-          console.error("❌ Error updating submission:", updateError);
+          console.error("Error updating submission:", updateError.message);
         } else {
-          console.log("✅ Submission updated successfully");
+          console.log("Submission updated successfully");
+
+          // Sync to MailerLite if we have the submission details
+          if (!fetchError && submission) {
+            console.log("Syncing to MailerLite...");
+            try {
+              const mailerliteResponse = await fetch(
+                "https://api.mailerlite.com/api/v1/subscribers",
+                {
+                  method: "POST",
+                  headers: {
+                    "Content-Type": "application/json",
+                    "X-MailerLite-ApiKey": Deno.env.get("MAILERLITE_API_KEY") || "",
+                  },
+                  body: JSON.stringify({
+                    email: submission.email,
+                    name: submission.name,
+                    fields: {
+                      business_name: submission.company_name || "",
+                      payment_status: "paid",
+                      last_updated: new Date().toISOString(),
+                    },
+                  }),
+                }
+              );
+
+              if (mailerliteResponse.ok) {
+                console.log("MailerLite synced successfully for:", submission.email);
+              } else {
+                console.warn("MailerLite sync failed:", await mailerliteResponse.text());
+              }
+            } catch (mlError) {
+              console.warn("Error syncing to MailerLite:", mlError);
+            }
+          }
         }
       }
 
-      console.log("🎉 Payment processed successfully:", payment.id);
+      console.log("Payment processed successfully:", payment.id);
 
       return new Response(
         JSON.stringify({ 
@@ -235,22 +260,19 @@ serve(async (req) => {
     }
 
     // Handle other events if needed
-    console.log("ℹ️ Unhandled event type:", event.event);
+    console.log("Unhandled event type:", event.event);
     return new Response(
       JSON.stringify({ message: "Event received" }),
       { status: 200, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
 
   } catch (error) {
-    console.error("💥 Webhook error:", {
-      error: error,
+    console.error("Webhook error:", {
       message: error.message,
-      stack: error.stack,
     });
     return new Response(
       JSON.stringify({ 
         error: error.message,
-        stack: error.stack,
       }),
       { status: 500, headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );

@@ -8,6 +8,9 @@ export function DashboardPage() {
   const [stats, setStats] = useState<DashboardStats | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [clearing, setClearing] = useState(false);
+  const [showConfirmDialog, setShowConfirmDialog] = useState(false);
+  const [confirmationInput, setConfirmationInput] = useState('');
 
   useEffect(() => {
     loadStats();
@@ -36,6 +39,27 @@ export function DashboardPage() {
       currency: 'ZAR',
       minimumFractionDigits: 0,
     }).format(amount);
+  };
+
+  const handleClearData = async () => {
+    if (confirmationInput !== 'DELETE ALL DATA') {
+      alert('Confirmation text does not match');
+      return;
+    }
+
+    setClearing(true);
+    try {
+      await ApiService.clearAllData();
+      setShowConfirmDialog(false);
+      setConfirmationInput('');
+      await loadStats();
+      alert('All data has been cleared successfully');
+    } catch (error) {
+      console.error('Failed to clear data:', error);
+      alert(`Failed to clear data: ${error instanceof Error ? error.message : 'Unknown error'}`);
+    } finally {
+      setClearing(false);
+    }
   };
 
   if (loading) {
@@ -79,12 +103,20 @@ export function DashboardPage() {
             Welcome back! Here's what's happening.
           </p>
         </div>
-        <button
-          onClick={loadStats}
-          className="self-start sm:self-auto px-4 py-2 text-sm bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
-        >
-          🔄 Refresh
-        </button>
+        <div className="flex gap-2">
+          <button
+            onClick={loadStats}
+            className="self-start sm:self-auto px-4 py-2 text-sm bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors"
+          >
+            🔄 Refresh
+          </button>
+          <button
+            onClick={() => setShowConfirmDialog(true)}
+            className="self-start sm:self-auto px-4 py-2 text-sm bg-red-50 border border-red-300 text-red-600 rounded-lg hover:bg-red-100 transition-colors"
+          >
+            🗑️ Clear Data
+          </button>
+        </div>
       </div>
 
       {/* Stats Grid - Mobile Optimized */}
@@ -184,6 +216,69 @@ export function DashboardPage() {
           </div>
         </div>
       </div>
+
+      {/* Confirmation Dialog */}
+      {showConfirmDialog && (
+        <div className="fixed inset-0 z-50 overflow-y-auto">
+          <div className="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:p-0">
+            {/* Overlay */}
+            <div
+              className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
+              onClick={() => {
+                setShowConfirmDialog(false);
+                setConfirmationInput('');
+              }}
+            />
+
+            {/* Modal */}
+            <div className="relative inline-block bg-white rounded-xl text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-md w-full">
+              {/* Header */}
+              <div className="bg-gradient-to-r from-red-500 to-red-600 px-6 py-4">
+                <h3 className="text-lg font-medium text-white">⚠️ Delete All Data</h3>
+              </div>
+
+              {/* Content */}
+              <div className="px-6 py-4">
+                <p className="text-sm text-gray-700 mb-4">
+                  This action will permanently delete all submissions and payments. This cannot be undone.
+                </p>
+                
+                <p className="text-sm font-medium text-gray-900 mb-2">
+                  To confirm, type: <span className="font-mono bg-gray-100 px-2 py-1 rounded">DELETE ALL DATA</span>
+                </p>
+                
+                <input
+                  type="text"
+                  value={confirmationInput}
+                  onChange={(e) => setConfirmationInput(e.target.value)}
+                  placeholder="Type confirmation text"
+                  className="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-red-500 mb-4"
+                />
+
+                <div className="flex gap-3">
+                  <button
+                    onClick={() => {
+                      setShowConfirmDialog(false);
+                      setConfirmationInput('');
+                    }}
+                    disabled={clearing}
+                    className="flex-1 px-4 py-2 text-sm font-medium text-gray-700 bg-gray-100 rounded-lg hover:bg-gray-200 disabled:opacity-50 transition-colors"
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    onClick={handleClearData}
+                    disabled={clearing || confirmationInput !== 'DELETE ALL DATA'}
+                    className="flex-1 px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+                  >
+                    {clearing ? 'Clearing...' : 'Delete All'}
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

@@ -14,6 +14,8 @@ export const supabase = createClient(supabaseUrl, supabaseAnonKey, {
     persistSession: true,
     autoRefreshToken: true,
     detectSessionInUrl: true,
+    storage: window.localStorage, // Explicitly use localStorage
+    storageKey: 'supabase.auth.token', // Custom storage key
   },
 });
 
@@ -41,4 +43,10 @@ export const isUserAdmin = async () => {
   } catch {
     return false;
   }
+};
+
+// Helper to check session on mount
+export const checkSession = async () => {
+  const { data: { session } } = await supabase.auth.getSession();
+  return session;
 };

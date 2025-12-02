@@ -1,6 +1,5 @@
 // src/pages/admin/LoginPage.tsx
-
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { supabase } from '../../lib/supabase';
 
@@ -8,111 +7,163 @@ export function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState('');
+  const [checkingSession, setCheckingSession] = useState(true);
+  const [error, setError] = useState<string | null>(null);
   const navigate = useNavigate();
+
+  // Check if user is already logged in on mount
+  useEffect(() => {
+    checkExistingSession();
+  }, []);
+
+  const checkExistingSession = async () => {
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      
+      if (session) {
+        console.log('✅ Existing session found, redirecting...');
+        navigate('/admin/dashboard', { replace: true });
+      }
+    } catch (error) {
+      console.error('Session check error:', error);
+    } finally {
+      setCheckingSession(false);
+    }
+  };
 
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError('');
+    setError(null);
     setLoading(true);
 
     try {
-      const { data, error: authError } = await supabase.auth.signInWithPassword({
-        email,
-        password,
+      console.log('🔐 Attempting login...');
+      
+      const { data, error: signInError } = await supabase.auth.signInWithPassword({
+        email: email.trim(),
+        password: password,
       });
 
-      if (authError) throw authError;
+      if (signInError) {
+        throw signInError;
+      }
 
-      // Verify user is admin
+      if (!data.user) {
+        throw new Error('Login failed - no user returned');
+      }
+
+      console.log('✅ Login successful:', data.user.email);
+
+      // Verify admin status
       const { data: adminData, error: adminError } = await supabase
         .from('admin_users')
         .select('is_active')
         .eq('id', data.user.id)
         .single();
 
-      if (adminError || !adminData?.is_active) {
+      if (adminError || !adminData) {
         await supabase.auth.signOut();
-        throw new Error('Unauthorized: Admin access required');
+        throw new Error('You do not have admin access');
       }
 
-      // Update last login
-      await supabase
-        .from('admin_users')
-        .update({ last_login: new Date().toISOString() })
-        .eq('id', data.user.id);
+      if (!adminData.is_active) {
+        await supabase.auth.signOut();
+        throw new Error('Your admin account is inactive');
+      }
 
-      navigate('/admin/dashboard');
-    } catch (err: any) {
-      setError(err.message || 'Failed to login');
+      console.log('✅ Admin verified, redirecting...');
+      
+      // Navigate to dashboard
+      navigate('/admin/dashboard', { replace: true });
+
+    } catch (error: any) {
+      console.error('❌ Login error:', error);
+      setError(error.message || 'Failed to login. Please try again.');
     } finally {
       setLoading(false);
     }
   };
 
-  return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 via-purple-50 to-pink-100">
-      <div className="max-w-md w-full space-y-8 p-10 bg-white rounded-2xl shadow-2xl">
-        <div>
-          <h2 className="mt-6 text-center text-4xl font-extrabold text-gray-900">
-            Pink & Purple
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Admin Dashboard
-          </p>
-        </div>
+  if (checkingSession) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 to-purple-50">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600"></div>
+      </div>
+    );
+  }
 
-        <form className="mt-8 space-y-6" onSubmit={handleLogin}>
+  return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-pink-50 to-purple-50 p-4">
+      <div className="max-w-md w-full">
+        <div className="bg-white rounded-2xl shadow-xl p-8">
+          {/* Header */}
+          <div className="text-center mb-8">
+            <h1 className="text-3xl font-bold text-gray-900 mb-2">Admin Login</h1>
+            <p className="text-gray-600">Sign in to access your dashboard</p>
+          </div>
+
+          {/* Error Message */}
           {error && (
-            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
-              {error}
+            <div className="mb-6 p-4 bg-red-50 border border-red-200 rounded-lg">
+              <p className="text-red-800 text-sm">{error}</p>
             </div>
           )}
 
-          <div className="space-y-4">
+          {/* Login Form */}
+          <form onSubmit={handleLogin} className="space-y-6">
             <div>
-              <label htmlFor="email" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
                 Email Address
               </label>
               <input
                 id="email"
-                name="email"
                 type="email"
-                autoComplete="email"
-                required
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                className="mt-1 appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                placeholder="admin@pinkandpurple.com"
+                required
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                placeholder="admin@example.com"
+                disabled={loading}
               />
             </div>
 
             <div>
-              <label htmlFor="password" className="block text-sm font-medium text-gray-700">
+              <label htmlFor="password" className="block text-sm font-medium text-gray-700 mb-2">
                 Password
               </label>
               <input
                 id="password"
-                name="password"
                 type="password"
-                autoComplete="current-password"
-                required
                 value={password}
                 onChange={(e) => setPassword(e.target.value)}
-                className="mt-1 appearance-none relative block w-full px-4 py-3 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-lg focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent"
-                placeholder="Enter your password"
+                required
+                className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-transparent transition-all"
+                placeholder="••••••••"
+                disabled={loading}
               />
             </div>
-          </div>
 
-          <button
-            type="submit"
-            disabled={loading}
-            className="w-full flex justify-center py-3 px-4 border border-transparent text-sm font-medium rounded-lg text-white bg-gradient-to-r from-pink-500 to-purple-600 hover:from-pink-600 hover:to-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 disabled:opacity-50 disabled:cursor-not-allowed transition-all duration-200"
-          >
-            {loading ? 'Signing in...' : 'Sign In'}
-          </button>
-        </form>
+            <button
+              type="submit"
+              disabled={loading}
+              className="w-full bg-gradient-to-r from-pink-500 to-purple-500 text-white py-3 rounded-lg font-semibold hover:from-pink-600 hover:to-purple-600 transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? (
+                <span className="flex items-center justify-center gap-2">
+                  <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+                  Signing in...
+                </span>
+              ) : (
+                'Sign In'
+              )}
+            </button>
+          </form>
+        </div>
+
+        {/* Footer */}
+        <p className="text-center text-sm text-gray-600 mt-6">
+          Protected admin area - Authorized access only
+        </p>
       </div>
     </div>
   );
