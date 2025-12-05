@@ -40,6 +40,7 @@ interface SocialLinkProps {
 const SocialLink: React.FC<SocialLinkProps> = ({ href, icon, label }) => (
   <m.a
     href={href}
+    target="_blank"
     whileHover={{ scale: 1.1 }}
     whileTap={{ scale: 0.95 }}
     transition={{ duration: 0.2 }}
@@ -161,7 +162,7 @@ export default function Footer() {
               </h4>
               <div className="flex gap-3">
                 <SocialLink
-                  href="https://linkedin.com"
+                  href="https://www.linkedin.com/company/yourmarketingandautomautomationpartner/"
                   icon={<Linkedin className="w-5 h-5" strokeWidth={2} />}
                   label="LinkedIn"
                 />
@@ -171,7 +172,8 @@ export default function Footer() {
                   label="Twitter"
                 />
                 <SocialLink
-                  href="https://instagram.com"
+                  href="https://www.instagram.com/pinkandpurple_marketing?igsh=MXE3cmRhbTd2dDZoNw%3D%3D&utm_source=qr"
+                  
                   icon={<Instagram className="w-5 h-5" strokeWidth={2} />}
                   label="Instagram"
                 />
