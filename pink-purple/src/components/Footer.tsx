@@ -3,12 +3,8 @@ import {
   Mail,
   Phone,
   MapPin,
-  Linkedin,
-  Twitter,
-  Instagram,
-  Facebook,
 } from "lucide-react";
-import { FaTiktok } from "react-icons/fa";
+import { FaFacebook, FaInstagram, FaLinkedin, FaTiktok } from "react-icons/fa";
 import { Link } from "react-router";
 
 const fadeIn = {
@@ -58,9 +54,7 @@ export default function Footer() {
   const footerSections = [
     {
       title: "Services",
-      links: [
-        { label: "Business Registration", href: "#services" },
-      ],
+      links: [{ label: "Business Registration", href: "#services" }],
     },
     {
       title: "Company",
@@ -92,8 +86,8 @@ export default function Footer() {
                 Pink & Purple
               </h3>
               <p className="text-neutral-400 text-[15px] leading-relaxed mb-6 max-w-xs">
-                Empowering SMEs with business solutions,
-                automation, and strategic guidance.
+                Empowering SMEs with business solutions, automation, and
+                strategic guidance.
               </p>
 
               {/* Contact Info */}
@@ -114,7 +108,9 @@ export default function Footer() {
                 </a>
                 <div className="flex items-center gap-3 text-neutral-400">
                   <MapPin className="w-4 h-4" strokeWidth={2} />
-                  <span className="text-[14px]">Pretoria, Gauteng, South Africa</span>
+                  <span className="text-[14px]">
+                    Pretoria, Gauteng, South Africa
+                  </span>
                 </div>
               </div>
             </m.div>
@@ -164,15 +160,26 @@ export default function Footer() {
               <div className="flex gap-3">
                 <SocialLink
                   href="https://www.linkedin.com/company/yourmarketingandautomautomationpartner/"
-                  icon={<Linkedin className="w-5 h-5" strokeWidth={2} />}
+                  icon={<FaLinkedin />}
                   label="LinkedIn"
                 />
                 <SocialLink
                   href="https://www.tiktok.com/@pinkandpurplemarketing?_r=1&_t=ZS-91EtVB8yi7c"
                   icon={<FaTiktok />}
-                  label="Twitter"
+                  label="Tiktok"
                 />
-            
+
+                <SocialLink
+                  href="https://www.instagram.com/pinkandpurple_marketing?igsh=MXE3cmRhbTd2dDZoNw%3D%3D&utm_source=qr"
+                  icon={<FaInstagram />}
+                  label="Instagram"
+                />
+
+                <SocialLink
+                  href="https://www.instagram.com/pinkandpurple_marketing?igsh=MXE3cmRhbTd2dDZoNw%3D%3D&utm_source=qr"
+                  icon={<FaFacebook />}
+                  label="Facebook"
+                />
               </div>
             </m.div>
           </div>
