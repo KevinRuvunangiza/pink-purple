@@ -3,11 +3,8 @@ import {
   Mail,
   Phone,
   MapPin,
-  Linkedin,
-  Twitter,
-  Instagram,
-  Facebook,
 } from "lucide-react";
+import { FaFacebook, FaInstagram, FaLinkedin, FaTiktok } from "react-icons/fa";
 import { Link } from "react-router";
 
 const fadeIn = {
@@ -46,6 +43,7 @@ const SocialLink: React.FC<SocialLinkProps> = ({ href, icon, label }) => (
     transition={{ duration: 0.2 }}
     className="w-10 h-10 rounded-lg bg-neutral-800 hover:bg-neutral-700 flex items-center justify-center text-neutral-400 hover:text-white transition-colors duration-200"
     aria-label={label}
+    target="_blank"
   >
     {icon}
   </m.a>
@@ -57,9 +55,7 @@ export default function Footer() {
   const footerSections = [
     {
       title: "Services",
-      links: [
-        { label: "Business Registration", href: "#services" },
-      ],
+      links: [{ label: "Business Registration", href: "#services" }],
     },
     {
       title: "Company",
@@ -91,8 +87,8 @@ export default function Footer() {
                 Pink & Purple
               </h3>
               <p className="text-neutral-400 text-[15px] leading-relaxed mb-6 max-w-xs">
-                Empowering SMEs with business solutions,
-                automation, and strategic guidance.
+                Empowering SMEs with business solutions, automation, and
+                strategic guidance.
               </p>
 
               {/* Contact Info */}
@@ -113,7 +109,9 @@ export default function Footer() {
                 </a>
                 <div className="flex items-center gap-3 text-neutral-400">
                   <MapPin className="w-4 h-4" strokeWidth={2} />
-                  <span className="text-[14px]">Pretoria, Gauteng, South Africa</span>
+                  <span className="text-[14px]">
+                    Pretoria, Gauteng, South Africa
+                  </span>
                 </div>
               </div>
             </m.div>
@@ -163,23 +161,24 @@ export default function Footer() {
               <div className="flex gap-3">
                 <SocialLink
                   href="https://www.linkedin.com/company/yourmarketingandautomautomationpartner/"
-                  icon={<Linkedin className="w-5 h-5" strokeWidth={2} />}
+                  icon={<FaLinkedin />}
                   label="LinkedIn"
                 />
                 <SocialLink
-                  href="https://twitter.com"
-                  icon={<Twitter className="w-5 h-5" strokeWidth={2} />}
-                  label="Twitter"
+                  href="https://www.tiktok.com/@pinkandpurplemarketing?_r=1&_t=ZS-91EtVB8yi7c"
+                  icon={<FaTiktok />}
+                  label="Tiktok"
                 />
+
                 <SocialLink
                   href="https://www.instagram.com/pinkandpurple_marketing?igsh=MXE3cmRhbTd2dDZoNw%3D%3D&utm_source=qr"
-                  
-                  icon={<Instagram className="w-5 h-5" strokeWidth={2} />}
+                  icon={<FaInstagram />}
                   label="Instagram"
                 />
+
                 <SocialLink
-                  href="https://facebook.com"
-                  icon={<Facebook className="w-5 h-5" strokeWidth={2} />}
+                  href="https://www.instagram.com/pinkandpurple_marketing?igsh=MXE3cmRhbTd2dDZoNw%3D%3D&utm_source=qr"
+                  icon={<FaFacebook />}
                   label="Facebook"
                 />
               </div>
