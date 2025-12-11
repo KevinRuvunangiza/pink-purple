@@ -1,6 +1,6 @@
 import { Link } from "react-router";
 import { motion } from "framer-motion";
-import NavBarSolid from "./AltNavBar";
+import NavBarSolid from "./NavBarSolid";
 
 export default function WorkInProgress({ pageName }: { pageName: string }) {
   return (

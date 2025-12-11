@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
-import NavBarSolid from "../components/AltNavBar";
+import NavBarSolid from "../components/NavBarSolid";
 import { BlogService } from "../services/api.service";
 import type { BlogPost } from "../types/blog.types";
 

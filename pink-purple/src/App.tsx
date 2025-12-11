@@ -16,6 +16,7 @@ import { DashboardPage } from "./pages/admin/DashboardPage";
 import { PaymentsPage } from "./pages/admin/PaymentsPage";
 import { SubmissionsPage } from "./pages/admin/SubmissionsPage";
 import { BlogManagePage } from "./pages/admin/BlogManagePage";
+import FullstackLaunch from "./pages/FullstackLaunch";
 
 function App() {
   return (
@@ -29,6 +30,7 @@ function App() {
           <Route path="/blog/:slug" element={<BlogPost />} />
           <Route path="/contact" element={<Contact />} />
           <Route path="/next-steps" element={<NextSteps />} />
+          <Route path="/fullstack-launch" element={<FullstackLaunch />} />
           {/* Public route */}
           <Route path="/admin/login" element={<LoginPage />} />
 
