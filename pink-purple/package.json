@@ -15,6 +15,7 @@
     "@tiptap/extension-image": "^3.13.0",
     "@tiptap/react": "^3.13.0",
     "@tiptap/starter-kit": "^3.13.0",
+    "framer-motion": "^12.23.26",
     "lucide-react": "^0.552.0",
     "motion": "^12.23.24",
     "netlify-cli": "^23.10.0",

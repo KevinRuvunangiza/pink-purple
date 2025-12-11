@@ -1,4 +1,4 @@
-import { m } from "framer-motion"; // Changed from 'motion' to 'm'
+import { motion as m } from "framer-motion";
 import {
   Mail,
   Phone,
