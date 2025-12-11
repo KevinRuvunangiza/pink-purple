@@ -798,3 +798,29 @@ export default function FullstackLaunch(){
     </>
   );
 };
+dingDown,
+  Alertb] = useState("overview");
+  const [selectedPackage, setSelectedPackage] = useState(null);
+  const [showModal, setShowModarSolid />
+      <div className="min-h-screen bg-slate-50 texed-nd-multiply filter blur-3xl opacate-pulse"
+            variants={floatVariants}
+            animate="animate"
+5px -5px rgba(0, 0, 0, 0.1)" }}
+              >
+                <div className="flex items-center mb-4">
+                  <Award className="w-8 h-8 text-purple-600 mr-3" />
+                  <h3 ss Re Bran                  <CheckCircle className="w-5 h-5 text-pink-500 mr-2 flex-shrink-0 mt-0.5" />
+             Prof     items-start">
+                    <CheckCircle className="w-5 h-5 text-purple-500 mr-2 flex-shrink-0 p-8 border-4 border-white transform scale-105 relative"
+                variants={itemVariants}
+                whileHover={{ y: -15, boxShadow: "0 35p mt-0flex--shrix-shrmr-2 -5 text-pink-300 mr-2 flex-shrink-0 mt-0.5" />
+                    <span className="font-bold text-pi   .m                     </div>
+                        <p className="text-slate-600 leading-relaxed">
+                          {step.desc}
+       whileHover={{ scale: 1.1 }}
+                    >
+                      SM
+                    </motion.div>
+                             key={idx}
+                  className="group bg-slate-50 rounded-xl border border-slate-200 hover:border-pink-300 transition-aimate={{ rotate: 0 }}
+       
