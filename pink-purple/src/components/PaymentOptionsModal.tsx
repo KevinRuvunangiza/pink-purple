@@ -1,6 +1,12 @@
 import { X, ArrowRight, Mail, DollarSign } from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { useState, useEffect, useCallback, useMemo } from "react";
+import { createClient } from "@supabase/supabase-js";
+import { ApiService } from '../services/api.service';
+
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL || "";
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY || "";
+const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
 interface PaymentOptionModalProps {
   showModal: boolean;
@@ -8,6 +14,7 @@ interface PaymentOptionModalProps {
   onPaymentSuccess: () => void;
   preselectedService?: string;
   preselectedPrice?: number;
+  submissionId?: string;
 }
 
 interface ServiceOption {
@@ -25,7 +32,7 @@ interface PaystackResponse {
   trxref: string;
 }
 
-const PUBLIC_PAYMENT_KEY = "pk_live_7f35457821ca77d85c3151a34f4feb430ef5ab53";
+const PUBLIC_PAYMENT_KEY = "pk_test_3492412833f812c4dd9984e8d550a0b332816e1d";
 
 const SERVICE_OPTIONS: ServiceOption[] = [
   {
@@ -40,20 +47,7 @@ const SERVICE_OPTIONS: ServiceOption[] = [
     price: 950,
     description: "Complete registration package for public companies",
   },
-  // {
-  //   value: "consultation",
-  //   label: "Business Consultation",
-  //   price: 500,
-  //   description: "Expert consultation for your business needs",
-  // },
-  // {
-  //   value: "other",
-  //   label: "Other Services",
-  //   price: 0,
-  //   description: "Custom pricing - we'll contact you",
-  // },
 ];
-
 
 export default function PaymentOptionModal({
   showModal,
@@ -61,14 +55,15 @@ export default function PaymentOptionModal({
   onPaymentSuccess,
   preselectedService = "private_company",
   preselectedPrice = 0,
+  submissionId,
 }: PaymentOptionModalProps) {
   const [email, setEmail] = useState("");
+  const [name, setName] = useState("");
   const [selectedService, setSelectedService] = useState(preselectedService);
   const [customPrice, setCustomPrice] = useState(preselectedPrice);
   const [emailError, setEmailError] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
 
-  // Update selected service and price when props change
   useEffect(() => {
     if (preselectedService) {
       setSelectedService(preselectedService);
@@ -78,13 +73,11 @@ export default function PaymentOptionModal({
     }
   }, [preselectedService, preselectedPrice]);
 
-  // Get current service details - memoized for performance
   const currentService = useMemo(
     () => SERVICE_OPTIONS.find((service) => service.value === selectedService),
     [selectedService]
   );
 
-  // Calculate final price - memoized
   const finalPrice = useMemo(() => {
     if (selectedService === "other") {
       return customPrice;
@@ -92,7 +85,6 @@ export default function PaymentOptionModal({
     return currentService?.price || 0;
   }, [selectedService, customPrice, currentService]);
 
-  // Email validation function
   const validateEmail = useCallback((email: string): string => {
     if (!email.trim()) return "Email is required";
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -100,11 +92,77 @@ export default function PaymentOptionModal({
     return "";
   }, []);
 
-  // Handle payment submission
-  const handleContinueToPayment = useCallback((): void => {
-    const error = validateEmail(email);
-    if (error) {
-      setEmailError(error);
+  const validateName = useCallback((name: string): string => {
+    if (!name.trim()) return "Name is required";
+    if (name.trim().length < 2) return "Name must be at least 2 characters";
+    return "";
+  }, []);
+
+  const savePaymentToDatabase = async (
+    paymentResponse: PaystackResponse,
+    activeSubmissionId: string
+  ) => {
+    try {
+      const paymentData = {
+        submission_id: activeSubmissionId,
+        amount: finalPrice,
+        status: "paid" as const,
+        reference: paymentResponse.reference,
+        paystack_reference: paymentResponse.reference,
+        payment_method: "paystack",
+        metadata: {
+          service_type: currentService?.label || "Custom Service",
+          service_value: selectedService,
+          email: email,
+          name: name,
+          transaction_id: paymentResponse.transaction,
+        },
+        paid_at: new Date().toISOString(),
+      };
+
+      const { data, error } = await supabase
+        .from("payments")
+        .insert(paymentData)
+        .select()
+        .single();
+
+      if (error) {
+        throw error;
+      }
+
+      console.log("Payment saved successfully");
+
+      const { error: updateError } = await supabase
+        .from("submissions")
+        .update({
+          status: "paid",
+          updated_at: new Date().toISOString(),
+        })
+        .eq("id", activeSubmissionId);
+
+      if (updateError) {
+        console.error("Could not update submission:", updateError);
+      } else {
+        console.log("Submission status updated to paid");
+      }
+
+      return data;
+    } catch (error) {
+      console.error("Failed to save payment:", error);
+      return null;
+    }
+  };
+
+  const handleContinueToPayment = useCallback(async (): Promise<void> => {
+    const emailError = validateEmail(email);
+    if (emailError) {
+      setEmailError(emailError);
+      return;
+    }
+
+    const nameError = validateName(name);
+    if (nameError) {
+      setEmailError(nameError);
       return;
     }
 
@@ -121,67 +179,112 @@ export default function PaymentOptionModal({
     setIsProcessing(true);
     setEmailError("");
 
-    const handler = window.PaystackPop.setup({
-      key: PUBLIC_PAYMENT_KEY,
-      email: email.trim(),
-      amount: finalPrice * 100, // Convert to kobo/cents
-      currency: "ZAR",
-      ref: `BRG_${Date.now()}_${Math.floor(Math.random() * 1000000)}`,
-      metadata: {
-        custom_fields: [
-          {
-            display_name: "Service Type",
-            variable_name: "service_type",
-            value: currentService?.label || "Custom Service",
-          },
-          {
-            display_name: "Service Value",
-            variable_name: "service_value",
-            value: selectedService,
-          },
-        ],
-      },
-      callback: function (response: PaystackResponse) {
-        console.log("Payment successful:", response);
-        setIsProcessing(false);
-        handleCloseModal();
-        onPaymentSuccess();
-      },
-      onClose: function () {
-        console.log("Payment window closed");
-        setIsProcessing(false);
-      },
-    });
+    try {
+      let activeSubmissionId = submissionId;
 
-    handler.openIframe();
-  }, [email, selectedService, customPrice, finalPrice, currentService, validateEmail, onPaymentSuccess]);
+      if (!activeSubmissionId) {
+        const newSubmission = await ApiService.createSubmission({
+          name: name,
+          email: email,
+          service_type: currentService?.label || "Custom Service",
+          status: "pending",
+          source: "landing_page",
+          message: `Payment for ${currentService?.label || "service"}`,
+        });
 
-  // Reset form and close modal
+        activeSubmissionId = newSubmission.id;
+      }
+
+      const handler = window.PaystackPop.setup({
+        key: PUBLIC_PAYMENT_KEY,
+        email: email.trim(),
+        amount: finalPrice * 100,
+        currency: "ZAR",
+        ref: `BRG_${Date.now()}_${Math.floor(Math.random() * 1000000)}`,
+        metadata: {
+          custom_fields: [
+            {
+              display_name: "Service Type",
+              variable_name: "service_type",
+              value: currentService?.label || "Custom Service",
+            },
+            {
+              display_name: "Service Value",
+              variable_name: "service_value",
+              value: selectedService,
+            },
+            {
+              display_name: "Submission ID",
+              variable_name: "submission_id",
+              value: activeSubmissionId,
+            },
+          ],
+        },
+        callback: function (response: PaystackResponse) {
+          savePaymentToDatabase(response, activeSubmissionId).then(() => {
+            // Payment processing complete
+          });
+
+          setIsProcessing(false);
+          handleCloseModal();
+          onPaymentSuccess();
+        },
+        onClose: function () {
+          setIsProcessing(false);
+        },
+      });
+
+      handler.openIframe();
+    } catch (error) {
+      console.error("Error setting up payment:", error);
+      setEmailError("Failed to initialize payment. Please try again.");
+      setIsProcessing(false);
+    }
+  }, [
+    email,
+    selectedService,
+    customPrice,
+    finalPrice,
+    currentService,
+    validateEmail,
+    validateName,
+    onPaymentSuccess,
+    submissionId,
+  ]);
+
   const handleCloseModal = useCallback((): void => {
-    if (isProcessing) return; // Prevent closing during payment
+    if (isProcessing) return;
     setShowModal(false);
     setEmail("");
+    setName("");
     setEmailError("");
     setCustomPrice(0);
     setSelectedService(preselectedService);
   }, [isProcessing, setShowModal, preselectedService]);
 
-  // Handle service selection change
   const handleServiceChange = useCallback((value: string): void => {
     setSelectedService(value);
-    // Reset custom price when switching away from "other"
     if (value !== "other") {
       setCustomPrice(0);
     }
   }, []);
 
-  // Handle email input change
-  const handleEmailChange = useCallback((value: string): void => {
-    setEmail(value);
-    if (emailError) setEmailError("");
-  }, [emailError]);
+  const handleEmailChange = useCallback(
+    (value: string): void => {
+      setEmail(value);
+      if (emailError) setEmailError("");
+    },
+    [emailError]
+  );
 
-  // Handle custom price change
+  const handleNameChange = useCallback(
+    (value: string): void => {
+      setName(value);
+      if (emailError) setEmailError("");
+    },
+    [emailError]
+  );
+
   const handleCustomPriceChange = useCallback((value: string): void => {
     const numValue = parseFloat(value) || 0;
     setCustomPrice(numValue);
@@ -206,7 +309,6 @@ export default function PaymentOptionModal({
             onClick={(e) => e.stopPropagation()}
             className="bg-white rounded-3xl max-w-lg w-full overflow-hidden shadow-2xl max-h-[90vh] overflow-y-auto"
           >
-            {/* Header */}
             <div className="bg-gradient-to-r from-purple-700 to-pink-600 px-8 py-6 relative sticky top-0 z-10">
               <motion.button
                 onClick={handleCloseModal}
@@ -215,7 +317,6 @@ export default function PaymentOptionModal({
                 whileTap={!isProcessing ? { scale: 0.9 } : {}}
                 transition={{ duration: 0.2 }}
                 className="absolute top-4 right-4 bg-white/20 backdrop-blur-sm text-white p-2 rounded-full hover:bg-white/30 transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-                aria-label="Close modal"
               >
                 <X className="w-5 h-5" strokeWidth={2.5} />
               </motion.button>
@@ -229,7 +330,28 @@ export default function PaymentOptionModal({
             </div>
 
             <div className="p-8 space-y-6">
-              {/* Email Input */}
+              <div>
+                <label
+                  htmlFor="name"
+                  className="block text-sm font-semibold text-gray-700 mb-2"
+                >
+                  Full Name <span className="text-red-500">*</span>
+                </label>
+                <input
+                  id="name"
+                  type="text"
+                  value={name}
+                  onChange={(e) => handleNameChange(e.target.value)}
+                  placeholder="John Doe"
+                  disabled={isProcessing}
+                  className={`w-full px-4 py-3 border-2 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-200 disabled:bg-gray-100 disabled:cursor-not-allowed ${
+                    emailError && !email
+                      ? "border-red-300 bg-red-50"
+                      : "border-gray-200 focus:border-purple-300"
+                  }`}
+                />
+              </div>
+
               <div>
                 <label
                   htmlFor="email"
@@ -253,19 +375,15 @@ export default function PaymentOptionModal({
                         ? "border-red-300 bg-red-50"
                         : "border-gray-200 focus:border-purple-300"
                     }`}
-                    aria-invalid={!!emailError}
-                    aria-describedby={emailError ? "email-error" : undefined}
                   />
                 </div>
                 <AnimatePresence>
                   {emailError && (
                     <motion.p
-                      id="email-error"
                       initial={{ opacity: 0, y: -10 }}
                       animate={{ opacity: 1, y: 0 }}
                       exit={{ opacity: 0, y: -10 }}
                       className="text-red-500 text-sm mt-2 flex items-center gap-1"
-                      role="alert"
                     >
                       <span>⚠️</span> {emailError}
                     </motion.p>
@@ -273,7 +391,6 @@ export default function PaymentOptionModal({
                 </AnimatePresence>
               </div>
 
-              {/* Service Selection */}
               <div>
                 <label className="block text-sm font-semibold text-gray-700 mb-3">
                   Select Service <span className="text-red-500">*</span>
@@ -289,7 +406,9 @@ export default function PaymentOptionModal({
                         selectedService === service.value
                           ? "border-purple-500 bg-purple-50"
                           : "border-gray-200 hover:border-purple-200 hover:bg-gray-50"
-                      } ${isProcessing ? "opacity-50 cursor-not-allowed" : ""}`}
+                      } ${
+                        isProcessing ? "opacity-50 cursor-not-allowed" : ""
+                      }`}
                     >
                       <input
                         type="radio"
@@ -299,7 +418,6 @@ export default function PaymentOptionModal({
                         onChange={(e) => handleServiceChange(e.target.value)}
                         disabled={isProcessing}
                         className="w-4 h-4 text-purple-600 focus:ring-purple-500 mt-1"
-                        aria-label={service.label}
                       />
                       <div className="flex-1">
                         <div className="flex items-center justify-between gap-2 mb-1">
@@ -339,7 +457,6 @@ export default function PaymentOptionModal({
                 </div>
               </div>
 
-              {/* Custom Price Input (only for "other" service) */}
               {selectedService === "other" && (
                 <motion.div
                   initial={{ opacity: 0, height: 0 }}
@@ -370,13 +487,11 @@ export default function PaymentOptionModal({
                       step="0.01"
                       disabled={isProcessing}
                       className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-300 transition-all duration-200 disabled:bg-gray-100"
-                      aria-label="Custom price amount"
                     />
                   </div>
                 </motion.div>
               )}
 
-              {/* Price Summary */}
               <div className="bg-gradient-to-r from-purple-50 to-pink-50 p-4 rounded-xl border border-purple-100">
                 <div className="flex items-center justify-between">
                   <span className="text-sm font-medium text-gray-700">
@@ -393,22 +508,22 @@ export default function PaymentOptionModal({
                 )}
               </div>
 
-              {/* Payment Button */}
               <div className="space-y-3 pt-2">
                 <motion.button
                   onClick={handleContinueToPayment}
-                  disabled={isProcessing || finalPrice <= 0}
+                  disabled={isProcessing || finalPrice <= 0 || !name.trim() || !email.trim()}
                   whileHover={
-                    !isProcessing && finalPrice > 0
+                    !isProcessing && finalPrice > 0 && name.trim() && email.trim()
                       ? { scale: 1.02, y: -2 }
                       : {}
                   }
                   whileTap={
-                    !isProcessing && finalPrice > 0 ? { scale: 0.98 } : {}
+                    !isProcessing && finalPrice > 0 && name.trim() && email.trim()
+                      ? { scale: 0.98 }
+                      : {}
                   }
                   transition={{ duration: 0.2 }}
                   className="w-full bg-gradient-to-r from-purple-700 to-pink-600 text-white py-4 rounded-xl font-bold hover:from-purple-800 hover:to-pink-700 transition-all duration-300 shadow-lg hover:shadow-xl flex items-center justify-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:shadow-lg"
-                  aria-label={`Pay R${finalPrice.toFixed(2)}`}
                 >
                   {isProcessing ? (
                     <>
@@ -443,7 +558,6 @@ export default function PaymentOptionModal({
   );
 }
 
-// Type declaration for Paystack
 declare global {
   interface Window {
     PaystackPop: {

@@ -1,29 +1,87 @@
+// src/pages/BlogPost.tsx
+
+import { useEffect, useState } from "react";
 import { useParams, Link } from "react-router";
-import blogPosts from "../data/blogPost.json";
-import NavBarSolid from "../components/AltNavBar";
+import NavBarSolid from "../components/NavBarSolid";
+import { BlogService } from "../services/api.service";
+import type { BlogPost as BlogPostType } from "../types/blog.types";
 
 export default function BlogPost() {
-  const { title } = useParams();
-  const post = blogPosts.find((p) => p.title === (title));
+  const { slug } = useParams<{ slug: string }>();
+  const [post, setPost] = useState<BlogPostType | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
 
-  if (!post) {
+  useEffect(() => {
+    const fetchPost = async () => {
+      if (!slug) {
+        setError("No blog post specified");
+        setLoading(false);
+        return;
+      }
+
+      try {
+        setLoading(true);
+        // Try slug first, then fall back to title for backward compatibility
+        let postData = await BlogService.getPostBySlug(slug);
+        
+        if (!postData) {
+          // Try by title for backward compatibility (URL encoded title)
+          const decodedTitle = decodeURIComponent(slug);
+          postData = await BlogService.getPostByTitle(decodedTitle);
+        }
+
+        if (!postData) {
+          setError("Post not found");
+        } else {
+          setPost(postData);
+        }
+      } catch (err) {
+        console.error("Error fetching blog post:", err);
+        setError(err instanceof Error ? err.message : "Failed to load blog post");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchPost();
+  }, [slug]);
+
+  if (loading) {
     return (
-      <div className="min-h-screen bg-gray-50 py-12 px-4">
-        <div className="max-w-4xl mx-auto text-center pt-32">
-          <h1 className="text-4xl font-bold text-gray-900 mb-4">
-            Post Not Found
-          </h1>
-          <p className="text-xl text-gray-600 mb-8">
-            The blog post you're looking for doesn't exist.
-          </p>
-          <Link
-            to="/blog"
-            className="inline-block bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-pink-600 transition-colors"
-          >
-            Back to Blog
-          </Link>
+      <>
+        <NavBarSolid />
+        <div className="min-h-screen bg-gray-50 flex items-center justify-center pt-32">
+          <div className="text-center">
+            <div className="inline-block animate-spin rounded-full h-12 w-12 border-b-2 border-purple-600 mb-4"></div>
+            <p className="text-gray-600">Loading blog post...</p>
+          </div>
         </div>
-      </div>
+      </>
+    );
+  }
+
+  if (error || !post) {
+    return (
+      <>
+        <NavBarSolid />
+        <div className="min-h-screen bg-gray-50 py-12 px-4">
+          <div className="max-w-4xl mx-auto text-center pt-32">
+            <h1 className="text-4xl font-bold text-gray-900 mb-4">
+              Post Not Found
+            </h1>
+            <p className="text-xl text-gray-600 mb-8">
+              {error || "The blog post you're looking for doesn't exist."}
+            </p>
+            <Link
+              to="/blog"
+              className="inline-block bg-purple-600 text-white px-6 py-3 rounded-lg hover:bg-pink-600 transition-colors"
+            >
+              Back to Blog
+            </Link>
+          </div>
+        </div>
+      </>
     );
   }
 
@@ -33,10 +91,13 @@ export default function BlogPost() {
       <div className="min-h-screen bg-gray-50 relative overflow-hidden">
         {/* Subtle background pattern */}
         <div className="absolute inset-0 opacity-10">
-          <div className="absolute inset-0" style={{
-            backgroundImage: `radial-gradient(circle at 2px 2px, rgb(168, 85, 247) 1px, transparent 0)`,
-            backgroundSize: '40px 40px'
-          }}></div>
+          <div
+            className="absolute inset-0"
+            style={{
+              backgroundImage: `radial-gradient(circle at 2px 2px, rgb(168, 85, 247) 1px, transparent 0)`,
+              backgroundSize: "40px 40px",
+            }}
+          ></div>
         </div>
 
         <div className="relative z-10 py-12 px-4 pt-32">
@@ -47,8 +108,18 @@ export default function BlogPost() {
                 to="/blog"
                 className="inline-flex items-center text-purple-600 hover:text-pink-600 font-medium transition-colors"
               >
-                <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                <svg
+                  className="w-5 h-5 mr-2"
+                  fill="none"
+                  stroke="currentColor"
+                  viewBox="0 0 24 24"
+                >
+                  <path
+                    strokeLinecap="round"
+                    strokeLinejoin="round"
+                    strokeWidth={2}
+                    d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                  />
                 </svg>
                 Back to Blog
               </Link>
@@ -72,9 +143,21 @@ export default function BlogPost() {
                   {post.category}
                 </span>
                 <span className="text-black">•</span>
-                <span className="text-black">{post.readTime}</span>
+                <span className="text-black">{post.read_time}</span>
                 <span className="text-black">•</span>
-                <span className="text-black">{post.date}</span>
+                <span className="text-black">
+                  {new Date(post.date).toLocaleDateString('en-US', {
+                    year: 'numeric',
+                    month: 'long',
+                    day: 'numeric'
+                  })}
+                </span>
+                {post.view_count > 0 && (
+                  <>
+                    <span className="text-black">•</span>
+                    <span className="text-black">{post.view_count} views</span>
+                  </>
+                )}
               </div>
 
               {/* Title */}
@@ -101,7 +184,7 @@ export default function BlogPost() {
               </div>
 
               {/* Content with proper HTML rendering */}
-              <div 
+              <div
                 className="blog-content prose prose-lg max-w-none"
                 dangerouslySetInnerHTML={{ __html: post.content }}
               />
@@ -112,12 +195,22 @@ export default function BlogPost() {
                   to="/blog"
                   className="inline-flex items-center text-purple-600 hover:text-pink-600 font-medium transition-colors"
                 >
-                  <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M10 19l-7-7m0 0l7-7m-7 7h18" />
+                  <svg
+                    className="w-5 h-5 mr-2"
+                    fill="none"
+                    stroke="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      strokeWidth={2}
+                      d="M10 19l-7-7m0 0l7-7m-7 7h18"
+                    />
                   </svg>
                   Back to All Posts
                 </Link>
-                
+
                 <Link
                   to="/contact"
                   className="px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-pink-600 transition-colors font-semibold"

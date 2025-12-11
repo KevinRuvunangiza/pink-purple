@@ -13,6 +13,8 @@ import {
 } from "lucide-react";
 
 import PaymentOptionModal from "../components/PaymentOptionsModal";
+import { saveReminderForm } from "../utils/formSubmission";
+import NavBar from "../components/NavBar";
 
 const REMINDER_OPTIONS = [
   { value: "3days", label: "In 3 Days" },
@@ -59,6 +61,7 @@ export default function NextSteps() {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [showContinueButton, setShowContinueButton] = useState(false);
   const [iframeLoaded, setIframeLoaded] = useState(false);
+  const [submissionId, setSubmissionId] = useState<string | null>(null);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -69,7 +72,7 @@ export default function NextSteps() {
 
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const continueButtonDelay = 120000;
+  const continueButtonDelay = 1200;
 
   // Optimized message listener with passive event
   useEffect(() => {
@@ -106,35 +109,39 @@ export default function NextSteps() {
 
   const validateForm = () => {
     const errors: Record<string, string> = {};
+    
     if (!formData.email.trim()) {
       errors.email = "Email is required";
     } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(formData.email)) {
       errors.email = "Please enter a valid email address";
     }
+    
     setFormErrors(errors);
-    return Object.keys(errors).length === 0;
+    const isValid = Object.keys(errors).length === 0;
+    return isValid;
   };
 
   const handleSubmitReminder = async () => {
-    if (!validateForm()) return;
+    if (!validateForm()) {
+      return;
+    }
 
     setIsSubmitting(true);
-    try {
-      const response = await fetch(
-        "/.netlify/functions/add-mailerlite-subscriber",
-        {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        }
-      );
 
-      if (!response.ok) throw new Error("Failed to add subscriber");
-      await response.json();
+    try {
+      // THIS IS THE KEY CHANGE - Using saveReminderForm instead of direct fetch
+      await saveReminderForm({
+        email: formData.email,
+        name: formData.name,
+        businessName: formData.businessName,
+        reminderTime: formData.reminderTime,
+      });
+
       setCurrentView("reminder-success");
-    } catch (error) {
-      console.error("Error submitting reminder:", error);
-      alert("There was an error setting up your reminder. Please try again.");
+    } catch (error: any) {
+      alert(
+        `There was an error setting up your reminder: ${error.message || "Please try again."}`
+      );
     } finally {
       setIsSubmitting(false);
     }
@@ -155,6 +162,7 @@ export default function NextSteps() {
 
   return (
     <div className="min-h-screen bg-gray-950 py-12 px-4 pt-[100px]">
+      <NavBar />
       {/* OPTIMIZED: Static background, no animation, positioned absolute instead of rendering pattern */}
       <div
         className="fixed inset-0 opacity-20 pointer-events-none"
@@ -420,9 +428,9 @@ export default function NextSteps() {
                     <input
                       type="text"
                       value={formData.name}
-                      onChange={(e) =>
-                        setFormData({ ...formData, name: e.target.value })
-                      }
+                      onChange={(e) => {
+                        setFormData({ ...formData, name: e.target.value });
+                      }}
                       placeholder="John Doe"
                       className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-300 transition-colors"
                     />
@@ -441,12 +449,12 @@ export default function NextSteps() {
                     <input
                       type="text"
                       value={formData.businessName}
-                      onChange={(e) =>
+                      onChange={(e) => {
                         setFormData({
                           ...formData,
                           businessName: e.target.value,
-                        })
-                      }
+                        });
+                      }}
                       placeholder="Your Company (Pty) Ltd"
                       className="w-full pl-12 pr-4 py-3 border-2 border-gray-200 rounded-xl focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-purple-300 transition-colors"
                     />
@@ -472,12 +480,12 @@ export default function NextSteps() {
                           name="reminderTime"
                           value={option.value}
                           checked={formData.reminderTime === option.value}
-                          onChange={(e) =>
+                          onChange={(e) => {
                             setFormData({
                               ...formData,
                               reminderTime: e.target.value,
-                            })
-                          }
+                            });
+                          }}
                           className="w-4 h-4 text-purple-600"
                         />
                         <Calendar
@@ -610,9 +618,7 @@ export default function NextSteps() {
           showModal={showPaymentModal}
           setShowModal={setShowPaymentModal}
           onPaymentSuccess={() => setCurrentView("payment-success")}
-          onContactUs={() =>
-            alert("Redirect to contact section or support email")
-          }
+          submissionId={submissionId || undefined}
         />
       )}
     </div>

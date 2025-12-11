@@ -37,6 +37,7 @@ interface SocialLinkProps {
 const SocialLink: React.FC<SocialLinkProps> = ({ href, icon, label }) => (
   <m.a
     href={href}
+    target="_blank"
     whileHover={{ scale: 1.1 }}
     whileTap={{ scale: 0.95 }}
     transition={{ duration: 0.2 }}
