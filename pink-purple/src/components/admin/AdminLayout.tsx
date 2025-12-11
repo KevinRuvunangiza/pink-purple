@@ -9,6 +9,7 @@ import {
   LogOut,
   Menu,
   X,
+  BookOpen,
 } from "lucide-react";
 import { supabase } from "../../lib/supabase";
 import MainLogo from "../../assets/Pink & Purple Logo Package/Main logo without background.png";
@@ -24,11 +25,13 @@ export function AdminLayout() {
   };
 
   const navItems = [
-    { path: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
-    { path: "/admin/submissions", label: "Submissions", icon: FileText },
-    { path: "/admin/payments", label: "Payments", icon: CreditCard },
-    { path: "/admin/activity", label: "Activity Logs", icon: History },
-  ];
+  { path: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
+  { path: "/admin/submissions", label: "Submissions", icon: FileText },
+  { path: "/admin/payments", label: "Payments", icon: CreditCard },
+  { path: "/admin/activity", label: "Activity Logs", icon: History },
+  { path: "/admin/blog", label: "Blog Posts", icon: BookOpen }, // Add this line
+];
+
 
   const isActive = (path: string) => location.pathname === path;
 

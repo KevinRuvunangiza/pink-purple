@@ -70,3 +70,70 @@
   --color-brand-purple-950: #250626;
 }
 
+/* Required Tiptap styles for proper editor functionality */
+.ProseMirror {
+  outline: none;
+}
+
+.ProseMirror > * + * {
+  margin-top: 0.75em;
+}
+
+.ProseMirror h2 {
+  @apply text-2xl font-bold text-gray-900 mt-6 mb-3;
+}
+
+.ProseMirror h3 {
+  @apply text-xl font-semibold text-gray-800 mt-5 mb-2;
+}
+
+.ProseMirror p {
+  @apply text-gray-700 leading-relaxed;
+}
+
+.ProseMirror ul,
+.ProseMirror ol {
+  @apply pl-6 my-4;
+}
+
+.ProseMirror ul {
+  @apply list-disc;
+}
+
+.ProseMirror ol {
+  @apply list-decimal;
+}
+
+.ProseMirror li {
+  @apply mb-2;
+}
+
+.ProseMirror blockquote {
+  @apply border-l-4 border-pink-500 pl-4 italic text-gray-600 my-4;
+}
+
+.ProseMirror code {
+  @apply bg-gray-100 px-1.5 py-0.5 rounded text-sm text-purple-600 font-mono;
+}
+
+.ProseMirror pre {
+  @apply bg-gray-900 text-gray-100 p-4 rounded-lg overflow-x-auto my-4 font-mono text-sm;
+}
+
+.ProseMirror pre code {
+  @apply bg-transparent p-0 text-gray-100;
+}
+
+.ProseMirror img {
+  @apply max-w-full h-auto rounded-lg my-6;
+}
+
+.ProseMirror a {
+  @apply text-pink-600 underline hover:text-pink-700;
+}
+
+/* Placeholder */
+.ProseMirror p.is-editor-empty:first-child::before {
+  content: 'Start writing your blog post...';
+  @apply text-gray-400 pointer-events-none float-left h-0;
+}

@@ -15,6 +15,7 @@ import { ActivityLogsPage } from "./pages/admin/ActivityLogsPage";
 import { DashboardPage } from "./pages/admin/DashboardPage";
 import { PaymentsPage } from "./pages/admin/PaymentsPage";
 import { SubmissionsPage } from "./pages/admin/SubmissionsPage";
+import { BlogManagePage } from "./pages/admin/BlogManagePage";
 
 function App() {
   return (
@@ -40,6 +41,7 @@ function App() {
               </ProtectedRoute>
             }
           >
+            <Route path="blog" element={<BlogManagePage />} />
             <Route path="dashboard" element={<DashboardPage />} />
             <Route path="submissions" element={<SubmissionsPage />} />
             <Route path="payments" element={<PaymentsPage />} />
