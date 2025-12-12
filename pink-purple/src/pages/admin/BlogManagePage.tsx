@@ -39,7 +39,7 @@ export function BlogManagePage() {
 
   const loadPosts = async () => {
     try {
-      const data = await BlogService.getAllPosts();
+      const data = await BlogService.getAllPostsForAdmin();
       setPosts(data);
     } catch (error) {
       console.error('Failed to load posts:', error);

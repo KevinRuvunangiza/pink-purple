@@ -436,6 +436,21 @@ export class BlogService {
     return data || [];
   }
 
+  // Get all blog posts including unpublished (admin only)
+  static async getAllPostsForAdmin(): Promise<BlogPost[]> {
+    const { data, error } = await supabase
+      .from("blog_posts")
+      .select("*")
+      .order("date", { ascending: false });
+
+    if (error) {
+      console.error("Supabase error fetching blog posts:", error);
+      throw new Error(`Failed to fetch blog posts: ${error.message}`);
+    }
+
+    return data || [];
+  }
+
   // Get a single blog post by slug
   static async getPostBySlug(slug: string): Promise<BlogPost | null> {
     const { data, error } = await supabase
