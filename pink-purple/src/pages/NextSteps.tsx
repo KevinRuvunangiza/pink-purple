@@ -72,7 +72,7 @@ export default function NextSteps() {
 
   const [formErrors, setFormErrors] = useState<Record<string, string>>({});
   const [showPaymentModal, setShowPaymentModal] = useState(false);
-  const continueButtonDelay = 1200;
+  const continueButtonDelay = 120000; //Waits for 120 seconds(Not optimal but had to do it due to us not having access to Clickup API)
 
   // Optimized message listener with passive event
   useEffect(() => {

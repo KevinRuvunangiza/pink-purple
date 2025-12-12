@@ -1,4 +1,4 @@
-import { motion as m } from "framer-motion";
+import { m } from "framer-motion"; 
 import {
   Mail,
   Phone,
@@ -43,7 +43,6 @@ const SocialLink: React.FC<SocialLinkProps> = ({ href, icon, label }) => (
     transition={{ duration: 0.2 }}
     className="w-10 h-10 rounded-lg bg-neutral-800 hover:bg-neutral-700 flex items-center justify-center text-neutral-400 hover:text-white transition-colors duration-200"
     aria-label={label}
-    target="_blank"
   >
     {icon}
   </m.a>
