@@ -107,7 +107,7 @@ export default function FullstackLaunch() {
       <NavBarSolid />
       <div className="min-h-screen bg-slate-50 text-slate-800">
         {/* Hero Section - Fusion of both designs */}
-        <section className="relative pt-24 pb-32 px-4 bg-gradient-to-br from-pink-50 via-purple-50 to-white overflow-hidden">
+        <section className="relative pt-24 pb-32 px-4 bg-gradient-to-br from-pink-50 via-purple-50 to-white overflow-hidden mt-5">
           {/* Animated background blobs */}
           <motion.div
             className="absolute top-0 right-0 w-96 h-96 bg-purple-300 rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-pulse"
@@ -174,15 +174,6 @@ export default function FullstackLaunch() {
               >
                 View Launch Packages
               </motion.button>
-              <motion.button
-                onClick={() => scrollToSection("financials")}
-                className="bg-white text-slate-700 border-2 border-slate-300 px-8 py-4 rounded-full font-bold hover:bg-slate-50 hover:border-purple-400 transition-all text-lg"
-                variants={itemVariants}
-                whileHover={{ scale: 1.05 }}
-                whileTap={{ scale: 0.95 }}
-              >
-                See Financial Plan
-              </motion.button>
             </motion.div>
           </motion.div>
         </section>
@@ -218,7 +209,10 @@ export default function FullstackLaunch() {
               <motion.div
                 className="bg-gradient-to-br from-purple-50 to-pink-50 p-8 rounded-3xl border border-purple-100 shadow-lg"
                 variants={slideInFromRight}
-                whileHover={{ y: -5, boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)" }}
+                whileHover={{
+                  y: -5,
+                  boxShadow: "0 20px 25px -5px rgba(0, 0, 0, 0.1)",
+                }}
               >
                 <div className="flex items-center mb-4">
                   <Award className="w-8 h-8 text-purple-600 mr-3" />
@@ -249,7 +243,10 @@ export default function FullstackLaunch() {
           >
             <div className="flex flex-col md:flex-row gap-12 items-start">
               {/* Target Persona */}
-              <motion.div className="w-full md:w-1/3" variants={slideInFromLeft}>
+              <motion.div
+                className="w-full md:w-1/3"
+                variants={slideInFromLeft}
+              >
                 <h2 className="text-3xl font-bold text-slate-900 mb-6">
                   Target Market
                 </h2>
@@ -284,7 +281,10 @@ export default function FullstackLaunch() {
               </motion.div>
 
               {/* SWOT Analysis */}
-              <motion.div className="w-full md:w-2/3" variants={slideInFromRight}>
+              <motion.div
+                className="w-full md:w-2/3"
+                variants={slideInFromRight}
+              >
                 <h2 className="text-3xl font-bold text-slate-900 mb-6">
                   Strategic SWOT
                 </h2>
@@ -340,11 +340,15 @@ export default function FullstackLaunch() {
                       variants={itemVariants}
                       whileHover={{ y: -5 }}
                     >
-                      <h4 className={`font-bold text-${swot.color}-900 mb-3 flex items-center`}>
+                      <h4
+                        className={`font-bold text-${swot.color}-900 mb-3 flex items-center`}
+                      >
                         <span className="mr-2">{swot.icon}</span>
                         {swot.title}
                       </h4>
-                      <ul className={`text-sm text-${swot.color}-800 space-y-2`}>
+                      <ul
+                        className={`text-sm text-${swot.color}-800 space-y-2`}
+                      >
                         {swot.items.map((item, i) => (
                           <li key={i}>• {item}</li>
                         ))}
@@ -366,7 +370,10 @@ export default function FullstackLaunch() {
             viewport={{ once: true, amount: 0.2 }}
             variants={containerVariants}
           >
-            <motion.div className="text-center mb-16" variants={containerVariants}>
+            <motion.div
+              className="text-center mb-16"
+              variants={containerVariants}
+            >
               <motion.h2
                 className="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4"
                 variants={fadeInUp}
@@ -389,7 +396,10 @@ export default function FullstackLaunch() {
               <motion.div
                 className="bg-white rounded-3xl shadow-lg p-8 border-2 border-slate-200 hover:border-pink-300 transition-all hover:shadow-xl"
                 variants={itemVariants}
-                whileHover={{ y: -10, boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.15)" }}
+                whileHover={{
+                  y: -10,
+                  boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.15)",
+                }}
               >
                 <h3 className="text-2xl font-bold text-slate-900 mb-2">
                   Launch Starter
@@ -431,7 +441,10 @@ export default function FullstackLaunch() {
               <motion.div
                 className="bg-white rounded-3xl shadow-lg p-8 border-2 border-slate-200 hover:border-purple-300 transition-all hover:shadow-xl"
                 variants={itemVariants}
-                whileHover={{ y: -10, boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.15)" }}
+                whileHover={{
+                  y: -10,
+                  boxShadow: "0 25px 50px -12px rgba(0, 0, 0, 0.15)",
+                }}
               >
                 <h3 className="text-2xl font-bold text-slate-900 mb-2">
                   Digital Foundations
@@ -477,7 +490,10 @@ export default function FullstackLaunch() {
               <motion.div
                 className="bg-gradient-to-br from-purple-900 to-pink-900 rounded-3xl shadow-2xl p-8 border-4 border-white transform scale-105 relative"
                 variants={itemVariants}
-                whileHover={{ y: -15, boxShadow: "0 35px 60px -15px rgba(0, 0, 0, 0.3)" }}
+                whileHover={{
+                  y: -15,
+                  boxShadow: "0 35px 60px -15px rgba(0, 0, 0, 0.3)",
+                }}
               >
                 <motion.div
                   className="absolute -top-4 left-1/2 transform -translate-x-1/2"
@@ -485,7 +501,8 @@ export default function FullstackLaunch() {
                   transition={{ duration: 2, repeat: Infinity }}
                 >
                   <span className="bg-pink-500 text-white px-4 py-1 rounded-full text-xs font-bold shadow-lg flex items-center gap-1">
-                    <Sparkles className="w-3 h-3" /> BEST VALUE <Sparkles className="w-3 h-3" />
+                    <Sparkles className="w-3 h-3" /> BEST VALUE{" "}
+                    <Sparkles className="w-3 h-3" />
                   </span>
                 </motion.div>
                 <h3 className="text-3xl font-bold text-white mb-2">
@@ -553,7 +570,10 @@ export default function FullstackLaunch() {
             viewport={{ once: true, amount: 0.2 }}
             variants={containerVariants}
           >
-            <motion.div className="text-center mb-16" variants={containerVariants}>
+            <motion.div
+              className="text-center mb-16"
+              variants={containerVariants}
+            >
               <motion.span
                 className="text-pink-400 font-bold tracking-widest text-xs uppercase border border-pink-400 px-3 py-1 rounded-full inline-block"
                 variants={scaleIn}
@@ -564,7 +584,7 @@ export default function FullstackLaunch() {
                 className="text-4xl md:text-5xl font-extrabold mt-4 mb-6"
                 variants={fadeInUp}
               >
-                14-27 Day Execution Roadmap
+                Execution Roadmap
               </motion.h2>
               <motion.p
                 className="text-slate-300 max-w-2xl mx-auto text-lg"
@@ -579,48 +599,51 @@ export default function FullstackLaunch() {
             <motion.div className="relative mb-20" variants={containerVariants}>
               <div className="hidden md:block absolute top-1/2 left-0 w-full h-1 bg-slate-700 transform -translate-y-1/2"></div>
 
-              <motion.div className="grid grid-cols-1 md:grid-cols-7 gap-6 relative" variants={containerVariants}>
+              <motion.div
+                className="grid grid-cols-1 md:grid-cols-7 gap-6 relative"
+                variants={containerVariants}
+              >
                 {[
                   {
                     num: 1,
                     title: "Brand Identity",
-                    days: "Days 1-3",
+                    days: "Will vary based on client responsiveness",
                     color: "pink",
                   },
                   {
                     num: 2,
                     title: "Social Setup",
-                    days: "Days 4-5",
+                    days: "Will vary based on client responsiveness",
                     color: "purple",
                   },
                   {
                     num: 3,
-                    title: "Domain & Email",
-                    days: "Days 6-7",
+                    title: "Domain & Registration",
+                    days: "Will vary based on client responsiveness",
                     color: "purple",
                   },
                   {
                     num: 4,
                     title: "Content Plan",
-                    days: "Days 8-10",
+                    days: "Will vary based on client responsiveness",
                     color: "pink",
                   },
                   {
                     num: 5,
-                    title: "Email Marketing",
-                    days: "Days 11-13",
+                    title: "CRM Setup",
+                    days: "Will vary based on client responsiveness",
                     color: "pink",
                   },
                   {
                     num: 6,
-                    title: "CRM Setup",
-                    days: "Days 14-17",
+                    title: "Email Marketing",
+                    days: "Will vary based on client responsiveness",
                     color: "purple",
                   },
                   {
                     num: 7,
                     title: "Landing Page",
-                    days: "Day 24+",
+                    days: "Will vary based on client responsiveness",
                     color: "white",
                   },
                 ].map((step) => (
@@ -728,7 +751,9 @@ export default function FullstackLaunch() {
                       <motion.tr
                         key={idx}
                         className="hover:bg-slate-700/50 transition-colors"
-                        whileHover={{ backgroundColor: "rgba(51, 65, 85, 0.3)" }}
+                        whileHover={{
+                          backgroundColor: "rgba(51, 65, 85, 0.3)",
+                        }}
                       >
                         <td className="px-6 py-4 font-medium text-white">
                           {row.feature}
@@ -745,7 +770,10 @@ export default function FullstackLaunch() {
               </div>
             </motion.div>
 
-            <motion.div className="mt-12 flex justify-center" variants={itemVariants}>
+            <motion.div
+              className="mt-12 flex justify-center"
+              variants={itemVariants}
+            >
               <motion.button
                 onClick={() => setShowModal(true)}
                 className="bg-white text-slate-900 px-10 py-4 rounded-full font-bold text-lg hover:bg-pink-50 hover:text-pink-600 transition-all shadow-lg transform hover:scale-105"
@@ -759,231 +787,6 @@ export default function FullstackLaunch() {
         </section>
 
         {/* Financial Plan Section */}
-        <section id="financials" className="py-20 bg-slate-50">
-          <motion.div
-            className="container mx-auto px-4 max-w-6xl"
-            initial="hidden"
-            whileInView="visible"
-            viewport={{ once: true, amount: 0.2 }}
-            variants={containerVariants}
-          >
-            <motion.div className="text-center mb-12" variants={containerVariants}>
-              <motion.h2
-                className="text-4xl font-bold text-slate-900 mb-4"
-                variants={fadeInUp}
-              >
-                Financial Viability
-              </motion.h2>
-              <motion.p
-                className="text-xl text-slate-600 max-w-3xl mx-auto"
-                variants={itemVariants}
-              >
-                Our strategy relies on high-volume registration to fund niche
-                systemization growth.
-              </motion.p>
-            </motion.div>
-
-            <motion.div
-              className="grid grid-cols-1 lg:grid-cols-2 gap-10"
-              variants={containerVariants}
-            >
-              {/* 6 Month Goal Card */}
-              <motion.div
-                className="bg-white p-8 rounded-3xl shadow-lg border border-slate-200"
-                variants={slideInFromLeft}
-                whileHover={{ y: -5 }}
-              >
-                <h3 className="text-2xl font-bold text-slate-800 mb-2 text-center">
-                  Initial 6-Month Monthly Goal
-                </h3>
-                <p className="text-sm text-center text-slate-500 mb-8">
-                  Target: 30 Registration Clients/Month
-                </p>
-
-                <motion.div
-                  className="grid grid-cols-4 gap-3 mb-6"
-                  variants={containerVariants}
-                >
-                  {[
-                    {
-                      label: "Net Profit",
-                      value: "R11,154",
-                      color: "bg-purple-500",
-                      percent: "57%",
-                    },
-                    {
-                      label: "CIPC Fees",
-                      value: "R5,250",
-                      color: "bg-pink-500",
-                      percent: "27%",
-                    },
-                    {
-                      label: "Ads",
-                      value: "R1,500",
-                      color: "bg-slate-400",
-                      percent: "8%",
-                    },
-                    {
-                      label: "Tools/Ops",
-                      value: "R1,596",
-                      color: "bg-slate-500",
-                      percent: "8%",
-                    },
-                  ].map((item, idx) => (
-                    <motion.div
-                      key={idx}
-                      className="text-center"
-                      variants={itemVariants}
-                      whileHover={{ scale: 1.05 }}
-                    >
-                      <motion.div
-                        className={`h-32 ${item.color} rounded-lg mb-2 flex items-end justify-center pb-2 text-white font-bold text-xs`}
-                        animate={{ height: ["128px", "140px", "128px"] }}
-                        transition={{ duration: 2, repeat: Infinity }}
-                      >
-                        {item.percent}
-                      </motion.div>
-                      <div className="text-xs font-semibold text-slate-600">
-                        {item.label}
-                      </div>
-                      <div className="text-sm font-bold text-slate-900">
-                        {item.value}
-                      </div>
-                    </motion.div>
-                  ))}
-                </motion.div>
-
-                <motion.div
-                  className="grid grid-cols-2 gap-4 mt-8"
-                  variants={containerVariants}
-                >
-                  <motion.div
-                    className="p-4 bg-slate-50 rounded-xl text-center"
-                    variants={itemVariants}
-                    whileHover={{ y: -5 }}
-                  >
-                    <div className="text-xs uppercase tracking-wide text-slate-500 mb-1">
-                      Monthly Revenue
-                    </div>
-                    <div className="text-2xl font-extrabold text-green-600">
-                      R19,500
-                    </div>
-                  </motion.div>
-                  <motion.div
-                    className="p-4 bg-purple-50 rounded-xl text-center"
-                    variants={itemVariants}
-                    whileHover={{ y: -5 }}
-                  >
-                    <div className="text-xs uppercase tracking-wide text-purple-500 mb-1">
-                      Est. Net Profit
-                    </div>
-                    <div className="text-2xl font-extrabold text-purple-700">
-                      R11,154
-                    </div>
-                  </motion.div>
-                </motion.div>
-              </motion.div>
-
-              {/* 3 Year Growth Card */}
-              <motion.div
-                className="bg-white p-8 rounded-3xl shadow-lg border border-slate-200"
-                variants={slideInFromRight}
-                whileHover={{ y: -5 }}
-              >
-                <h3 className="text-2xl font-bold text-slate-800 mb-2 text-center">
-                  3-Year Revenue Projection
-                </h3>
-                <p className="text-sm text-center text-slate-500 mb-8">
-                  Scaling from Funding Arm to Core Services
-                </p>
-
-                <motion.div
-                  className="space-y-6"
-                  variants={containerVariants}
-                >
-                  {[
-                    {
-                      year: "Year 1",
-                      registration: 130000,
-                      systemization: 50000,
-                    },
-                    {
-                      year: "Year 2",
-                      registration: 240000,
-                      systemization: 400000,
-                    },
-                    {
-                      year: "Year 3",
-                      registration: 360000,
-                      systemization: 850000,
-                    },
-                  ].map((data, idx) => {
-                    const total = data.registration + data.systemization;
-                    const regPercent = (data.registration / total) * 100;
-                    const sysPercent = (data.systemization / total) * 100;
-
-                    return (
-                      <motion.div key={idx} variants={itemVariants}>
-                        <div className="flex justify-between mb-2">
-                          <span className="font-bold text-slate-900">
-                            {data.year}
-                          </span>
-                          <span className="font-bold text-slate-900">
-                            R{(total / 1000).toFixed(0)}k
-                          </span>
-                        </div>
-                        <motion.div
-                          className="flex h-12 rounded-lg overflow-hidden"
-                          whileHover={{ height: "50px" }}
-                        >
-                          <motion.div
-                            className="bg-pink-500 flex items-center justify-center text-white text-xs font-bold"
-                            style={{ width: `${regPercent}%` }}
-                            whileHover={{ backgroundColor: "#ec4899" }}
-                          >
-                            {regPercent > 20 && "Registration"}
-                          </motion.div>
-                          <motion.div
-                            className="bg-purple-600 flex items-center justify-center text-white text-xs font-bold"
-                            style={{ width: `${sysPercent}%` }}
-                            whileHover={{ backgroundColor: "#7c3aed" }}
-                          >
-                            {sysPercent > 20 && "Systemization"}
-                          </motion.div>
-                        </motion.div>
-                      </motion.div>
-                    );
-                  })}
-                </motion.div>
-
-                <motion.div
-                  className="mt-8 p-4 bg-pink-50 rounded-xl"
-                  variants={itemVariants}
-                >
-                  <p className="text-sm text-slate-700 italic text-center">
-                    "By Year 3, recurring retainers and specialized
-                    systemization projects overtake one-off registrations as the
-                    primary revenue driver."
-                  </p>
-                </motion.div>
-
-                <motion.div
-                  className="flex gap-2 mt-4 text-xs"
-                  variants={containerVariants}
-                >
-                  <motion.div className="flex items-center" variants={itemVariants}>
-                    <div className="w-3 h-3 bg-pink-500 rounded mr-1"></div>
-                    <span className="text-slate-600">Registration</span>
-                  </motion.div>
-                  <motion.div className="flex items-center" variants={itemVariants}>
-                    <div className="w-3 h-3 bg-purple-600 rounded mr-1"></div>
-                    <span className="text-slate-600">Systemization</span>
-                  </motion.div>
-                </motion.div>
-              </motion.div>
-            </motion.div>
-          </motion.div>
-        </section>
 
         {/* How It Works Section */}
         <section className="py-20 bg-white">
@@ -1009,10 +812,7 @@ export default function FullstackLaunch() {
                   from sign-up and document submission.
                 </p>
 
-                <motion.div
-                  className="space-y-8"
-                  variants={containerVariants}
-                >
+                <motion.div className="space-y-8" variants={containerVariants}>
                   {[
                     {
                       num: 1,
@@ -1039,7 +839,10 @@ export default function FullstackLaunch() {
                       variants={itemVariants}
                       whileHover={{ x: 10 }}
                     >
-                      <motion.div className="flex-shrink-0" whileHover={{ scale: 1.1 }}>
+                      <motion.div
+                        className="flex-shrink-0"
+                        whileHover={{ scale: 1.1 }}
+                      >
                         <div className="w-12 h-12 bg-gradient-to-br from-pink-500 to-purple-600 rounded-full flex items-center justify-center text-white font-bold shadow-lg group-hover:scale-110 transition-transform">
                           {step.num}
                         </div>
@@ -1106,7 +909,10 @@ export default function FullstackLaunch() {
                     className="flex items-center mb-4"
                     whileHover={{ scale: 1.05 }}
                   >
-                    <motion.div animate={{ rotate: 360 }} transition={{ duration: 3, repeat: Infinity }}>
+                    <motion.div
+                      animate={{ rotate: 360 }}
+                      transition={{ duration: 3, repeat: Infinity }}
+                    >
                       <Sparkles className="w-8 h-8 text-pink-300 mr-3" />
                     </motion.div>
                     <h4 className="text-2xl font-bold">Exclusive Bonus</h4>
@@ -1163,7 +969,10 @@ export default function FullstackLaunch() {
                 <div className="p-2">Why This Matters</div>
               </div>
 
-              <motion.div className="divide-y divide-slate-200" variants={containerVariants}>
+              <motion.div
+                className="divide-y divide-slate-200"
+                variants={containerVariants}
+              >
                 {[
                   {
                     icon: <Globe className="w-6 h-6" />,
@@ -1278,10 +1087,7 @@ export default function FullstackLaunch() {
             >
               Critical Questions Answered
             </motion.h2>
-            <motion.div
-              className="space-y-4"
-              variants={containerVariants}
-            >
+            <motion.div className="space-y-4" variants={containerVariants}>
               {[
                 {
                   question: "How do I know the branding will fit my vision?",
@@ -1308,7 +1114,9 @@ export default function FullstackLaunch() {
                   key={idx}
                   className="group bg-slate-50 rounded-xl border border-slate-200 hover:border-pink-300 transition-all"
                   variants={itemVariants}
-                  whileHover={{ boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)" }}
+                  whileHover={{
+                    boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)",
+                  }}
                 >
                   <motion.summary
                     className="flex items-center justify-between cursor-pointer p-6 font-bold text-slate-800 group-open:text-pink-600"
@@ -1382,7 +1190,8 @@ export default function FullstackLaunch() {
                 whileTap={{ scale: 0.95 }}
               >
                 <Mail className="w-5 h-5 mr-2" />
-                Email Us Instead
+                {/*Hook this to Mailerlite */}
+                Request A CallBack
               </motion.a>
             </motion.div>
             <motion.p
@@ -1447,10 +1256,7 @@ export default function FullstackLaunch() {
                 perfect fit for your business goals.
               </motion.p>
 
-              <motion.div
-                className="space-y-3"
-                variants={containerVariants}
-              >
+              <motion.div className="space-y-3" variants={containerVariants}>
                 <motion.a
                   href="#"
                   className="block w-full bg-gradient-to-r from-pink-600 to-purple-600 text-white py-3 rounded-xl font-bold hover:opacity-90 transition-opacity"
@@ -1467,7 +1273,8 @@ export default function FullstackLaunch() {
                   whileHover={{ scale: 1.02 }}
                   whileTap={{ scale: 0.98 }}
                 >
-                  Email Us Instead
+                  {/*Hook this to Mailerlite */}
+                  Request A CallBack
                 </motion.a>
               </motion.div>
               <motion.p
