@@ -220,7 +220,7 @@ export default function NavBar() {
                   </button>
 
                   <button
-                    onClick={() => handleNavClick("/next-steps")}
+                    onClick={() => handleNavClick("/fullstack-launch")}
                     className="block w-full flex justify-between items-center text-left px-4 py-3 font-semibold text-gray-800 rounded-lg hover:bg-pink-50 hover:text-pink-600"
                   >
                     Fullstack Launch

@@ -20,6 +20,7 @@ import {
 } from "lucide-react";
 import NavBarSolid from "../components/NavBarSolid";
 import Footer from "../components/Footer";
+import BookingModal from "../components/BookingModal";
 
 export default function FullstackLaunch() {
   const [activeTab, setActiveTab] = useState("overview");
@@ -1072,6 +1073,183 @@ export default function FullstackLaunch() {
           </motion.div>
         </section>
 
+        {/* Team Section */}
+        <section className="py-20 bg-slate-50">
+          <motion.div
+            className="container mx-auto px-4 max-w-6xl"
+            initial="hidden"
+            whileInView="visible"
+            viewport={{ once: true, amount: 0.2 }}
+            variants={containerVariants}
+          >
+            <motion.div
+              className="text-center mb-16"
+              variants={containerVariants}
+            >
+              <motion.h2
+                className="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4"
+                variants={fadeInUp}
+              >
+                Meet Our Team
+              </motion.h2>
+              <motion.p
+                className="text-lg text-slate-600 max-w-3xl mx-auto"
+                variants={itemVariants}
+              >
+                Experienced professionals with a proven track record of
+                launching successful businesses and building digital solutions.
+              </motion.p>
+            </motion.div>
+
+            <motion.div
+              className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-start"
+              variants={containerVariants}
+            >
+              {[
+                {
+                  name: "Bliss Kipela",
+                  role: "Founder & Business Strategy",
+                  image: "👨‍💼",
+                  bio: "7+ years in business consulting and SME development across Southern Africa.",
+                  projects: [
+                    { title: "E-Commerce Platform Launch", link: "#" },
+                    { title: "SME Growth Acceleration Program", link: "#" },
+                    { title: "Digital Transformation Initiative", link: "#" },
+                  ],
+                },
+                {
+                  name: "Micheal",
+                  role: "Lead Designer & Branding",
+                  image: "👩‍🎨",
+                  bio: "Creative director specializing in brand identity and digital experiences for African startups.",
+                  projects: [
+                    { title: "Brand Identity System Design", link: "#" },
+                    { title: "Fashion E-Commerce Site", link: "#" },
+                    { title: "Tech Startup Rebranding", link: "#" },
+                  ],
+                },
+                {
+                  name: "Kevin Ruvunangiza",
+                  role: "Full-Stack Developer",
+                  image: "👨‍💻",
+                  bio: "Full-stack engineer with expertise in building scalable automation systems and CRM integrations.",
+                  projects: [
+                    {
+                      title: "StudentOS: Academic Toolkit",
+                      link: "https://studentoss.netlify.app/",
+                    },
+                    { title: "Exp.me", link: "https://exp-me.netlify.app/" },
+                    {
+                      title: "Ukhuthula Medical Centre",
+                      link: "https://ukuthulamedicalcenter.co.za/",
+                    },
+                  ],
+                },
+              ].map((member, idx) => (
+                <motion.div key={idx} className="group" variants={itemVariants}>
+                  <motion.div
+                    className="bg-white rounded-2xl overflow-hidden shadow-lg border border-slate-200 hover:border-pink-300 transition-all flex flex-col"
+                    whileHover={{
+                      y: -8,
+                      boxShadow: "0 20px 40px -10px rgba(0, 0, 0, 0.1)",
+                    }}
+                  >
+                    {/* Member Header */}
+                    <motion.div
+                      className="bg-gradient-to-r from-pink-50 to-purple-50 p-8 text-center"
+                      whileHover={{ scale: 1.02 }}
+                    >
+                      <motion.div
+                        className="text-6xl mb-4"
+                        whileHover={{ rotate: 10, scale: 1.1 }}
+                        transition={{ type: "spring", damping: 15 }}
+                      >
+                        {member.image}
+                      </motion.div>
+                      <h3 className="text-2xl font-bold text-slate-900 mb-1">
+                        {member.name}
+                      </h3>
+                      <p className="text-pink-600 font-semibold">
+                        {member.role}
+                      </p>
+                    </motion.div>
+
+                    {/* Member Info */}
+                    <motion.div className="p-6 flex-1 flex flex-col">
+                      <p className="text-slate-600 text-sm leading-relaxed mb-6">
+                        {member.bio}
+                      </p>
+
+                      {/* Projects List */}
+                      <motion.details
+                        className="group/details mt-auto"
+                        initial={{ opacity: 0 }}
+                        animate={{ opacity: 1 }}
+                      >
+                        <motion.summary
+                          className="cursor-pointer font-bold text-slate-800 flex items-center justify-between hover:text-pink-600 transition-colors p-3 bg-slate-50 rounded-lg mb-3 select-none"
+                          whileHover={{ x: 5 }}
+                        >
+                          <span className="text-sm uppercase tracking-wider">
+                            Past Projects
+                          </span>
+                          <motion.span
+                            className="text-slate-500 group-open/details:text-pink-600"
+                            animate={{ rotate: 0 }}
+                            whileHover={{ rotate: 180 }}
+                            transition={{ duration: 0.3 }}
+                          >
+                            ▼
+                          </motion.span>
+                        </motion.summary>
+
+                        <motion.div
+                          className="space-y-2"
+                          initial={{ opacity: 0, height: 0 }}
+                          animate={{ opacity: 1, height: "auto" }}
+                          exit={{ opacity: 0, height: 0 }}
+                          transition={{ duration: 0.3 }}
+                        >
+                          {member.projects.map((project, pidx) => (
+                            <motion.a
+                              key={pidx}
+                              href={project.link}
+                              className="flex items-start gap-3 p-3 rounded-lg hover:bg-pink-50 transition-colors group/link"
+                              whileHover={{ x: 5 }}
+                            >
+                              <span className="text-pink-500 mt-1 shrink-0 font-bold flex gap-2">
+                                →{" "}
+                                <span className="text-sm text-slate-700 group-hover/link:text-pink-600 font-medium transition-colors line-clamp-2">
+                                  {project.title}
+                                </span>
+                              </span>
+                            </motion.a>
+                          ))}
+                        </motion.div>
+                      </motion.details>
+                    </motion.div>
+
+                    {/* Contact CTA */}
+                    <motion.div
+                      className="px-6 pb-6"
+                      whileHover={{ scale: 1.02 }}
+                    >
+                      <motion.button
+                        onClick={() => setShowModal(true)}
+                        className="w-full py-2 bg-gradient-to-r from-pink-500 to-purple-500 text-white rounded-lg font-semibold text-sm hover:opacity-90 transition-opacity"
+                        whileHover={{ scale: 1.02 }}
+                        whileTap={{ scale: 0.98 }}
+                      >
+                        Connect With {member.name.split(" ")[0]}
+                      </motion.button>
+                    </motion.div>
+                  </motion.div>
+                </motion.div>
+              ))}
+            </motion.div>
+          </motion.div>
+        </section>
+
         {/* FAQ Section */}
         <section className="py-20 bg-white">
           <motion.div
@@ -1203,91 +1381,12 @@ export default function FullstackLaunch() {
           </motion.div>
         </section>
 
-        {/* Contact Modal */}
-        <motion.div
-          initial={false}
-          animate={showModal ? "open" : "closed"}
-          variants={{
-            open: { opacity: 1 },
-            closed: { opacity: 0, pointerEvents: "none" },
-          }}
-          className="fixed inset-0 bg-slate-900/80 backdrop-blur-sm z-50 flex items-center justify-center p-4"
-        >
-          <motion.div
-            className="bg-white rounded-3xl p-8 max-w-md w-full relative shadow-2xl"
-            variants={{
-              open: { scale: 1, y: 0 },
-              closed: { scale: 0.9, y: 20 },
-            }}
-            transition={{ type: "spring", damping: 20 }}
-          >
-            <motion.button
-              onClick={() => setShowModal(false)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-slate-600 text-3xl font-bold leading-none"
-              whileHover={{ scale: 1.2, rotate: 90 }}
-              whileTap={{ scale: 0.9 }}
-            >
-              ×
-            </motion.button>
-
-            <motion.div
-              className="text-center"
-              variants={containerVariants}
-              initial="hidden"
-              animate="visible"
-            >
-              <motion.div
-                className="w-16 h-16 bg-pink-100 text-pink-600 rounded-full flex items-center justify-center mx-auto mb-4"
-                variants={scaleIn}
-              >
-                <Calendar className="w-8 h-8" />
-              </motion.div>
-              <motion.h3
-                className="text-2xl font-bold text-slate-900 mb-2"
-                variants={fadeInUp}
-              >
-                Book Strategy Call
-              </motion.h3>
-              <motion.p
-                className="text-slate-600 text-sm mb-8"
-                variants={itemVariants}
-              >
-                Mandatory for Launch Accelerate clients. Let's ensure we're a
-                perfect fit for your business goals.
-              </motion.p>
-
-              <motion.div className="space-y-3" variants={containerVariants}>
-                <motion.a
-                  href="#"
-                  className="block w-full bg-gradient-to-r from-pink-600 to-purple-600 text-white py-3 rounded-xl font-bold hover:opacity-90 transition-opacity"
-                  variants={itemVariants}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  Select Time on Calendly
-                </motion.a>
-                <motion.a
-                  href="mailto:info@pinkandpurple.co.za"
-                  className="block w-full bg-white border-2 border-slate-300 text-slate-700 py-3 rounded-xl font-bold hover:bg-slate-50 transition-colors"
-                  variants={itemVariants}
-                  whileHover={{ scale: 1.02 }}
-                  whileTap={{ scale: 0.98 }}
-                >
-                  {/*Hook this to Mailerlite */}
-                  Request A CallBack
-                </motion.a>
-              </motion.div>
-              <motion.p
-                className="text-xs text-slate-400 mt-4"
-                variants={itemVariants}
-              >
-                No obligation. 100% Free.
-              </motion.p>
-            </motion.div>
-          </motion.div>
-        </motion.div>
+        {/* Booking Modal */}
+        <BookingModal isOpen={showModal} onClose={() => setShowModal(false)} />
       </div>
-      <Footer />
+      <motion.div>
+        <Footer />
+      </motion.div>
     </>
   );
 }
