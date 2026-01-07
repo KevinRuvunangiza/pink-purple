@@ -1107,7 +1107,7 @@ export default function FullstackLaunch() {
             >
               {[
                 {
-                  name: "Thabo Mthembu",
+                  name: "Bliss Kipela",
                   role: "Founder & Business Strategy",
                   image: "👨‍💼",
                   bio: "7+ years in business consulting and SME development across Southern Africa.",
@@ -1118,7 +1118,7 @@ export default function FullstackLaunch() {
                   ],
                 },
                 {
-                  name: "Sophia Chen",
+                  name: "Micheal",
                   role: "Lead Designer & Branding",
                   image: "👩‍🎨",
                   bio: "Creative director specializing in brand identity and digital experiences for African startups.",
