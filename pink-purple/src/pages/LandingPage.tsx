@@ -26,6 +26,7 @@ import {
 import { Link } from "react-router";
 import ReminderForm  from "../components/RemindMeLaterModal";
 import NavBar from "../components/NavBar";
+import TestimoniesSection from "../components/sections/TestimoniesSection";
 
 // Lazy load heavy components
 const CTASection = lazy(() => import("../components/sections/CTASection"));
@@ -625,6 +626,9 @@ export default function LandingPage() {
             </div>
           </div>
         </section>
+
+        {/* Testimonies Section */}
+        <TestimoniesSection />
 
         {/* FAQs Section */}
         <section className="relative py-32 bg-gradient-to-br from-pink-50 via-purple-50 to-pink-50">
