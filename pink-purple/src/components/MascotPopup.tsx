@@ -6,17 +6,21 @@ export default function MascotPopup() {
   const [isVisible, setIsVisible] = useState(false);
   const [step, setStep] = useState(1);
   const navigate = useNavigate();
-    const defaultTimer = 30000; // 30 seconds
-   
+  const defaultTimer = 22000; // 22 seconds
+
   useEffect(() => {
     const timer = setTimeout(() => {
       setIsVisible(true);
-    }, defaultTimer); // 30 seconds
+    }, defaultTimer); // 22 seconds
 
     return () => clearTimeout(timer);
   }, []);
 
   const handleYesRegister = () => {
+    setStep(3);
+  };
+
+  const handleRegisterNextSteps = () => {
     navigate("/next-steps");
   };
 
@@ -67,7 +71,7 @@ export default function MascotPopup() {
 
         {/* Content */}
         <div className="p-8">
-          {step === 1 ? (
+          {step === 1 && (
             <>
               <p className="text-gray-700 text-lg leading-relaxed mb-6 text-center">
                 I noticed you've been exploring! Ready to take the exciting step
@@ -96,7 +100,9 @@ export default function MascotPopup() {
                 </button>
               </div>
             </>
-          ) : (
+          )}
+
+          {step === 2 && (
             <>
               <p className="text-gray-700 text-lg leading-relaxed mb-6 text-center">
                 That's totally okay! Would you like to
@@ -125,9 +131,37 @@ export default function MascotPopup() {
               </div>
             </>
           )}
-        </div>
 
-        {/* Decorative Footer */}
+          {step === 3 && (
+            <>
+              <p className="text-gray-700 text-lg leading-relaxed mb-6 text-center">
+                You are on the path to success!
+                <span className="font-semibold text-purple-600">
+                  {" "}
+                  And are about to register your business
+                </span>{" "}
+                with Pink and Purple. Let's get started!
+              </p>
+
+              <div className="space-y-3">
+                <button
+                  onClick={handleRegisterNextSteps}
+                  className="w-full py-4 px-6 bg-gradient-to-r from-purple-600 to-pink-600 text-white font-bold rounded-xl hover:shadow-lg hover:scale-105 transition-all duration-300 flex items-center justify-center gap-2"
+                >
+                  Let's Go!
+                  <ArrowRight className="w-5 h-5" />
+                </button>
+
+                <button
+                  onClick={handleClose}
+                  className="w-full py-4 px-6 bg-gray-100 text-gray-700 font-semibold rounded-xl hover:bg-gray-200 transition-all duration-300"
+                >
+                  Maybe Later
+                </button>
+              </div>
+            </>
+          )}
+        </div>
       </div>
 
       <style>{`
