@@ -32,7 +32,7 @@ interface PaystackResponse {
   trxref: string;
 }
 
-const PUBLIC_PAYMENT_KEY = "pk_test_3492412833f812c4dd9984e8d550a0b332816e1d";
+const PUBLIC_PAYMENT_KEY = "pk_live_7f35457821ca77d85c3151a34f4feb430ef5ab53";
 
 const SERVICE_OPTIONS: ServiceOption[] = [
   {

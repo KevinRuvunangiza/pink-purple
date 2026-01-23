@@ -83,11 +83,11 @@ export default function NavBar() {
 
                   <button
                     onClick={() => handleNavClick("/fullstack-launch")}
-                    className="w-full flex items-center justify-between text-left px-4 py-3 text-sm font-semibold text-gray-700 hover:bg-pink-50 hover:text-pink-600 rounded-lg"
+                    className="w-full flex items-center justify-between text-left px-5 py-3 text-sm font-semibold text-gray-700 hover:bg-pink-50 hover:text-pink-600 rounded-lg gap-[15px]"
                   >
                     Fullstack Launch
-                    <span className="text-xs bg-pink-600 text-white px-2 py-0.5 rounded-full">
-                      NEW
+                    <span className="text-xs bg-amber-500 text-white px-2 py-1 rounded-2xl w-full">
+                      WORK IN PROGRESS
                     </span>
                   </button>
                 </div>
@@ -197,13 +197,13 @@ export default function NavBar() {
                     Business Registration
                   </button>
 
-                  <button
+                 <button
                     onClick={() => handleNavClick("/fullstack-launch")}
-                    className="block w-full flex justify-between items-center text-left px-4 py-3 font-semibold text-gray-800 rounded-lg hover:bg-pink-50 hover:text-pink-600"
+                    className="w-full flex items-center justify-between text-left px-5 py-3 text-sm font-semibold text-gray-700 hover:bg-pink-50 hover:text-pink-600 rounded-lg gap-[15px]"
                   >
                     Fullstack Launch
-                    <span className="text-xs bg-pink-600 text-white px-2 py-0.5 rounded-full">
-                      NEW
+                    <span className="text-xs bg-amber-500 text-white px-2 py-1 rounded-2xl w-full">
+                      WORK IN PROGRESS
                     </span>
                   </button>
                 </div>

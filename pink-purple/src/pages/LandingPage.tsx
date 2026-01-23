@@ -26,6 +26,7 @@ import {
 import { Link } from "react-router";
 import ReminderForm  from "../components/RemindMeLaterModal";
 import NavBar from "../components/NavBar";
+import MascotPopup from "../components/MascotPopup";
 
 // Lazy load heavy components
 const CTASection = lazy(() => import("../components/sections/CTASection"));
@@ -706,6 +707,7 @@ export default function LandingPage() {
           onClose={() => setShowRemindModal(false)}
         />
       </div>
+      <MascotPopup />
     </LazyMotion>
   );
 }
