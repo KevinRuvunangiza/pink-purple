@@ -59,7 +59,7 @@ export default function MascotPopup() {
 
           {/* Cute Mascot Character */}
           <div className="relative inline-block mb-4">
-            <div className="w-24 h-24 bg-white rounded-full flex items-center justify-center shadow-lg transform hover:scale-110 transition-transform">
+            <div className="w-24 h-24 rounded-full flex items-center justify-center  transform hover:scale-110 transition-transform">
               <span className="text-6xl animate-wave">👋</span>
             </div>
           </div>
@@ -135,12 +135,11 @@ export default function MascotPopup() {
           {step === 3 && (
             <>
               <p className="text-gray-700 text-lg leading-relaxed mb-6 text-center">
-                You are on the path to success!
+                Great News!
                 <span className="font-semibold text-purple-600">
                   {" "}
-                  And are about to register your business
+                  Fill in the form and leave the rest to us.
                 </span>{" "}
-                with Pink and Purple. Let's get started!
               </p>
 
               <div className="space-y-3">

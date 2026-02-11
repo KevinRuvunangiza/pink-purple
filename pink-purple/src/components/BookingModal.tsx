@@ -1,13 +1,64 @@
 import React, { useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { Calendar } from "lucide-react";
+import { Calendar, CheckCircle } from "lucide-react";
 
 interface BookingModalProps {
   isOpen: boolean;
   onClose: () => void;
+  selectedPackage?: "starter" | "foundations" | "accelerate" | null;
 }
 
-export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
+const PACKAGE_CONTENT = {
+  starter: {
+    title: "Launch Starter",
+    subtitle: "Essential Legal & Identity Setup",
+    description: "Get your business registered and professionally branded.",
+    features: [
+      "CIPC Business Registration",
+      "Basic Brand Identity",
+      "Professional Email Setup",
+    ],
+  },
+  foundations: {
+    title: "Digital Foundations",
+    subtitle: "Website & Digital Presence",
+    description: "Launch with a professional website and complete digital identity.",
+    features: [
+      "Everything in Starter",
+      "Professional Website Development",
+      "Domain Registration (1 year)",
+      "Social Media Profile Setup",
+    ],
+  },
+  accelerate: {
+    title: "Launch Accelerate",
+    subtitle: "Full Compliance, Automation & Marketing",
+    description: "Complete business launch with automation and marketing foundation.",
+    features: [
+      "Everything in Digital Foundations",
+      "CRM Automation Setup",
+      "Email Marketing Campaign",
+      "30-Day Content Calendar",
+      "5 Marketing Templates",
+      "FREE 1-Hour Strategy Session",
+    ],
+  },
+};
+
+export default function BookingModal({
+  isOpen,
+  onClose,
+  selectedPackage = null,
+}: BookingModalProps) {
+  const content =
+    selectedPackage && PACKAGE_CONTENT[selectedPackage]
+      ? PACKAGE_CONTENT[selectedPackage]
+      : {
+          title: "Book Your Strategy Call",
+          subtitle: "Launch Accelerate",
+          description: "Let's ensure we're a perfect fit for your business goals.",
+          features: [],
+        };
   // Prevent body scroll when modal is open
   useEffect(() => {
     if (isOpen) {
@@ -103,22 +154,48 @@ export default function BookingModal({ isOpen, onClose }: BookingModalProps) {
                 <Calendar className="w-8 h-8" />
               </motion.div>
               <motion.h3
-                className="text-2xl font-bold text-slate-900 mb-2"
+                className="text-2xl font-bold text-slate-900 mb-1"
                 variants={fadeInUp}
               >
-                Book Strategy Call
+                {content.title}
               </motion.h3>
+              {content.subtitle && (
+                <motion.p
+                  className="text-pink-600 font-semibold text-sm mb-3"
+                  variants={itemVariants}
+                >
+                  {content.subtitle}
+                </motion.p>
+              )}
               <motion.p
-                className="text-slate-600 text-sm mb-8"
+                className="text-slate-600 text-sm mb-4"
                 variants={itemVariants}
               >
-                Mandatory for Launch Accelerate clients. Let's ensure we're a
-                perfect fit for your business goals.
+                {content.description}
               </motion.p>
+              {content.features.length > 0 && (
+                <motion.ul
+                  className="text-left text-sm text-slate-700 mb-6 space-y-2"
+                  variants={containerVariants}
+                >
+                  {content.features.map((feature, idx) => (
+                    <motion.li
+                      key={idx}
+                      className="flex items-start gap-2"
+                      variants={itemVariants}
+                    >
+                      <CheckCircle className="w-4 h-4 text-pink-500 flex-shrink-0 mt-0.5" />
+                      <span>{feature}</span>
+                    </motion.li>
+                  ))}
+                </motion.ul>
+              )}
 
               <motion.div className="space-y-3" variants={containerVariants}>
                 <motion.a
-                  href="#"
+                  href="https://calendly.com/ruvunangizakev"
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="block w-full bg-gradient-to-r from-pink-600 to-purple-600 text-white py-3 rounded-xl font-bold hover:opacity-90 transition-opacity"
                   variants={itemVariants}
                   whileHover={{ scale: 1.02 }}
