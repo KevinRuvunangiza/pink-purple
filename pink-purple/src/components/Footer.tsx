@@ -202,6 +202,7 @@ export default function Footer() {
               <FooterLink href="#terms">Terms</FooterLink>
               <FooterLink href="#cookies">Cookies</FooterLink>
             </div>
+          <p className="text-neutral-500 text-[14px]">Brought to you by <a href="https://monolith-studio.netlify.app/" target="_blank" rel="noopener noreferrer" className="text-neutral-100 text-[14px] font-black">Monolith.</a></p>
           </div>
         </m.div>
       </div>
